@@ -5,6 +5,10 @@ VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruckMove.API", "TruckMove.API\TruckMove.API.csproj", "{1E87528C-9B37-4C05-AEF4-4674E516FD8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruckMove.API.BLL", "TruckMove.API.BLL\TruckMove.API.BLL.csproj", "{FD441028-5222-434F-86CF-79ED082F16DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TruckMove.API.DAL", "TruckMove.API.DAL\TruckMove.API.DAL.csproj", "{06CD0497-E713-4E7A-A4D5-4FE5D63B3A1E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{1E87528C-9B37-4C05-AEF4-4674E516FD8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E87528C-9B37-4C05-AEF4-4674E516FD8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E87528C-9B37-4C05-AEF4-4674E516FD8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD441028-5222-434F-86CF-79ED082F16DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD441028-5222-434F-86CF-79ED082F16DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD441028-5222-434F-86CF-79ED082F16DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD441028-5222-434F-86CF-79ED082F16DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06CD0497-E713-4E7A-A4D5-4FE5D63B3A1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06CD0497-E713-4E7A-A4D5-4FE5D63B3A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06CD0497-E713-4E7A-A4D5-4FE5D63B3A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06CD0497-E713-4E7A-A4D5-4FE5D63B3A1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
