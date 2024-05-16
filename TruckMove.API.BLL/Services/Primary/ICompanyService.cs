@@ -4,6 +4,7 @@ namespace TruckMove.API.BLL.Services.Primary
 {
     public interface ICompanyService
     {
-        IEnumerable<Company> Get();
+        Company Get(int id);
+        Company Update(Company company, Company existingCompany);
     }
 }

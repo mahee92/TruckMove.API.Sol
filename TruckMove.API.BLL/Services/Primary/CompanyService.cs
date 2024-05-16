@@ -1,5 +1,5 @@
 ﻿using TruckMove.API.BLL.Models.Primary;
-using TruckMove.API.DAL.DTO;
+using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories.Primary;
 
 namespace TruckMove.API.BLL.Services.Primary
@@ -16,10 +16,37 @@ namespace TruckMove.API.BLL.Services.Primary
 
 
 
-        public IEnumerable<Company> Get()
+        public Company Get(int id)
         {
-            return companyDataRepository.Get().Select(CompanyDto => new Company { Name = CompanyDto.Name });
-            //  companyDataRepository.GetByIdAsync(10);
+            var company = companyDataRepository.Get(id);
+
+            if (company == null)
+                return null;
+            
+            var companyDto = new Company
+            {
+                CompanyId = company.CompanyId,
+                CompanyName = company.CompanyName,
+            };
+
+            return companyDto;
+
+        }
+
+
+
+        // write the Update method to update company
+        public Company Update(Company company, Company existingCompany)
+        {
+            var companyModel = new CompanyModel
+            {
+                CompanyId = company.CompanyId,
+                CompanyName = company.CompanyName,
+            };
+
+            //companyDataRepository.Update(companyModel);
+
+            return company;
         }
     }
 }
