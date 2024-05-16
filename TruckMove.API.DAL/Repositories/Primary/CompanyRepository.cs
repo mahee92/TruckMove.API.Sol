@@ -9,17 +9,23 @@ namespace TruckMove.API.DAL.Repositories.Primary
         public CompanyDataRepository(TrukMoveLocalContext context)
         {
             _context = context;
-        }
-        private static readonly string[] Summaries = new[]
+        }       
+        public CompanyModel Get(int id)
         {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-         };
-        public IEnumerable<CompanyModel> Get()
-        {
-            var xx = _context.Companies.ToList();
-            return xx;
+
+            return _context.Companies.Where(x => x.CompanyId == id).FirstOrDefault();
+
         }
 
+        // complete update method to update company
+        public CompanyModel Update(CompanyModel companyModel)
+        {
 
+            companyModel.CompanyName = companyModel.CompanyName;
+           _context.SaveChanges();
+
+
+            return companyModel;
+        }
     }
 }
