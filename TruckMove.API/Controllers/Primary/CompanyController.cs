@@ -22,6 +22,7 @@ namespace TruckMove.API.Controllers.Primary
             _logger = logger;
             _companyService = new CompanyService(dbContextOptions);
         }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
