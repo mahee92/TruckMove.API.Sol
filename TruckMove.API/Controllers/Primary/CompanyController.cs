@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TruckMove.API.BLL.Models.Primary;
+using TruckMove.API.BLL;
+using TruckMove.API.DAL.Models;
 using TruckMove.API.BLL.Services.Primary;
-using TruckMove.API.ExeptionHandler;
+
 
 namespace TruckMove.API.Controllers.Primary
 {
@@ -12,55 +15,98 @@ namespace TruckMove.API.Controllers.Primary
 
 
         private readonly ILogger<CompanyController> _logger;
-        private readonly ICompanyService companyService;
+        private readonly ICompanyService _companyService;
 
-        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService)
+        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService, DbContextOptions<TrukMoveLocalContext> dbContextOptions)
         {
             _logger = logger;
-            this.companyService = companyService;
+            _companyService = new CompanyService(dbContextOptions);
         }
-
-        [HttpGet(Name = "Company")]
-        public Company Get(int id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync(int id)
         {
 
-            var Company = companyService.Get(id);
+            Response<Company> response = await _companyService.GetAsync(id);
 
-            if (Company == null)
+
+            if (response.Success)
             {
-                throw new NotFoundException(ErrorMessages.NotFound);
+                return Ok(response.Object);
             }
-            return Company;
-
-
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+                
+            }
         }
 
         // create Put method to update company
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Company company)
+        [HttpPut]
+        public async Task<IActionResult> PutAsync([FromBody] UpdateCompany company)
         {
-
-            var existingCompany = companyService.Get(id);
-
-            if (existingCompany == null)
+            
+            Response<UpdateCompany> response = await _companyService.UpdateAsync(company);
+           
+            if (response.Success)
             {
-                throw new NotFoundException(ErrorMessages.NotFound);
+                return NoContent();
             }
-
-            //companyService.Update(company);
-
-            return Ok();
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }          
         }
 
-        // create Post method to create company
+        
         [HttpPost]
-        public IActionResult Post([FromBody] Company company)
+        public async Task<IActionResult> PostAsync([FromBody] Company company)
         {
+            Response<Company> response = await _companyService.AddAsync(company);
+            if (response.Success)
+            {
+                return CreatedAtRoute("Company", new { id = response.Object.CompanyId }, response.Object);
+            }
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
 
-            //companyService.Create(company);
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            Response<Company> response = await _companyService.DeleteAsync(id);
+            if (response.Success)
+            {
+                return NoContent();
+            }
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var response = await _companyService.GetAllAsync();
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
 
-            return Ok();
-        }   
+
+
 
     }
 }

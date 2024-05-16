@@ -4,38 +4,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TruckMove.API.BLL.Models.Primary
 {
-    public class Company
+    public class UpdateCompany
     {
         [Key]
         public int CompanyId { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string CompanyName { get; set; }
+        
+         [MaxLength(100)]
+         public string? CompanyName { get; set; }
 
        
         [MaxLength(20)]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
 
         [Column(TypeName = "nvarchar(max)")]
-        public string CompanyAddress { get; set; }
+        public string? CompanyAddress { get; set; }
 
         
         [MaxLength(100)]
         [EmailAddress]
-        public string PrimaryEmail { get; set; }
+        public string? PrimaryEmail { get; set; }
 
         
-        [MaxLength(100)]
+       [MaxLength(100)]
         [EmailAddress]
-        public string AccountsEmail { get; set; }
+        public string? AccountsEmail { get; set; }
 
         [Column(TypeName = "nvarchar(max)")]
-        public string CompanyStreetAddress { get; set; }
+        public string? CompanyStreetAddress { get; set; }
 
-        
+
         [StringLength(11)]
-        public string CompanyABN { get; set; }
+        public string? CompanyABN { get; set; }
     }
 }

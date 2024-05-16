@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Options;
 
 namespace TruckMove.API.DAL.Models
 {
     public partial class TrukMoveLocalContext : DbContext
     {
-        public TrukMoveLocalContext()
-        {
-        }
+        //public TrukMoveLocalContext(DbContextOptions _options)
+        //    : base(options)
+        //{
+        //}
 
         public TrukMoveLocalContext(DbContextOptions<TrukMoveLocalContext> options)
             : base(options)

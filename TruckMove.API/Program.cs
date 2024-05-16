@@ -5,7 +5,7 @@ using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.DAL;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories.Primary;
-using TruckMove.API.ExeptionHandler;
+
 
 internal class Program
 {
@@ -15,10 +15,7 @@ internal class Program
 
         // Add services to the container.
 
-        builder.Services.AddControllers(options =>
-        {
-            options.Filters.Add(new GlobalExceptionFilter());
-        });
+        builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddTransient<ICompanyService, CompanyService>();
         builder.Services.AddTransient<ICompanyDataRepository, CompanyDataRepository>();
@@ -39,6 +36,7 @@ internal class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
+
 
         app.MapControllers();
 
