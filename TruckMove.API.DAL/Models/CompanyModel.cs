@@ -40,5 +40,10 @@ namespace TruckMove.API.DAL.Models
         [Required]
         [StringLength(11)] 
         public string CompanyABN { get; set; }
+
+        public DateTime? CreatedDate { get; set; }
+
+        public DateTime? LastModifiedDate { get; set; }
+
     }
 }

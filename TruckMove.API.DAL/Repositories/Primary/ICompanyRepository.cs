@@ -5,7 +5,8 @@ namespace TruckMove.API.DAL.Repositories.Primary
 {
     public interface ICompanyDataRepository
     {
-        CompanyModel Get(int id);
-        CompanyModel Update(CompanyModel companyModel);
+        //CompanyModel Get(int id);
+        //CompanyModel Update(CompanyModel companyModel);
+        
     }
 }
