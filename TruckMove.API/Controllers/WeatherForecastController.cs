@@ -18,6 +18,7 @@ namespace TruckMove.API.Controllers
             _logger = logger;
 
         }
+        //new change
 
         //[HttpGet(Name = "GetWeatherForecast")]
         //public IEnumerable<WeatherForecast> Get()
