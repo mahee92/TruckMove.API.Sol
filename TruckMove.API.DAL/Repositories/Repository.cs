@@ -10,8 +10,8 @@ using TruckMove.API.DAL.Models;
 
 namespace TruckMove.API.DAL.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
-    {
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IActiveEntity
+    { 
 
         private readonly DbContext _context;
         private readonly DbSet<TEntity> _dbSet;
@@ -33,7 +33,8 @@ namespace TruckMove.API.DAL.Repositories
        
         public async Task<TEntity> Get(int id)
         {
-            return await _dbSet.FindAsync(id);
+          
+            return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
         }
 
         public async Task UpdateAsync(TEntity entity)
@@ -43,18 +44,42 @@ namespace TruckMove.API.DAL.Repositories
             //return entity;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(TEntity entity)
         {
-            var entity = await _dbSet.FindAsync(id);
-            _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+            _context.Entry(entity).State = EntityState.Modified;
+             await _context.SaveChangesAsync();
         }
 
    
         public async Task<List<TEntity>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.Where(e => e.IsActive).ToListAsync();
         }
+
+        public async Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
+        }
+
+        public async Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.Where(e => e.IsActive).ToListAsync();
+        }
+
 
 
     }

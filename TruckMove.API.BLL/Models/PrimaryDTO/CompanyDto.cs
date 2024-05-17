@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using TruckMove.API.DAL.Models;
 
 namespace TruckMove.API.BLL.Models.Primary
 {
-    public class Company
+    public class CompanyDto
     {
         [Key]
-        public int CompanyId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -37,5 +38,7 @@ namespace TruckMove.API.BLL.Models.Primary
         
         [StringLength(11)]
         public string CompanyABN { get; set; }
+
+        public ICollection<ContactModel> Contacts { get; set; }
     }
 }

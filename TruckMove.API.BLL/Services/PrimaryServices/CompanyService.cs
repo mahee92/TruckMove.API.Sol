@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 using TruckMove.API.BLL.Models.ModelConvertor;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.DAL.Models;
@@ -13,20 +15,29 @@ namespace TruckMove.API.BLL.Services.Primary
 
 
         private readonly IRepository<CompanyModel> _companyRepository;
+        private readonly IMapper _mapper;
 
-        public CompanyService(DbContextOptions<TrukMoveLocalContext> dbContextOptions)
+        //public CompanyService(DbContextOptions<TrukMoveLocalContext> dbContextOptions)
+        //{
+        //    _companyRepository = new Repository<CompanyModel>(dbContextOptions);
+        //}
+        public CompanyService(IRepository<CompanyModel> repository, IMapper mapper)
         {
-            _companyRepository = new Repository<CompanyModel>(dbContextOptions);
+            _companyRepository = repository;
+                _mapper = mapper;
         }
 
 
-
-        public async Task<Response<Company>> GetAsync(int id)
+        public async Task<Response<CompanyDto>> GetAsync(int id)
         {
-            Response<Company> response = new Response<Company>();
+            Response<CompanyDto> response = new Response<CompanyDto>();
             try
             {
+                // get only isactive companies
+
+
                 var company = await _companyRepository.Get(id);
+
                 if (company == null)
                 {
                     response.Success = false;
@@ -48,13 +59,28 @@ namespace TruckMove.API.BLL.Services.Primary
 
 
         }
-            
-        public async Task<Response<UpdateCompany>> UpdateAsync(UpdateCompany updatedcompany)
+
+        public async Task<bool> ValidateCompanyById(int id)
         {
-            Response<UpdateCompany> response = new Response<UpdateCompany>();
+            Response<CompanyDto> response = await GetAsync(id);
+            if(response.Success)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+
+        public async Task<Response<CompanyDtoUpdate>> UpdateAsync(CompanyDtoUpdate updatedcompany)
+        {
+            Response<CompanyDtoUpdate> response = new Response<CompanyDtoUpdate>();
             try
             {
-                var company = await _companyRepository.Get(updatedcompany.CompanyId);
+                var company = await _companyRepository.Get(updatedcompany.Id);
                 if (company == null)
                 {
                     response.Success = false;
@@ -64,7 +90,7 @@ namespace TruckMove.API.BLL.Services.Primary
                 else
                 {
 
-                        ObjectUpdater<UpdateCompany, CompanyModel> updater = new ObjectUpdater<UpdateCompany, CompanyModel>();
+                        ObjectUpdater<CompanyDtoUpdate, CompanyModel> updater = new ObjectUpdater<CompanyDtoUpdate, CompanyModel>();
                         var res = updater.Map(updatedcompany, company);
                         res.LastModifiedDate= DateTime.Now;
 
@@ -83,9 +109,9 @@ namespace TruckMove.API.BLL.Services.Primary
         }
 
         
-        public async Task<Response<Company>> AddAsync(Company company)
+        public async Task<Response<CompanyDto>> AddAsync(CompanyDto company)
         {
-            Response<Company> response = new Response<Company>();
+            Response<CompanyDto> response = new Response<CompanyDto>();
             try
             {
                 var companyModel = CompanyConvertor.ConvertToCompanyModel(company);
@@ -106,9 +132,9 @@ namespace TruckMove.API.BLL.Services.Primary
         }
 
 
-        public async Task<Response<Company>> DeleteAsync(int id)
+        public async Task<Response<CompanyDto>> DeleteAsync(int id)
         {
-            Response<Company> response = new Response<Company>();
+            Response<CompanyDto> response = new Response<CompanyDto>();
             try
             {
 
@@ -122,8 +148,8 @@ namespace TruckMove.API.BLL.Services.Primary
                 }
                 else
                 {
-
-                    await _companyRepository.DeleteAsync(id);
+                    company.IsActive = false;
+                    await _companyRepository.DeleteAsync(company);
                     response.Success = true;
                 }
 
@@ -162,6 +188,22 @@ namespace TruckMove.API.BLL.Services.Primary
             }
       
             return response;
+        }
+
+        public async Task UpdateCompanyPartialAsync(int id, JsonPatchDocument<CompanyDtoUpdate> patchDoc)
+        {
+            var company = await _companyRepository.Get(id);
+            if (company == null)
+            {
+                throw new KeyNotFoundException("Company not found");
+            }
+
+            var updateModel = new CompanyDtoUpdate();
+            patchDoc.ApplyTo(updateModel);
+
+            // Map and apply the update model to the entity using AutoMapper
+            var patchedCompany = _mapper.Map(updateModel, company);
+            await _companyRepository.UpdateAsync(patchedCompany);
         }
 
 

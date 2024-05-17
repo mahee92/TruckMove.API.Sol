@@ -10,10 +10,10 @@ namespace TruckMove.API.BLL.Models.ModelConvertor
 {
     public static class CompanyConvertor
     {
-        public static Company ConvertToCompany(CompanyModel companyModel)
+        public static CompanyDto ConvertToCompany(CompanyModel companyModel)
         {
-            Company company = new Company();
-            company.CompanyId = companyModel.CompanyId;
+            CompanyDto company = new CompanyDto();
+            company.Id = companyModel.Id;
             company.CompanyName = companyModel.CompanyName;
             company.PhoneNumber = companyModel.PhoneNumber;
             company.CompanyAddress = companyModel.CompanyAddress;
@@ -25,10 +25,10 @@ namespace TruckMove.API.BLL.Models.ModelConvertor
             return company;
         }
 
-        public static CompanyModel ConvertToCompanyModel(Company company)
+        public static CompanyModel ConvertToCompanyModel(CompanyDto company)
         {
             CompanyModel companyModel = new CompanyModel();
-            companyModel.CompanyId = company.CompanyId;
+            companyModel.Id = company.Id;
             companyModel.CompanyName = company.CompanyName;
             companyModel.PhoneNumber = company.PhoneNumber;
             companyModel.CompanyAddress = company.CompanyAddress;
@@ -41,9 +41,9 @@ namespace TruckMove.API.BLL.Models.ModelConvertor
         }
 
         // create ConvertToCompanies method
-        public static List<Company> ConvertToCompanies(List<CompanyModel> companyModels)
+        public static List<CompanyDto> ConvertToCompanies(List<CompanyModel> companyModels)
         {
-            List<Company> companies = new List<Company>();
+            List<CompanyDto> companies = new List<CompanyDto>();
             foreach (var companyModel in companyModels)
             {
                 companies.Add(ConvertToCompany(companyModel));

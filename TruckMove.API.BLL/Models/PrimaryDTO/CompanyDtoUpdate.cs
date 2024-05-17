@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TruckMove.API.BLL.Models.Primary
 {
-    public class UpdateCompany
+    public class CompanyDtoUpdate
     {
         [Key]
-        public int CompanyId { get; set; }
+        public int Id { get; set; }
 
         
          [MaxLength(100)]

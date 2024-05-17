@@ -4,7 +4,7 @@ using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.BLL.Services.Primary;
-
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace TruckMove.API.Controllers.Primary
 {
@@ -17,10 +17,10 @@ namespace TruckMove.API.Controllers.Primary
         private readonly ILogger<CompanyController> _logger;
         private readonly ICompanyService _companyService;
 
-        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService, DbContextOptions<TrukMoveLocalContext> dbContextOptions)
+        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService)
         {
             _logger = logger;
-            _companyService = new CompanyService(dbContextOptions);
+            _companyService = companyService;
         }
         //test
 
@@ -28,7 +28,7 @@ namespace TruckMove.API.Controllers.Primary
         public async Task<IActionResult> GetAsync(int id)
         {
 
-            Response<Company> response = await _companyService.GetAsync(id);
+            Response<CompanyDto> response = await _companyService.GetAsync(id);
 
 
             if (response.Success)
@@ -43,12 +43,13 @@ namespace TruckMove.API.Controllers.Primary
             }
         }
 
+
         // create Put method to update company
         [HttpPut]
-        public async Task<IActionResult> PutAsync([FromBody] UpdateCompany company)
+        public async Task<IActionResult> PutAsync([FromBody] CompanyDtoUpdate company)
         {
             
-            Response<UpdateCompany> response = await _companyService.UpdateAsync(company);
+            Response<CompanyDtoUpdate> response = await _companyService.UpdateAsync(company);
            
             if (response.Success)
             {
@@ -63,12 +64,12 @@ namespace TruckMove.API.Controllers.Primary
 
         
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] Company company)
+        public async Task<IActionResult> PostAsync([FromBody] CompanyDto company)
         {
-            Response<Company> response = await _companyService.AddAsync(company);
+            Response<CompanyDto> response = await _companyService.AddAsync(company);
             if (response.Success)
             {
-                return CreatedAtRoute("Company", new { id = response.Object.CompanyId }, response.Object);
+                return CreatedAtRoute("Company", new { id = response.Object.Id }, response.Object);
             }
             else
             {
@@ -80,7 +81,7 @@ namespace TruckMove.API.Controllers.Primary
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            Response<Company> response = await _companyService.DeleteAsync(id);
+            Response<CompanyDto> response = await _companyService.DeleteAsync(id);
             if (response.Success)
             {
                 return NoContent();
@@ -106,6 +107,30 @@ namespace TruckMove.API.Controllers.Primary
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+
+        //[HttpPatch("{id}")]
+        //public async Task<IActionResult> PatchCompany(int id, [FromBody] JsonPatchDocument<CompanyDtoUpdate> patchDoc)
+        //{
+        //    if (patchDoc == null)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    try
+        //    {
+        //        await _companyService.UpdateCompanyPartialAsync(id, patchDoc);
+        //        return NoContent();
+        //    }
+        //    catch (KeyNotFoundException)
+        //    {
+        //        return NotFound();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error updating company");
+        //        return StatusCode(500, "Internal server error");
+        //    }
+        //}
 
 
 

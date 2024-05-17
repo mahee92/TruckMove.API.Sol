@@ -1,4 +1,6 @@
-﻿namespace TruckMove.API.BLL
+﻿using TruckMove.API.BLL.Models.Primary;
+
+namespace TruckMove.API.BLL
 {
     public class Response<T>
     {
@@ -9,6 +11,11 @@
 
         public ErrorCode ErrorType { get; set; }
         public string ErrorMessage { get; set; }
+
+        public static implicit operator Response<T>(Response<CompanyDto> v)
+        {
+            throw new NotImplementedException();
+        }
     }
     public enum ErrorCode
     {

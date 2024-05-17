@@ -6,13 +6,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public class CompanyModel
+    public class CompanyModel : IActiveEntity
     {
         [Key]
-        public int CompanyId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(100)] 
@@ -44,6 +45,11 @@ namespace TruckMove.API.DAL.Models
         public DateTime? CreatedDate { get; set; }
 
         public DateTime? LastModifiedDate { get; set; }
+
+        [Required]
+        public bool IsActive { get; set; }
+
+        public ICollection<ContactModel> Contacts { get; set; }
 
     }
 }

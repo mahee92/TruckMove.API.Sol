@@ -10,11 +10,14 @@ namespace TruckMove.API.DAL.Repositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        Task<TEntity> AddAsync(TEntity companyModel);
+        Task<TEntity> AddAsync(TEntity model);
         Task<TEntity> Get(int id);
         Task UpdateAsync(TEntity entity);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(TEntity entity);
         Task<List<TEntity>> GetAllAsync();
+        Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes);
+
+        Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes);
 
 
 
