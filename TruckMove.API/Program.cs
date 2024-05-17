@@ -17,13 +17,6 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Load configuration based on the current environment
-        var environment = builder.Environment.EnvironmentName;
-        builder.Configuration
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables();
-
         builder.Services.AddControllers().AddJsonOptions(x =>
          x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
@@ -39,9 +32,7 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<TrukMoveLocalContext>(option =>
-        option.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
-        //"Server=(localdb)\\localdbtest;Database=TrukMoveLocal;Trusted_Connection=True;"
-
+            option.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
 
         var app = builder.Build();
 
