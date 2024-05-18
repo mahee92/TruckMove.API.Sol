@@ -55,7 +55,7 @@ internal class Program
             app.UseSwaggerUI();
         }
 
-        });
+       
 
         app.UseHttpsRedirection();
 
