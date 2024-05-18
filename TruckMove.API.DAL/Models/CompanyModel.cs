@@ -13,6 +13,7 @@ namespace TruckMove.API.DAL.Models
     public class CompanyModel : IActiveEntity
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]

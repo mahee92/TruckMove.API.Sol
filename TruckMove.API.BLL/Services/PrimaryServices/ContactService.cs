@@ -69,7 +69,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
             try
             {
 
-                var contact = await _contactRepository.Get(id);
+                var contact = await _contactRepository.GetAsync(id);
 
                 if (contact == null)
                 {
@@ -128,7 +128,8 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
             Response<ContactDto> response = new Response<ContactDto>();
             try
             {
-                var contact = await _contactRepository.GetWithIncludesAsync(id, contact => contact.Company);
+                //var contact = await _contactRepository.GetWithIncludesAsync(id, contact => contact.Company);
+                var contact = await _contactRepository.GetAsync(id);
                 if (contact == null)
                 {
                     response.Success = false;
@@ -156,7 +157,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
             Response<ContactUpdateDto> response = new Response<ContactUpdateDto>();
             try
             {
-                var contact = await _contactRepository.Get(updatedContact.Id);
+                var contact = await _contactRepository.GetAsync(updatedContact.Id);
                 if (contact == null)
                 {
                     response.Success = false;

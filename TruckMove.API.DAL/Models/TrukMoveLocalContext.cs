@@ -27,22 +27,28 @@ namespace TruckMove.API.DAL.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<CompanyModel>()
+              .Property(x => x.Id)
+              .UseIdentityColumn(seed: 0, increment: 1);
+
             modelBuilder.Entity<CompanyModel>()
                .Property(b => b.IsActive)
                .HasDefaultValue(true);
 
+            modelBuilder.Entity<CompanyModel>()
+            .HasMany(e => e.Contacts)
+            .WithOne(e => e.Company)
+            .HasForeignKey(e => e.CompanyId)
+            .IsRequired();
+
+            modelBuilder.Entity<ContactModel>()
+              .Property(x => x.Id)
+              .UseIdentityColumn(seed: 0, increment: 1);
+
             modelBuilder.Entity<ContactModel>()
                .Property(b => b.IsActive)
             .HasDefaultValue(true);
-
-
-            modelBuilder.Entity<CompanyModel>()
-             .HasMany(e => e.Contacts)
-             .WithOne(e => e.Company)
-             .HasForeignKey(e => e.CompanyId)
-             .IsRequired();
-
-
 
 
             OnModelCreatingPartial(modelBuilder);

@@ -39,6 +39,6 @@ namespace TruckMove.API.BLL.Models.Primary
         [StringLength(11)]
         public string CompanyABN { get; set; }
 
-        public ICollection<ContactModel> Contacts { get; set; }
+       
     }
 }

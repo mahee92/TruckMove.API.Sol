@@ -17,10 +17,6 @@ namespace TruckMove.API.BLL.Services.Primary
         private readonly IRepository<CompanyModel> _companyRepository;
         private readonly IMapper _mapper;
 
-        //public CompanyService(DbContextOptions<TrukMoveLocalContext> dbContextOptions)
-        //{
-        //    _companyRepository = new Repository<CompanyModel>(dbContextOptions);
-        //}
         public CompanyService(IRepository<CompanyModel> repository, IMapper mapper)
         {
             _companyRepository = repository;
@@ -36,7 +32,7 @@ namespace TruckMove.API.BLL.Services.Primary
                 // get only isactive companies
 
 
-                var company = await _companyRepository.Get(id);
+                var company = await _companyRepository.GetAsync(id);
 
                 if (company == null)
                 {
@@ -80,7 +76,7 @@ namespace TruckMove.API.BLL.Services.Primary
             Response<CompanyDtoUpdate> response = new Response<CompanyDtoUpdate>();
             try
             {
-                var company = await _companyRepository.Get(updatedcompany.Id);
+                var company = await _companyRepository.GetAsync(updatedcompany.Id);
                 if (company == null)
                 {
                     response.Success = false;
@@ -138,7 +134,7 @@ namespace TruckMove.API.BLL.Services.Primary
             try
             {
 
-                var company = await _companyRepository.Get(id);
+                var company = await _companyRepository.GetAsync(id);
 
                 if (company == null)
                 {
@@ -192,7 +188,7 @@ namespace TruckMove.API.BLL.Services.Primary
 
         public async Task UpdateCompanyPartialAsync(int id, JsonPatchDocument<CompanyDtoUpdate> patchDoc)
         {
-            var company = await _companyRepository.Get(id);
+            var company = await _companyRepository.GetAsync(id);
             if (company == null)
             {
                 throw new KeyNotFoundException("Company not found");
