@@ -69,7 +69,8 @@ namespace TruckMove.API.Controllers.Primary
             Response<CompanyDto> response = await _companyService.AddAsync(company);
             if (response.Success)
             {
-                return CreatedAtRoute("Company", new { id = response.Object.Id }, response.Object);
+                // return CreatedAtRoute("Company", new { id = response.Object.Id }, response.Object);
+                return Ok(response.Object);
             }
             else
             {

@@ -51,7 +51,8 @@ namespace TruckMove.API.Controllers.PrimaryControllers
             Response<ContactDto> response = await _contactservice.AddAsync(contact);
             if (response.Success)
             {
-                return CreatedAtRoute("Contact", new { id = response.Object.Id }, response.Object);
+                //  return CreatedAtRoute("Contact", new { id = response.Object.Id }, response.Object);
+                return Ok(response.Object);
             }
             else
             {
