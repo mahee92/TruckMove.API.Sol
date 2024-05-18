@@ -36,12 +36,42 @@ internal class Program
 
         var app = builder.Build();
 
+        app.UseSwagger();
+        // app.UseSwaggerUI();
+        app.UseStaticFiles();
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        //if (app.Environment.IsDevelopment())
+        //{
+        //    app.UseSwagger();
+        //    app.UseSwaggerUI(c =>
+        //    {
+        //        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        //        c.RoutePrefix = string.Empty; // Sets Swagger UI at the app's root
+        //    });
+        //}
+        //else
+        //{
+        //    app.UseSwagger();
+        //    app.UseSwaggerUI(c =>
+        //    {
+        //        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        //        c.RoutePrefix = string.Empty; // Sets Swagger UI at the app's root
+        //    });
+        //}
+
+        app.UseSwaggerUI(c =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+            if (app.Environment.IsDevelopment())
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API V1");
+            }
+            else
+            {
+                // To deploy on IIS
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web API V1");
+            }
+
+        });
 
         app.UseHttpsRedirection();
 
