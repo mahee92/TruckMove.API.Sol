@@ -8,6 +8,8 @@ using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.BLL.Services.PrimaryServices;
 using TruckMove.API.Controllers.Primary;
 using TruckMove.API.DAL.Models;
+using Microsoft.Extensions.Options;
+using TruckMove.API.Helper;
 
 namespace TruckMove.API.Controllers.PrimaryControllers
 {
@@ -19,11 +21,13 @@ namespace TruckMove.API.Controllers.PrimaryControllers
 
         private readonly ILogger<ContactController> _logger;
         private readonly IContactService _contactservice;
+        private readonly MySettings _mySettings;
 
-        public ContactController(ILogger<ContactController> logger, IContactService companService)
+        public ContactController(ILogger<ContactController> logger, IContactService companService, IOptions<MySettings> mySettings)
         {
             _logger = logger;
             _contactservice = companService;
+            _mySettings = mySettings.Value;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
@@ -108,23 +112,26 @@ namespace TruckMove.API.Controllers.PrimaryControllers
             }
         }
 
-        //
-        //[HttpPut]
-        //public async Task<IActionResult> PutAsync(int id, [FromBody] ContactUpdateDto updateCompany)
-        //{
+        [HttpPost("UploadImage")]
+        public async Task<IActionResult> UploadImage([FromForm] FileUpload fileUpload)
+        {
+            if (fileUpload == null || fileUpload.file == null || fileUpload.file.Length == 0)
+            {
+                return StatusCode((int)ErrorCode.fileNotFound, ErrorMessages.FileNotFound);
+            }
+            try
+            {                
+               var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, fileUpload, Meta.CONTACT_IMG_PATH, Request.Scheme, Request.Host);
+               return Ok(fileUrl);
 
-        //    Response<ContactUpdateDto> response = await _contactservice.UpdateAsync(contact);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)ErrorCode.InternalServerError, ex.InnerException);
 
-        //    if (response.Success)
-        //    {
-        //        return NoContent();
-        //    }
-        //    else
-        //    {
-        //        _logger.BeginScope(response.ErrorMessage);
-        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
-        //    }
-        //}
+            }
+
+        }
 
 
 

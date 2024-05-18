@@ -15,5 +15,6 @@ namespace TruckMove.API.BLL.Services.Primary
 
         Task<bool> ValidateCompanyById(int id);
         Task UpdateCompanyPartialAsync(int id, JsonPatchDocument<CompanyDtoUpdate> patchDoc);
+        Task<Response<ContactModel>> GetContactsByCompany(int companyId);
     }
 }

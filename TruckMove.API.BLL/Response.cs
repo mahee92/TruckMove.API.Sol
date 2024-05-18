@@ -22,7 +22,7 @@ namespace TruckMove.API.BLL
         NotFound = 404,
         BadRequest = 400,
         InternalServerError = 500,
-        dbError = 600
-        // Add more error codes as needed
+        dbError = 600,
+        fileNotFound=300
     }
 }
