@@ -9,5 +9,7 @@
 
         public static string NotResultFound => "No result found";
 
+        public static string FileNotFound => "File Not Found";
+
     }
 }

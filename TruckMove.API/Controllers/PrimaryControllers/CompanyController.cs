@@ -16,11 +16,13 @@ namespace TruckMove.API.Controllers.Primary
 
         private readonly ILogger<CompanyController> _logger;
         private readonly ICompanyService _companyService;
+        private readonly IWebHostEnvironment _environment;
 
-        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService)
+        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService,IWebHostEnvironment webHostEnvironment)
         {
             _logger = logger;
             _companyService = companyService;
+            _environment = webHostEnvironment;
         }
         //test
 
@@ -43,8 +45,38 @@ namespace TruckMove.API.Controllers.Primary
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var response = await _companyService.GetAllAsync();
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
 
-        // create Put method to update company
+        [HttpPost]
+        public async Task<IActionResult> PostAsync([FromBody] CompanyDto company)
+        {
+            Response<CompanyDto> response = await _companyService.AddAsync(company);
+            if (response.Success)
+            {
+                // return CreatedAtRoute("Company", new { id = response.Object.Id }, response.Object);
+                return Ok(response.Object);
+            }
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+
         [HttpPut]
         public async Task<IActionResult> PutAsync([FromBody] CompanyDtoUpdate company)
         {
@@ -62,22 +94,6 @@ namespace TruckMove.API.Controllers.Primary
             }          
         }
 
-        
-        [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] CompanyDto company)
-        {
-            Response<CompanyDto> response = await _companyService.AddAsync(company);
-            if (response.Success)
-            {
-                // return CreatedAtRoute("Company", new { id = response.Object.Id }, response.Object);
-                return Ok(response.Object);
-            }
-            else
-            {
-                _logger.BeginScope(response.ErrorMessage);
-                return StatusCode((int)response.ErrorType, response.ErrorMessage);
-            }
-        }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(int id)
@@ -94,10 +110,15 @@ namespace TruckMove.API.Controllers.Primary
             }
         }
         
-        [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        
+       
+        
+
+
+        [HttpGet("{id}/Contacts")]
+        public async Task<IActionResult> GetContactsByCompany(int id)
         {
-            var response = await _companyService.GetAllAsync();
+            var response = await _companyService.GetContactsByCompany(id);
             if (response.Success)
             {
                 return Ok(response.Objects);
@@ -108,30 +129,6 @@ namespace TruckMove.API.Controllers.Primary
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
-
-        //[HttpPatch("{id}")]
-        //public async Task<IActionResult> PatchCompany(int id, [FromBody] JsonPatchDocument<CompanyDtoUpdate> patchDoc)
-        //{
-        //    if (patchDoc == null)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    try
-        //    {
-        //        await _companyService.UpdateCompanyPartialAsync(id, patchDoc);
-        //        return NoContent();
-        //    }
-        //    catch (KeyNotFoundException)
-        //    {
-        //        return NotFound();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Error updating company");
-        //        return StatusCode(500, "Internal server error");
-        //    }
-        //}
 
 
 

@@ -5,7 +5,7 @@ using TruckMove.API.BLL.Models.ModelConvertor;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
-
+using TruckMove.API.DAL.Repositories.Primary;
 
 namespace TruckMove.API.BLL.Services.Primary
 {
@@ -16,11 +16,13 @@ namespace TruckMove.API.BLL.Services.Primary
 
         private readonly IRepository<CompanyModel> _companyRepository;
         private readonly IMapper _mapper;
+        private readonly IContactRepository _contactRepository;
 
-        public CompanyService(IRepository<CompanyModel> repository, IMapper mapper)
+        public CompanyService(IRepository<CompanyModel> repository, IMapper mapper, IContactRepository contactRepository)
         {
             _companyRepository = repository;
-                _mapper = mapper;
+            _mapper = mapper;
+            _contactRepository = contactRepository;
         }
 
 
@@ -202,7 +204,41 @@ namespace TruckMove.API.BLL.Services.Primary
             await _companyRepository.UpdateAsync(patchedCompany);
         }
 
+        public async Task<Response<ContactModel>> GetContactsByCompany(int companyId)
+        {
+            Response<ContactModel> response = new Response<ContactModel>();
+            try
+            {
+                var companyExits = await ValidateCompanyById(companyId);
+                if (!companyExits)
+                {
+                    response.Success = false;
+                    response.ErrorType = ErrorCode.NotFound;
+                    response.ErrorMessage = ErrorMessages.NotFound + " (Company Id : " + companyId + ")";
 
+                }
+                else
+                {
+                    var contacts = await _contactRepository.GetContactsByCompany(companyId);
+                    response.Success = true;
+                    if (contacts.Count > 0)
+                    {
+                        response.Objects = new List<ContactModel>();
+                        response.Objects.AddRange(contacts);
+                    }
+                }
+                
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+
+            return response;
+        }
     }
 
 }

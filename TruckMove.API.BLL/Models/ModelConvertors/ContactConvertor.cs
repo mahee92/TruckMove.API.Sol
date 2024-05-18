@@ -22,6 +22,7 @@ namespace TruckMove.API.BLL.Models.ModelConvertors
             contactModel.ContactsEmail = contact.ContactsEmail;
             contactModel.ContactStreetAddress = contact.ContactStreetAddress;
             contactModel.CompanyId = contact.CompanyId;
+            contactModel.Image= contact.Image;
             return contactModel;
         }
 
@@ -36,6 +37,7 @@ namespace TruckMove.API.BLL.Models.ModelConvertors
             ContactDto.ContactsEmail = contact.ContactsEmail;
             ContactDto.ContactStreetAddress = contact.ContactStreetAddress;
             ContactDto.CompanyId = contact.CompanyId;
+            ContactDto.Image= contact.Image;
             //ContactDto.CompanyName = (contact.Company != null) ? contact.Company.CompanyName : "";
             return ContactDto;
         }

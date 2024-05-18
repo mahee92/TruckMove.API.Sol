@@ -27,7 +27,7 @@ namespace TruckMove.API.BLL.Models.Primary
         public string? PrimaryEmail { get; set; }
 
         
-       [MaxLength(100)]
+        [MaxLength(100)]
         [EmailAddress]
         public string? AccountsEmail { get; set; }
 
@@ -37,5 +37,7 @@ namespace TruckMove.API.BLL.Models.Primary
 
         [StringLength(11)]
         public string? CompanyABN { get; set; }
+
+        public string? Image { get; set; }
     }
 }
