@@ -11,5 +11,8 @@
 
         public static string FileNotFound => "File Not Found";
 
+        public static string EmailAlreadyExists => "Email already exists";
+
+
     }
 }

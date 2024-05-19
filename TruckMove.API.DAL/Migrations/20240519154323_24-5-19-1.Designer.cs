@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveLocalContext))]
-    partial class TrukMoveLocalContextModelSnapshot : ModelSnapshot
+    [Migration("20240519154323_24-5-19-1")]
+    partial class _245191
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,9 +216,7 @@ namespace TruckMove.API.DAL.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -232,7 +232,7 @@ namespace TruckMove.API.DAL.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<DateTime?>("UpdatedDate")
+                    b.Property<DateTime?>("UreatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -255,9 +255,7 @@ namespace TruckMove.API.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");

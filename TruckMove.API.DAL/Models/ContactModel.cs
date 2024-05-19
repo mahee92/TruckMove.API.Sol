@@ -10,7 +10,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TruckMove.API.DAL.Models
 {
-    public class ContactModel : IActiveEntity
+    public class ContactModel : AuditableEntity, IActiveEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -36,10 +36,7 @@ namespace TruckMove.API.DAL.Models
        
         [Required]
         public bool IsActive { get; set; }
-
-
-        public DateTime? CreatedDate { get; set; }
-
+      
         public string? Image { get; set; }
 
     }

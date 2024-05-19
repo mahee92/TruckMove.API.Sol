@@ -23,6 +23,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
         {
             _contactRepository = repository;
             _companyService = companyService;
+         
 
         }
 
@@ -169,7 +170,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
 
                     ObjectUpdater<ContactUpdateDto, ContactModel> updater = new ObjectUpdater<ContactUpdateDto, ContactModel>();
                     var res = updater.Map(updatedContact, contact);
-                   // res.LastModifiedDate = DateTime.Now;
+                    res.CreatedDate = DateTime.Now;
 
                     await _contactRepository.UpdateAsync(res);
                     response.Success = true;
