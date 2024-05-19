@@ -4,22 +4,22 @@
 
 namespace TruckMove.API.DAL.Migrations
 {
-    public partial class _20245171 : Migration
+    public partial class _245192 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "CompanyId",
-                table: "Companies",
-                newName: "Id");
+                name: "UreatedDate",
+                table: "Users",
+                newName: "UpdatedDate");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "Id",
-                table: "Companies",
-                newName: "CompanyId");
+                name: "UpdatedDate",
+                table: "Users",
+                newName: "UreatedDate");
         }
     }
 }

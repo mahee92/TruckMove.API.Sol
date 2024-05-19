@@ -23,6 +23,7 @@ namespace TruckMove.API.BLL
         BadRequest = 400,
         InternalServerError = 500,
         dbError = 600,
-        fileNotFound=300
+        fileNotFound=300,
+        alreadyExists = 409,
     }
 }

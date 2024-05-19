@@ -10,7 +10,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public class CompanyModel : IActiveEntity
+    public class CompanyModel : AuditableEntity , IActiveEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -43,14 +43,15 @@ namespace TruckMove.API.DAL.Models
         [StringLength(11)] 
         public string CompanyABN { get; set; }
 
-        public DateTime? CreatedDate { get; set; }
-
-        public DateTime? LastModifiedDate { get; set; }
+        public ICollection<ContactModel> Contacts { get; set; }
+       
 
         [Required]
         public bool IsActive { get; set; }
 
-        public ICollection<ContactModel> Contacts { get; set; }
+
+       
+
 
     }
 }

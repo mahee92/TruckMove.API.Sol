@@ -89,8 +89,8 @@ namespace TruckMove.API.BLL.Services.Primary
                 {
 
                         ObjectUpdater<CompanyDtoUpdate, CompanyModel> updater = new ObjectUpdater<CompanyDtoUpdate, CompanyModel>();
-                        var res = updater.Map(updatedcompany, company);
-                        res.LastModifiedDate= DateTime.Now;
+                         var res = updater.Map(updatedcompany, company);
+                          res.LastModifiedDate= DateTime.Now;
 
                         await _companyRepository.UpdateAsync(res);
                         response.Success = true;

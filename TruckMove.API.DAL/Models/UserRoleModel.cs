@@ -6,10 +6,11 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public class UserRole
+    public class UserRoleModel : AuditableEntity, IActiveEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -22,6 +23,7 @@ namespace TruckMove.API.DAL.Models
         [ForeignKey("Role")]
         public int RoleId { get; set; }
         public RoleModel Role { get; set; }
+        public bool IsActive { get; set; }
 
         // Other properties and annotations as needed
     }

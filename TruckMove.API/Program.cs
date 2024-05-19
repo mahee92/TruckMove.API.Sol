@@ -31,10 +31,14 @@ internal class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddTransient<ICompanyService, CompanyService>();
         builder.Services.AddTransient<IContactService, ContactService>();
+        builder.Services.AddTransient<IUserService, UserService>();
         builder.Services.AddTransient<IRepository<CompanyModel>, Repository<CompanyModel>>();
         builder.Services.AddTransient<IRepository<ContactModel>, Repository<ContactModel>>();
+        builder.Services.AddTransient<IRepository<UserModel>, Repository<UserModel>>();
         builder.Services.AddTransient<IContactRepository, CompanyRepository>();
-        builder.Services.AddTransient<IContactService, ContactService>();
+        builder.Services.AddTransient<IUserRepository, UserRepository>();
+
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddDbContext<TrukMoveLocalContext>(option =>
