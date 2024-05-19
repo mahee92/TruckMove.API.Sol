@@ -16,8 +16,7 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers().AddJsonOptions(x =>
-         x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+        builder.Services.AddControllers();
 
         builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
