@@ -50,6 +50,14 @@ namespace TruckMove.API.DAL.Models
                .Property(b => b.IsActive)
             .HasDefaultValue(true);
 
+            modelBuilder.Entity<UserModel>()
+              .Property(x => x.Id)
+              .UseIdentityColumn(seed: 0, increment: 1);
+
+            modelBuilder.Entity<RoleModel>()
+              .Property(x => x.Id)
+              .UseIdentityColumn(seed: 0, increment: 1);
+
 
             OnModelCreatingPartial(modelBuilder);
         }
