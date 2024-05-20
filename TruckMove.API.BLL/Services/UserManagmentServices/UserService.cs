@@ -192,6 +192,23 @@ namespace TruckMove.API.BLL.Services.Primary
             return response;
         }
 
+        public async Task<Response> AddRoles(int id, List<int> roles)
+        {
+            Response response = new Response();
+            try
+            {
+               
+                await _userRepository.AddRolesAsync(id, roles);
+                response.Success = true;
 
+            }
+            catch(Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
     }
 }
