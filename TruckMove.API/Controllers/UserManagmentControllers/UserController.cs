@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using TruckMove.API.Helper;
 using Microsoft.AspNetCore.JsonPatch;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
+using System.Collections.Generic;
 
 namespace TruckMove.API.Controllers.PrimaryControllers
 {
@@ -104,23 +105,20 @@ namespace TruckMove.API.Controllers.PrimaryControllers
             }
         }
 
-       
-        ////[HttpPost("UploadImage")]
-        ////public async Task<IActionResult> UploadImage([FromForm] FileUpload fileUpload)
-        ////{
-        ////    if (fileUpload == null || fileUpload.file == null || fileUpload.file.Length == 0)
-        ////    {
-        ////        return StatusCode((int)ErrorCode.fileNotFound, ErrorMessages.FileNotFound);
-        ////    }
-        ////    try
-        ////    {
-        ////        var fileUrl = await FileUploaderUtil.UploadImage(_mySettings.FileLocation, fileUpload, Meta.USER_IMG_PATH, Request.Scheme, Request.Host);
-        ////        return Ok(fileUrl);
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        return StatusCode((int)ErrorCode.InternalServerError, ex.InnerException);
-        ////    }
-        ////}
+
+        [HttpPost("{id}/AddRoles")]
+        public async Task<IActionResult> AddRoles(int id, [FromBody] List<int> roles)
+        {
+            var response = await _userService.AddRoles(id, roles);
+            if (response.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ namespace TruckMove.API.DAL.Repositories.Primary
 {
     public interface IUserRepository
     {
+        Task AddRolesAsync(int id, List<int> roles);
         Task<bool> CheckUserEmailExits(string email);
 
         Task<UserModel> GetUserByEmail(string email);

@@ -2,20 +2,36 @@
 
 namespace TruckMove.API.BLL
 {
-    public class Response<T>
+    //public class Response<T>
+    //{
+    //    public bool Success { get; set; }
+
+    //    public T Object { get; set; }
+    //    public List<T> Objects { get; set; }
+
+    //    public ErrorCode ErrorType { get; set; }
+    //    public string ErrorMessage { get; set; }
+
+    //    public static implicit operator Response<T>(Response<CompanyDto> v)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
+    public class Response
     {
         public bool Success { get; set; }
-
-        public T Object { get; set; }
-        public List<T> Objects { get; set; }
-
         public ErrorCode ErrorType { get; set; }
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
-        public static implicit operator Response<T>(Response<CompanyDto> v)
-        {
-            throw new NotImplementedException();
-        }
+       
+    }
+    public class Response<T> : Response where T : class
+    {
+        public T? Object { get; set; }
+        public List<T>? Objects { get; set; }
+
+        
     }
     public enum ErrorCode
     {
