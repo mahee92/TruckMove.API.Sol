@@ -65,8 +65,8 @@ internal class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        app.UseCors("AllowAll");
 
-       
 
         app.UseHttpsRedirection();
 
