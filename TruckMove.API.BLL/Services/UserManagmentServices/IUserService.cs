@@ -12,5 +12,6 @@ namespace TruckMove.API.BLL.Services.Primary
         Task<Response<UserOutputDto>> DeleteAsync(int id);
         Task<Response<UserOutputDto>> GetAllAsync();
         Task<Response> AddRoles(int id, List<int> roles);
+        Task<Response> ValidateUser(LoginDto loginModel);
     }
 }

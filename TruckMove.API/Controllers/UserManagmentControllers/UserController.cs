@@ -12,6 +12,7 @@ using TruckMove.API.Helper;
 using Microsoft.AspNetCore.JsonPatch;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using System.Collections.Generic;
+using TruckMove.API.Settings;
 
 namespace TruckMove.API.Controllers.PrimaryControllers
 {

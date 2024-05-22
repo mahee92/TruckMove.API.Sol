@@ -10,6 +10,7 @@ using TruckMove.API.Controllers.Primary;
 using TruckMove.API.DAL.Models;
 using Microsoft.Extensions.Options;
 using TruckMove.API.Helper;
+using TruckMove.API.Settings;
 
 namespace TruckMove.API.Controllers.PrimaryControllers
 {

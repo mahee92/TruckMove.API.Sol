@@ -41,5 +41,6 @@ namespace TruckMove.API.BLL
         dbError = 600,
         fileNotFound=300,
         alreadyExists = 409,
+        invalidLogin = 401
     }
 }

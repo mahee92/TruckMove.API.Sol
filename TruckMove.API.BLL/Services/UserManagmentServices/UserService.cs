@@ -210,5 +210,43 @@ namespace TruckMove.API.BLL.Services.Primary
             }
             return response;
         }
+
+       
+
+        public async Task<Response> ValidateUser(LoginDto loginModel)
+        {
+            Response response = new Response();
+            try
+            {
+                var user = await _userRepository.GetUserByEmail(loginModel.UserName);
+                if (user == null)
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.Invalidlogin;
+                    response.ErrorType = ErrorCode.invalidLogin;
+                }
+                else
+                {
+                    if (PasswordHelper.VerifyPassword(loginModel.Password, user.PasswordHash))
+                    {
+                        response.Success = true;
+                        
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.ErrorMessage = ErrorMessages.Invalidlogin;
+                        response.ErrorType = ErrorCode.invalidLogin;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = ex.Message;
+                response.ErrorType = ErrorCode.dbError;
+            }
+            return response;
+        }
     }
 }

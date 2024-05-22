@@ -1,14 +1,18 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 using System.Text.Json.Serialization;
-using TruckMove.API;
 using TruckMove.API.BLL;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.BLL.Services.PrimaryServices;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
 using TruckMove.API.DAL.Repositories.Primary;
-
+using TruckMove.API.Helper;
+using TruckMove.API.Settings;
 
 internal class Program
 {
@@ -33,7 +37,65 @@ internal class Program
            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
            .AddEnvironmentVariables();
 
+        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+        var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtSettings:SecretKey"]);
+
+        builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = "http://localhost",
+                ValidAudience = "http://localhost",
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+        });
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+            // Add JWT Authentication
+            var securityScheme = new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+            };
+            c.AddSecurityDefinition("Bearer", securityScheme);
+
+            var securityRequirement = new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    };
+            c.AddSecurityRequirement(securityRequirement);
+        });
+
+        builder.Services.AddAuthorization();
+
+
         builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySettings"));
+        
 
         // builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -48,13 +110,27 @@ internal class Program
 
 
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+       
         builder.Services.AddDbContext<TrukMoveLocalContext>(option =>
         option.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
 
-
+        builder.Services.AddSingleton<JwtTokenGenerator>();
 
         var app = builder.Build();
+
+        app.UseStaticFiles();
+
+        // Serve static files from the external directory
+        var uploadPath = builder.Configuration.GetValue<string>("MySettings:FileLocation");
+
+        if (!string.IsNullOrEmpty(uploadPath) && Directory.Exists(uploadPath))
+        {
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(uploadPath),
+                RequestPath = "/uploads"
+            });
+        }
 
         app.UseSwagger();
         // app.UseSwaggerUI();
@@ -70,21 +146,10 @@ internal class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseStaticFiles();
-
-        // Serve static files from the external directory
-        var uploadPath = builder.Configuration.GetValue<string>("MySettings:FileLocation");
-      
-        if (!string.IsNullOrEmpty(uploadPath) && Directory.Exists(uploadPath))
-        {
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(uploadPath),
-                RequestPath = "/uploads"
-            });
-        }
+        
 
 
         app.MapControllers();

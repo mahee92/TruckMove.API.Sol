@@ -2,6 +2,7 @@
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL;
 using Microsoft.Extensions.Options;
+using TruckMove.API.Settings;
 
 namespace TruckMove.API.Controllers
 {
