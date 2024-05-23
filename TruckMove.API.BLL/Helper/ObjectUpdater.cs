@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System;
 using System.Reflection;
 
-namespace TruckMove.API.BLL.Services
+namespace TruckMove.API.BLL.Helper
 {
 
 
@@ -39,7 +39,7 @@ namespace TruckMove.API.BLL.Services
                         {
                             destinationProperty.SetValue(destination, value);
                         }
-                       
+
                     }
                 }
 

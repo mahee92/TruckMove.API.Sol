@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 using TruckMove.API.DAL.Models;
 
 namespace TruckMove.API.DAL.Repositories.Primary
@@ -59,9 +60,31 @@ namespace TruckMove.API.DAL.Repositories.Primary
         {
             return await _dbSet.AnyAsync(user => user.Email == email && user.IsActive);
         }
+
+
+        public async Task<List<RoleModel>> GetRolesByUserId(int id)
+        {
+            var userRoles = await _roleModeldbSet
+                .Where(ur => ur.UserId == id && ur.IsActive)
+                .Include(ur => ur.Role)
+                .ToListAsync();
+
+            var roles = userRoles.Select(ur => ur.Role).ToList();
+            return roles;
+        }
+
         public async Task<UserModel> GetUserByEmail(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(user => user.Email == email && user.IsActive);
+        }
+        public async Task<UserModel> GetUserByEmailWithRoles(string email)
+        {
+            
+            return await _dbSet
+              .Include(u => u.UserRoles)
+              .ThenInclude(ur => ur.Role)
+              .FirstOrDefaultAsync(user => user.Email == email && user.IsActive);
+
         }
     }
 }

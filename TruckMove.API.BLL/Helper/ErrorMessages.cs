@@ -1,4 +1,4 @@
-﻿namespace TruckMove.API.BLL
+﻿namespace TruckMove.API.BLL.Helper
 {
     public class ErrorMessages
     {

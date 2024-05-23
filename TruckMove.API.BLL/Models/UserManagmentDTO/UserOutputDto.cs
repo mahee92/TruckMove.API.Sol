@@ -5,33 +5,18 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TruckMove.API.DAL.Models;
 
 namespace TruckMove.API.BLL.Models.UserManagmentDTO
 {
-    public class UserOutputDto
+    public class UserOutputDto : UserDto
     {
-        [Key]
         
-        public int Id { get; set; }
+        public virtual List<RoleDto> Roles { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        public string FirstName { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        public string LastName { get; set; }
-
-        [Required]
-        [MaxLength(100)]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string jwtToken { get; set; }
 
 
-        [MaxLength(20)]
-        public string PhoneNumber { get; set; }
 
-
-        
     }
 }

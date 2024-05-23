@@ -29,7 +29,11 @@ namespace TruckMove.API.BLL.Models.PrimaryDTO
 
         public int CompanyId { get; set; }
 
+
         public string? Image { get; set; }
+
+        public int? UpdatedById { get; set; }
+
 
     }
 }

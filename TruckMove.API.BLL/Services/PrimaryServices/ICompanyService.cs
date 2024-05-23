@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
+using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.Primary;
+using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.DAL.Models;
 
 namespace TruckMove.API.BLL.Services.Primary
@@ -11,10 +13,10 @@ namespace TruckMove.API.BLL.Services.Primary
         Task<Response<CompanyDtoUpdate>> UpdateAsync(CompanyDtoUpdate updatedCompany);
 
         Task<Response<CompanyDto>> DeleteAsync(int id);
-        Task<Response<CompanyModel>> GetAllAsync();
+        Task<Response<CompanyDto>> GetAllAsync();
 
         Task<bool> ValidateCompanyById(int id);
         Task UpdateCompanyPartialAsync(int id, JsonPatchDocument<CompanyDtoUpdate> patchDoc);
-        Task<Response<ContactModel>> GetContactsByCompany(int companyId);
+        Task<Response<ContactDto>> GetContactsByCompany(int companyId);
     }
 }

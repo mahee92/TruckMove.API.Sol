@@ -1,4 +1,5 @@
 ﻿
+using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 
 namespace TruckMove.API.BLL.Services.Primary
@@ -12,6 +13,8 @@ namespace TruckMove.API.BLL.Services.Primary
         Task<Response<UserOutputDto>> DeleteAsync(int id);
         Task<Response<UserOutputDto>> GetAllAsync();
         Task<Response> AddRoles(int id, List<int> roles);
-        Task<Response> ValidateUser(LoginDto loginModel);
+
+        Task<Response<RoleDto>> GetRolesByUser(int id);
+        Task<Response<UserOutputDto>> Auth(LoginDto loginModel);
     }
 }

@@ -1,30 +1,39 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TruckMove.API.BLL.Models.Primary;
-using TruckMove.API.BLL;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.BLL.Services.Primary;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using TruckMove.API.BLL.Helper;
+using TruckMove.API.Helper;
+using TruckMove.API.Settings;
+using System.Runtime;
+using Microsoft.Extensions.Options;
 
 namespace TruckMove.API.Controllers.Primary
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Administrator")]
     public class CompanyController : ControllerBase
     {
 
 
         private readonly ILogger<CompanyController> _logger;
         private readonly ICompanyService _companyService;
-        private readonly IWebHostEnvironment _environment;
+        private readonly IAuthUserService _authUserService;
+        private readonly MySettings _mySettings;
 
-        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService,IWebHostEnvironment webHostEnvironment)
+        public CompanyController(ILogger<CompanyController> logger, ICompanyService companyService, IAuthUserService authUserService, IOptions<MySettings> mySettings)
         {
             _logger = logger;
             _companyService = companyService;
-            _environment = webHostEnvironment;
+             _authUserService = authUserService;
+            _mySettings = mySettings.Value;
         }
-        //test
+ 
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
@@ -63,6 +72,7 @@ namespace TruckMove.API.Controllers.Primary
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] CompanyDto company)
         {
+            company.CreatedById = Convert.ToInt32(_authUserService.GetUserId());
             Response<CompanyDto> response = await _companyService.AddAsync(company);
             if (response.Success)
             {
@@ -80,7 +90,8 @@ namespace TruckMove.API.Controllers.Primary
         [HttpPut]
         public async Task<IActionResult> PutAsync([FromBody] CompanyDtoUpdate company)
         {
-            
+
+            company.UpdatedById = Convert.ToInt32(_authUserService.GetUserId());
             Response<CompanyDtoUpdate> response = await _companyService.UpdateAsync(company);
            
             if (response.Success)
@@ -129,7 +140,26 @@ namespace TruckMove.API.Controllers.Primary
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+        [HttpPost("UploadLogo")]
+        public async Task<IActionResult> UploadLogo([FromForm] FileUpload fileUpload)
+        {
+            if (fileUpload == null || fileUpload.file == null || fileUpload.file.Length == 0)
+            {
+                return StatusCode((int)ErrorCode.fileNotFound, ErrorMessages.FileNotFound);
+            }
+            try
+            {
+                var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, fileUpload, Meta.COMPANY_IMG_PATH, Request.Scheme, Request.Host);
+                return Ok(fileUrl);
 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)ErrorCode.InternalServerError, ex.InnerException);
+
+            }
+
+        }
 
 
 

@@ -33,5 +33,7 @@ namespace TruckMove.API.BLL.Models.PrimaryDTO
 
         public string? Image { get; set; }
 
+        public int? CreatedById { get; set; }
+
     }
 }

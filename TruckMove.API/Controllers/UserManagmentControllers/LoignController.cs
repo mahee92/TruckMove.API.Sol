@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TruckMove.API.BLL;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.Helper;
@@ -17,22 +18,42 @@ namespace TruckMove.API.Controllers.UserManagmentControllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginDto loginModel)
+        public async Task<IActionResult> Login([FromBody] LoginDto loginModel)
         {
-            // Replace this with your actual user validation logic
-            if (loginModel.UserName == "test" && loginModel.Password == "password")
+            var authres= await _userService.Auth(loginModel);
+            if (authres.Success)
             {
-                var token = _jwtTokenGenerator.GenerateToken(loginModel.UserName);
-                return Ok(new { Token = token });
+                
+                var token = _jwtTokenGenerator.GenerateToken(loginModel.UserName, authres.Object.Id ,authres.Object.Roles);
+                authres.Object.jwtToken = token;
+                return Ok(authres.Object);
+            }
+            else
+            {                    
+                    return StatusCode((int)authres.ErrorType, authres.ErrorMessage);
             }
 
-            return Unauthorized();
         }
         [HttpGet("protected")]
         [Authorize]
         public IActionResult Protected()
         {
             return Ok("You have accessed a protected endpoint.");
+        }
+
+        [HttpPost("logout")]
+
+        public IActionResult Logout()
+        {
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+
+            if (token != null)
+            {
+                TokenBlacklist.AddToken(token);
+                return Ok(new { message = "Logged out successfully." });
+            }
+
+            return BadRequest(new { message = "Token is missing." });
         }
     }
 }

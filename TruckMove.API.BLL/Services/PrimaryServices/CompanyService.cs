@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
-using TruckMove.API.BLL.Models.ModelConvertor;
+using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.Primary;
+using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
 using TruckMove.API.DAL.Repositories.Primary;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TruckMove.API.BLL.Services.Primary
 {
@@ -20,6 +22,7 @@ namespace TruckMove.API.BLL.Services.Primary
 
         public CompanyService(IRepository<CompanyModel> repository, IMapper mapper, IContactRepository contactRepository)
         {
+         
             _companyRepository = repository;
             _mapper = mapper;
             _contactRepository = contactRepository;
@@ -45,7 +48,7 @@ namespace TruckMove.API.BLL.Services.Primary
                 else
                 {
                     response.Success = true;
-                    response.Object = CompanyConvertor.ConvertToCompany(company);
+                    response.Object = _mapper.Map<CompanyDto>(company); 
                 }
             }
             catch (Exception ex)
@@ -88,9 +91,11 @@ namespace TruckMove.API.BLL.Services.Primary
                 else
                 {
 
-                        ObjectUpdater<CompanyDtoUpdate, CompanyModel> updater = new ObjectUpdater<CompanyDtoUpdate, CompanyModel>();
-                         var res = updater.Map(updatedcompany, company);
-                          res.LastModifiedDate= DateTime.Now;
+
+                    //var res  = _mapper.Map<CompanyModel>(updatedcompany);
+                    ObjectUpdater<CompanyDtoUpdate, CompanyModel> updater = new ObjectUpdater<CompanyDtoUpdate, CompanyModel>();
+                    var res = updater.Map(updatedcompany, company);
+                    res.LastModifiedDate= DateTime.Now;
 
                         await _companyRepository.UpdateAsync(res);
                         response.Success = true;
@@ -112,12 +117,11 @@ namespace TruckMove.API.BLL.Services.Primary
             Response<CompanyDto> response = new Response<CompanyDto>();
             try
             {
-                var companyModel = CompanyConvertor.ConvertToCompanyModel(company);
+                var companyModel = _mapper.Map<CompanyModel>(company);
                 companyModel.CreatedDate = DateTime.Now;
-
                 var res = await _companyRepository.AddAsync(companyModel);
                 response.Success = true;
-                response.Object = CompanyConvertor.ConvertToCompany(res);
+                response.Object = _mapper.Map<CompanyDto>(res);
 
             }
             catch (Exception ex)
@@ -164,17 +168,18 @@ namespace TruckMove.API.BLL.Services.Primary
         }
 
         
-        public async Task<Response<CompanyModel>> GetAllAsync()
+        public async Task<Response<CompanyDto>> GetAllAsync()
         {
-            Response<CompanyModel> response = new Response<CompanyModel>();
+            Response<CompanyDto> response = new Response<CompanyDto>();
             try
             {
                 var companies = await _companyRepository.GetAllAsync();
                 response.Success = true;
                 if (companies.Count > 0)
                 {
-                    response.Objects = new List<CompanyModel>();
-                    response.Objects.AddRange(companies);
+                    
+                    response.Objects = new List<CompanyDto>();
+                    response.Objects.AddRange(_mapper.Map<List<CompanyDto>>(companies));
                 }
 
             }
@@ -204,9 +209,9 @@ namespace TruckMove.API.BLL.Services.Primary
             await _companyRepository.UpdateAsync(patchedCompany);
         }
 
-        public async Task<Response<ContactModel>> GetContactsByCompany(int companyId)
+        public async Task<Response<ContactDto>> GetContactsByCompany(int companyId)
         {
-            Response<ContactModel> response = new Response<ContactModel>();
+            Response<ContactDto> response = new Response<ContactDto>();
             try
             {
                 var companyExits = await ValidateCompanyById(companyId);
@@ -223,8 +228,8 @@ namespace TruckMove.API.BLL.Services.Primary
                     response.Success = true;
                     if (contacts.Count > 0)
                     {
-                        response.Objects = new List<ContactModel>();
-                        response.Objects.AddRange(contacts);
+                        response.Objects = new List<ContactDto>();
+                        response.Objects.AddRange(_mapper.Map<List<ContactDto>>(contacts));
                     }
                 }
                 

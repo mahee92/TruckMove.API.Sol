@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TruckMove.API.BLL.Models.ModelConvertor;
-using TruckMove.API.BLL.Models.ModelConvertors;
+using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Services.Primary;
@@ -18,12 +17,13 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
     {
         private readonly IRepository<ContactModel> _contactRepository;
         private readonly ICompanyService _companyService;
+        private readonly IMapper _mapper;
 
-        public ContactService(IRepository<ContactModel> repository, ICompanyService companyService)
+        public ContactService(IRepository<ContactModel> repository, ICompanyService companyService, IMapper mapper)
         {
             _contactRepository = repository;
             _companyService = companyService;
-         
+            _mapper = mapper;
 
         }
 
@@ -43,13 +43,14 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
                 }
                 else
                 {
-                    var ContactModel = ContactConvertor.ConvertToContactModel(contact);
+
+                    var ContactModel = _mapper.Map<ContactModel> (contact); 
                     ContactModel.CreatedDate = DateTime.Now;
 
                     var res = await _contactRepository.AddAsync(ContactModel);
 
                     response.Success = true;
-                    response.Object = ContactConvertor.ConvertToContacDto(res);
+                    response.Object = _mapper.Map<ContactDto>(res);;
                 }
 
                
@@ -107,7 +108,8 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
                 response.Success = true;
                 if (contacts.Count > 0)
                 {
-                    var ContactDtos = ContactConvertor.ConvertToContacts(contacts);
+                   
+                    var ContactDtos = _mapper.Map<List<ContactDto>>(contacts);
                     response.Objects = new List<ContactDto>();
                     
                     response.Objects.AddRange(ContactDtos);
@@ -140,7 +142,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
                 else
                 {
                     response.Success = true;
-                    response.Object = ContactConvertor.ConvertToContacDto(contact);
+                    response.Object = _mapper.Map<ContactDto>(contact); 
                 }
             }
             catch (Exception ex)
@@ -170,7 +172,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
 
                     ObjectUpdater<ContactUpdateDto, ContactModel> updater = new ObjectUpdater<ContactUpdateDto, ContactModel>();
                     var res = updater.Map(updatedContact, contact);
-                    res.CreatedDate = DateTime.Now;
+                    res.LastModifiedDate = DateTime.Now;
 
                     await _contactRepository.UpdateAsync(res);
                     response.Success = true;

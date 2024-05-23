@@ -33,6 +33,12 @@ namespace TruckMove.API.BLL.Helper
         public static bool VerifyPassword(string hashedPassword, string password)
         {
             var hashBytes = Convert.FromBase64String(hashedPassword);
+
+            if (hashBytes.Length != SaltSize + KeySize)
+            {
+                throw new ArgumentException("Invalid length of password hash");
+            }
+
             var salt = new byte[SaltSize];
             Buffer.BlockCopy(hashBytes, 0, salt, 0, SaltSize);
 

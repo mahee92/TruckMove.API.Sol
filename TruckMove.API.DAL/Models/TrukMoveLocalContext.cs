@@ -119,6 +119,11 @@ namespace TruckMove.API.DAL.Models
              .Property(b => b.IsActive)
              .HasDefaultValue(true);
 
+            modelBuilder.Entity<UserModel>()
+            .HasMany(u => u.UserRoles)
+            .WithOne(ur => ur.User)
+            .HasForeignKey(ur => ur.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
 
             OnModelCreatingPartial(modelBuilder);
         }

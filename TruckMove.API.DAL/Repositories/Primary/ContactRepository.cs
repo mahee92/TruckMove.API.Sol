@@ -16,7 +16,7 @@ namespace TruckMove.API.DAL.Repositories.Primary
 
         public async Task<List<ContactModel>> GetContactsByCompany(int companyId)
         {
-            return await _dbSet.Where(e => e.CompanyId== companyId).ToListAsync();
+            return await _dbSet.Where(e => e.CompanyId== companyId & e.IsActive==true).ToListAsync();
 
         }
 

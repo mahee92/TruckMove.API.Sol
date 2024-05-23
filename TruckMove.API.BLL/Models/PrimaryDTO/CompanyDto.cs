@@ -39,6 +39,12 @@ namespace TruckMove.API.BLL.Models.Primary
         [StringLength(11)]
         public string CompanyABN { get; set; }
 
-       
+        public string? Logo { get; set; }
+
+        public int? CreatedById { get; set; }
+
+
+
+
     }
 }

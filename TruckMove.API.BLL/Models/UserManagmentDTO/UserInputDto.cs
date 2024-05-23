@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace TruckMove.API.BLL.Models.UserManagmentDTO
 {
-    public class UserInputDto : UserOutputDto
+    public class UserInputDto : UserDto
     {
         public string Password { get; set; }
-       
+        
+        public int? CreatedById { get; set; }
+
     }
 }

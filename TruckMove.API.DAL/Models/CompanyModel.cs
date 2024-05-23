@@ -43,6 +43,9 @@ namespace TruckMove.API.DAL.Models
         [StringLength(11)] 
         public string CompanyABN { get; set; }
 
+        [Column(TypeName = "nvarchar(max)")]
+        public string? Logo { get; set; }
+
         public ICollection<ContactModel> Contacts { get; set; }
        
 

@@ -18,8 +18,6 @@ namespace TruckMove.API.DAL.Repositories
         Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes);
 
         Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes);
-
-
-
+        
     }
 }

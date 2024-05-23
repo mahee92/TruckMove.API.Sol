@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TruckMove.API.BLL.Models.Primary;
-using TruckMove.API.BLL;
 using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.BLL.Services.PrimaryServices;
@@ -11,11 +10,16 @@ using TruckMove.API.DAL.Models;
 using Microsoft.Extensions.Options;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using TruckMove.API.BLL.Helper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TruckMove.API.Controllers.PrimaryControllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Administrator")]
     public class ContactController : ControllerBase
     {
 
@@ -23,12 +27,14 @@ namespace TruckMove.API.Controllers.PrimaryControllers
         private readonly ILogger<ContactController> _logger;
         private readonly IContactService _contactservice;
         private readonly MySettings _mySettings;
+        private readonly IAuthUserService _authUserService;
 
-        public ContactController(ILogger<ContactController> logger, IContactService companService, IOptions<MySettings> mySettings)
+        public ContactController(ILogger<ContactController> logger, IContactService companService, IOptions<MySettings> mySettings, IAuthUserService authUserService)
         {
             _logger = logger;
             _contactservice = companService;
             _mySettings = mySettings.Value;
+            _authUserService = authUserService;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
@@ -52,7 +58,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] ContactDto contact)
         {
-
+            contact.CreatedById = Convert.ToInt32(_authUserService.GetUserId());
             Response<ContactDto> response = await _contactservice.AddAsync(contact);
             if (response.Success)
             {
@@ -99,7 +105,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
         [HttpPut]
         public async Task<IActionResult> PutAsync([FromBody] ContactUpdateDto contact)
         {
-
+            contact.UpdatedById = Convert.ToInt32(_authUserService.GetUserId());
             Response<ContactUpdateDto> response = await _contactservice.UpdateAsync(contact);
 
             if (response.Success)

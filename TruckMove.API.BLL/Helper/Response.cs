@@ -1,6 +1,6 @@
 ﻿using TruckMove.API.BLL.Models.Primary;
 
-namespace TruckMove.API.BLL
+namespace TruckMove.API.BLL.Helper
 {
     //public class Response<T>
     //{
@@ -24,14 +24,14 @@ namespace TruckMove.API.BLL
         public ErrorCode ErrorType { get; set; }
         public string? ErrorMessage { get; set; }
 
-       
+
     }
     public class Response<T> : Response where T : class
     {
         public T? Object { get; set; }
         public List<T>? Objects { get; set; }
 
-        
+
     }
     public enum ErrorCode
     {
@@ -39,7 +39,7 @@ namespace TruckMove.API.BLL
         BadRequest = 400,
         InternalServerError = 500,
         dbError = 600,
-        fileNotFound=300,
+        fileNotFound = 300,
         alreadyExists = 409,
         invalidLogin = 401
     }

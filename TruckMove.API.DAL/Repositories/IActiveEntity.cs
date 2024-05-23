@@ -10,5 +10,7 @@ namespace TruckMove.API.DAL.Repositories
     {
         int Id { get; set; }
         bool IsActive { get; set; }
+
+        DateTime? CreatedDate { get; set; }
     }
 }

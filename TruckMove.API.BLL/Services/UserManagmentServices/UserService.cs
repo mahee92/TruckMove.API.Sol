@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using TruckMove.API.BLL.Helper;
-using TruckMove.API.BLL.Models.ModelConvertors;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
@@ -13,13 +12,15 @@ namespace TruckMove.API.BLL.Services.Primary
     {
         private readonly IRepository<UserModel> _repository;
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-
-
-        public UserService(IRepository<UserModel> repository, IUserRepository userRepository)
+    
+        public UserService(IRepository<UserModel> repository, IUserRepository userRepository, IMapper mapper)
         {
             _repository = repository;
             _userRepository = userRepository;
+            _mapper = mapper;
+            
         }
 
         public async Task<Response<UserOutputDto>> GetAsync(int id)
@@ -38,7 +39,7 @@ namespace TruckMove.API.BLL.Services.Primary
                 else
                 {
                     response.Success = true;
-                    response.Object = UserConvertor.ConvertUser(user);
+                    response.Object = _mapper.Map<UserOutputDto>(user); ;
                 }
             }
             catch (Exception ex)
@@ -84,8 +85,9 @@ namespace TruckMove.API.BLL.Services.Primary
 
                 var user = await _userRepository.GetUserByEmail(updatedUser.Email);
 
-                ObjectUpdater<UserOutputDto, UserModel> updater = new ObjectUpdater<UserOutputDto, UserModel>();
+                ObjectUpdater<UserUpdateDto, UserModel> updater = new ObjectUpdater<UserUpdateDto, UserModel>();
                 var res = updater.Map(updatedUser, user);
+              
                 if(!String.IsNullOrEmpty(updatedUser.Password))
                 {
                     res.PasswordHash = PasswordHelper.HashPassword(updatedUser.Password);
@@ -122,13 +124,14 @@ namespace TruckMove.API.BLL.Services.Primary
 
                 }
                 {
-                    var userModel = UserConvertor.ConvertUser(user);
+                   
+                    UserModel userModel = _mapper.Map<UserModel>(user);
                     userModel.PasswordHash = PasswordHelper.HashPassword(user.Password);
                     userModel.CreatedDate = DateTime.Now;
 
                     var res = await _repository.AddAsync(userModel);
                     response.Success = true;
-                    response.Object = UserConvertor.ConvertUser(res);
+                    response.Object = _mapper.Map<UserOutputDto>(res);
                 }
 
             }
@@ -180,7 +183,7 @@ namespace TruckMove.API.BLL.Services.Primary
                 if (users.Count > 0)
                 {
                     response.Objects = new List<UserOutputDto>();
-                    response.Objects.AddRange(UserConvertor.ConvertToUserList(users));
+                    response.Objects= _mapper.Map<List<UserOutputDto>>(users);
                 }
             }
             catch (Exception ex)
@@ -211,15 +214,35 @@ namespace TruckMove.API.BLL.Services.Primary
             return response;
         }
 
-       
-
-        public async Task<Response> ValidateUser(LoginDto loginModel)
+        public async Task<Response<RoleDto>> GetRolesByUser(int id)
         {
-            Response response = new Response();
+            Response<RoleDto> response = new Response<RoleDto>();
             try
             {
-                var user = await _userRepository.GetUserByEmail(loginModel.UserName);
-                if (user == null)
+
+               var roles = await _userRepository.GetRolesByUserId(id);
+               response.Success = true;
+               response.Objects = new List<RoleDto>();
+               response.Objects.AddRange(_mapper.Map<List<RoleDto>>(roles));
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<UserOutputDto>> Auth(LoginDto loginModel)
+        {
+            
+            Response<UserOutputDto> response = new Response<UserOutputDto>();
+            try
+            {
+                var EmailExits = await _userRepository.CheckUserEmailExits(loginModel.UserName);
+                if (!EmailExits)
                 {
                     response.Success = false;
                     response.ErrorMessage = ErrorMessages.Invalidlogin;
@@ -227,16 +250,27 @@ namespace TruckMove.API.BLL.Services.Primary
                 }
                 else
                 {
-                    if (PasswordHelper.VerifyPassword(loginModel.Password, user.PasswordHash))
+                    var user = await _userRepository.GetUserByEmailWithRoles(loginModel.UserName);
+                    if (PasswordHelper.VerifyPassword(user.PasswordHash,loginModel.Password))
                     {
                         response.Success = true;
+
+
+                        response.Object = _mapper.Map<UserOutputDto>(user);
                         
+                        if (user.UserRoles!=null)
+                        {
+                            var roles = user.UserRoles.Select(ur => ur.Role).ToList();
+                            response.Object.Roles = new List<RoleDto>();
+                            response.Object.Roles.AddRange(_mapper.Map<List<RoleDto>>(roles));
+                        }
                     }
                     else
                     {
                         response.Success = false;
                         response.ErrorMessage = ErrorMessages.Invalidlogin;
                         response.ErrorType = ErrorCode.invalidLogin;
+                        
                     }
                 }
             }

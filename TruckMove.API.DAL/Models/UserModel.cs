@@ -40,6 +40,10 @@ namespace TruckMove.API.DAL.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
+        public int? UpdatedById { get; set; }
+
+        public int? CreatedById { get; set; }
+
         public virtual ICollection<CompanyModel> CreatedCompanies { get; set; }
         public virtual ICollection<CompanyModel> UpdatedCompanies { get; set; }
 
@@ -48,5 +52,7 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<UserRoleModel> CreatedRoles { get; set; }
         public virtual ICollection<UserRoleModel> UpdatedRoles { get; set; }
+
+        public virtual ICollection<UserRoleModel> UserRoles { get; set; }
     }
 }

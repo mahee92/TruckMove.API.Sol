@@ -6,6 +6,11 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 using TruckMove.API.BLL;
+using TruckMove.API.BLL.Helper;
+using TruckMove.API.BLL.Models.Primary;
+using TruckMove.API.BLL.Models.PrimaryDTO;
+using TruckMove.API.BLL.Models.UserManagmentDTO;
+using TruckMove.API.BLL.Services;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.BLL.Services.PrimaryServices;
 using TruckMove.API.DAL.Models;
@@ -21,7 +26,7 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllers();
-     
+
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll",
@@ -30,7 +35,24 @@ internal class Program
                                   .AllowAnyMethod());
         });
 
-        builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+
+        builder.Services.AddAutoMapper(cfg =>
+        {
+            var profile = new MapProfile();
+            cfg.AddProfile(profile);
+            profile.CreateGenericMap<UserInputDto, UserModel>();
+            profile.CreateGenericMap<UserModel, UserOutputDto>();
+            profile.CreateGenericMap<RoleModel, RoleDto>();
+            profile.CreateGenericMap<CompanyModel, CompanyDto>();
+            profile.CreateGenericMap<CompanyDto, CompanyModel>();
+            profile.CreateGenericMap<CompanyDtoUpdate, CompanyModel>();
+            profile.CreateGenericMap<CompanyModel, CompanyDtoUpdate>();
+            profile.CreateGenericMap<ContactModel, ContactDto>();
+            profile.CreateGenericMap<ContactDto, ContactModel>();
+            profile.CreateGenericMap<ContactModel, CompanyDtoUpdate>();
+            profile.CreateGenericMap<CompanyDtoUpdate, ContactModel>();
+
+        }, typeof(Program));
 
         builder.Configuration
            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -53,8 +75,8 @@ internal class Program
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = "http://localhost",
-                ValidAudience = "http://localhost",
+                ValidIssuer = builder.Configuration.GetValue<string>("JwtSettings:Issuer"),
+                ValidAudience = builder.Configuration.GetValue<string>("JwtSettings:Audience"),
                 IssuerSigningKey = new SymmetricSecurityKey(key)
             };
         });
@@ -75,19 +97,19 @@ internal class Program
             c.AddSecurityDefinition("Bearer", securityScheme);
 
             var securityRequirement = new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
                 }
-            },
-            new string[] {}
-        }
-    };
+            };
             c.AddSecurityRequirement(securityRequirement);
         });
 
@@ -95,22 +117,27 @@ internal class Program
 
 
         builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySettings"));
-        
+
 
         // builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddTransient<ICompanyService, CompanyService>();
-        builder.Services.AddTransient<IContactService, ContactService>();
-        builder.Services.AddTransient<IUserService, UserService>();
-        builder.Services.AddTransient<IRepository<CompanyModel>, Repository<CompanyModel>>();
-        builder.Services.AddTransient<IRepository<ContactModel>, Repository<ContactModel>>();
-        builder.Services.AddTransient<IRepository<UserModel>, Repository<UserModel>>();
-        builder.Services.AddTransient<IContactRepository, CompanyRepository>();
-        builder.Services.AddTransient<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<ICompanyService, CompanyService>();
+        builder.Services.AddScoped<IContactService, ContactService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 
+        builder.Services.AddScoped<IRepository<CompanyModel>, Repository<CompanyModel>>();
+        builder.Services.AddScoped<IRepository<ContactModel>, Repository<ContactModel>>();
+        builder.Services.AddScoped<IRepository<UserModel>, Repository<UserModel>>();
+        builder.Services.AddScoped<IContactRepository, CompanyRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();
+
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IAuthUserService, AuthUserService>();
 
         builder.Services.AddEndpointsApiExplorer();
-       
+
         builder.Services.AddDbContext<TrukMoveLocalContext>(option =>
         option.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
 
@@ -149,8 +176,9 @@ internal class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        
 
+        app.UseMiddleware<BlacklistMiddleware>();
+        app.UseMiddleware<UserInfoMiddleware>();
 
         app.MapControllers();
 
