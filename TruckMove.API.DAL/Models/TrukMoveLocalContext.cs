@@ -24,6 +24,7 @@ namespace TruckMove.API.DAL.Models
         public DbSet<UserRoleModel> UserRoles { get; set; }
 
         public DbSet<JobModel> Jobs { get; set; }
+        public DbSet<JobSequenceValue> JobSequence { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -183,7 +184,8 @@ namespace TruckMove.API.DAL.Models
             //    .HasDefaultValueSql("NEXT VALUE FOR dbo.JobSeq");
 
 
-
+            modelBuilder.Entity<JobSequenceValue>()
+            .HasNoKey();
 
             OnModelCreatingPartial(modelBuilder);
         }

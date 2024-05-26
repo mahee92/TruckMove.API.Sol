@@ -32,7 +32,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobDto> response = new Response<JobDto>();
             try
             {
-                job.Id = 2475;
+               
                 if (!IsPossibleToAdd(job))
                 {
                     response.Success = false;
@@ -42,6 +42,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 }
                 var jobModel = _mapper.Map<JobModel>(job);
                 jobModel.CreatedDate = DateTime.Now;
+                jobModel.JobId= await _jobRepository.GetNextJobId();
                 var res = await _repository.AddAsync(jobModel);
                 response.Success = true;
                 response.Object = _mapper.Map<JobDto>(res);
@@ -62,12 +63,12 @@ namespace TruckMove.API.BLL.Services.JobServices
         }
 
         // CREATE METHOD TO GET NEXT JOB ID
-        public Response GetNextJobId()
+        public  async Task<Response> GetNextJobId()
         {
             Response response = new Response();
             try
             {
-                int id = _jobRepository.GetNextJobId();
+                var id = await _jobRepository.GetNextJobId();
                 response.Success = true;
                 response.data = id.ToString();
             }

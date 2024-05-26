@@ -11,6 +11,6 @@ namespace TruckMove.API.BLL.Services.JobServices
     public interface IJobService
     {
         Task<Response<JobDto>> AddAsync(JobDto job);
-        Response GetNextJobId();
+        Task<Response> GetNextJobId();
     }
 }

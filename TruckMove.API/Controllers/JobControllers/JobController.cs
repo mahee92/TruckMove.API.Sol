@@ -28,9 +28,9 @@ namespace TruckMove.API.Controllers.JobControllers
 
         
         [HttpGet("GetNextJobId")]
-        public IActionResult GetNextJobId()
+        public async Task<IActionResult> GetNextJobId()
         {
-            var response = _jobService.GetNextJobId();
+            var response = await _jobService.GetNextJobId();
             if (response.Success)
             {
                 return Ok(response.data);

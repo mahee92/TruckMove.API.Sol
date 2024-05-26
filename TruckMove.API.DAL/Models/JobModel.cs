@@ -16,7 +16,9 @@ namespace TruckMove.API.DAL.Models
         [Key]
         public int Id { get; set; }
 
-        
+        public int JobId { get; set; }
+
+
 
         [AllowNull]
         public int? Controller { get; set; }

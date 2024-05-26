@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,17 +14,36 @@ namespace TruckMove.API.DAL.Repositories.Job
     {
         private readonly DbContext _context;
         private readonly DbSet<JobModel> _dbSet;
+        private readonly DbSet<JobSequenceValue> _Sequence;
         public JobRepository(DbContextOptions<TrukMoveLocalContext> options)
         {
             _context = new TrukMoveLocalContext(options);
             _dbSet = _context.Set<JobModel>();
+            _Sequence = _context.Set<JobSequenceValue>();
         }
 
-        public int GetNextJobId()
+        //public int GetNextJobId()
+        //{
+        //    var nextId1 = _context.Database.ExecuteSqlInterpolated($"SELECT NEXT VALUE FOR dbo.JobSeq");
+        //    var nextId = _context.Database.ExecuteSqlRaw("SELECT NEXT VALUE FOR dbo.JobSeq");
+        //    return nextId;
+        //}
+        public async Task<int> GetNextJobId()
         {
-            var nextId1 = _context.Database.ExecuteSqlInterpolated($"SELECT NEXT VALUE FOR dbo.JobSeq");
-            var nextId = _context.Database.ExecuteSqlRaw("SELECT NEXT VALUE FOR dbo.JobSeq");
-            return nextId;
+
+            var connection = _context.Database.GetDbConnection();
+            await connection.OpenAsync();
+
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "SELECT NEXT VALUE FOR dbo.JobSeq";
+                command.CommandType = CommandType.Text;
+
+                var result = await command.ExecuteScalarAsync();
+                return (int)result;
+            }
+
+
         }
         public bool IsValidSequence(int inputNumber)
         {

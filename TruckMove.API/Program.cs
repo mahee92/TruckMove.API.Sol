@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using TruckMove.API.BLL;
 using TruckMove.API.BLL.Helper;
+using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
@@ -55,6 +56,7 @@ internal class Program
             profile.CreateGenericMap<ContactDto, ContactModel>();
             profile.CreateGenericMap<ContactModel, CompanyDtoUpdate>();
             profile.CreateGenericMap<CompanyDtoUpdate, ContactModel>();
+            profile.CreateGenericMap<JobDto, JobModel>();
 
         }, typeof(Program));
 

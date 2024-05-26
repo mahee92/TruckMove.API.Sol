@@ -8,7 +8,7 @@ namespace TruckMove.API.DAL.Repositories.Job
 {
     public interface IJobRepository
     {
-        int GetNextJobId();
+        Task<int> GetNextJobId();
         bool IsValidSequence(int inputNumber);
 
     }
