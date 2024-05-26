@@ -19,7 +19,10 @@ namespace TruckMove.API.DAL.Repositories.Primary
             return await _dbSet.Where(e => e.CompanyId== companyId & e.IsActive==true).ToListAsync();
 
         }
+        public async Task<List<ContactModel>> GetAllAsync()
+        {
+            return await _dbSet.Where(e => e.IsActive & e.Company.IsActive==true).OrderByDescending(x => x.CreatedDate).ToListAsync();
+        }
 
-        
     }
 }
