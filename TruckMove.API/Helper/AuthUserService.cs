@@ -15,8 +15,13 @@ namespace TruckMove.API.Helper
 
         public string GetUserId()
         {
-            //return "11";
+#if DEBUG
+            // This code will only run in debug mode
+            return "11";
+#else
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+#endif
+
         }
 
         public string GetUserName()

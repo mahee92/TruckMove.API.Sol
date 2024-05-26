@@ -53,7 +53,10 @@ namespace TruckMove.API.DAL.Models
         public bool IsActive { get; set; }
 
 
-       
+        public ICollection<JobModel> jobs { get; set; }
+
+
+
 
 
     }

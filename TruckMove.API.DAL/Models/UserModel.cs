@@ -54,5 +54,10 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<UserRoleModel> UpdatedRoles { get; set; }
 
         public virtual ICollection<UserRoleModel> UserRoles { get; set; }
+
+        public virtual ICollection<JobModel> CreatedJobs { get; set; }
+        public virtual ICollection<JobModel> UpdatedJobs { get; set; }
+
+        public virtual ICollection<JobModel> ControlledJobs { get; set; }
     }
 }

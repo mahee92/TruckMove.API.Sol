@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
 
-namespace TruckMove.API.DAL.Repositories.Primary
+namespace TruckMove.API.DAL.Repositories
 {
     public interface IMasterDataRepository
     {

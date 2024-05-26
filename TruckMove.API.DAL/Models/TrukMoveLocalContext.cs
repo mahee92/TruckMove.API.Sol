@@ -23,12 +23,14 @@ namespace TruckMove.API.DAL.Models
         public DbSet<RoleModel> Roles { get; set; }
         public DbSet<UserRoleModel> UserRoles { get; set; }
 
+        public DbSet<JobModel> Jobs { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMoveLocal;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-5;Trusted_Connection=True;");
             }
         }
 
@@ -124,6 +126,64 @@ namespace TruckMove.API.DAL.Models
             .WithOne(ur => ur.User)
             .HasForeignKey(ur => ur.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+            // job table
+            modelBuilder.Entity<JobModel>()
+             .Property(b => b.IsActive)
+             .HasDefaultValue(true);
+
+            modelBuilder.Entity<JobModel>()
+          .HasOne(c => c.CreatedBy)
+          .WithMany(u => u.CreatedJobs)
+          .HasForeignKey(c => c.CreatedById)
+          .OnDelete(DeleteBehavior.Restrict);
+
+           modelBuilder.Entity<JobModel>()
+                .HasOne(c => c.UpdatedBy)
+                .WithMany(u => u.UpdatedJobs)
+                .HasForeignKey(c => c.UpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<CompanyModel>()
+            .HasMany(e => e.jobs)
+            .WithOne(e => e.Company)
+            .HasForeignKey(e => e.CompanyId)
+            .IsRequired();
+
+            modelBuilder.Entity<JobModel>()
+          .HasOne(e => e.Contact)
+          .WithMany(c => c.jobs)
+          .HasForeignKey(e => e.ContactId)
+          .IsRequired(false)
+           .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<ContactModel>()
+                    .HasMany(e => e.jobs)
+                    .WithOne(e => e.Contact)
+                    .HasForeignKey(e => e.ContactId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+
+            modelBuilder.Entity<JobModel>()
+         .HasOne(e => e.ControlledUser)
+         .WithMany(c => c.ControlledJobs)
+         .HasForeignKey(e => e.Controller)
+         .IsRequired(false)
+          .OnDelete(DeleteBehavior.NoAction);
+
+           // Define the sequence
+            modelBuilder.HasSequence<int>("JobSeq", schema: "dbo")
+                .StartsAt(2475)
+                .IncrementsBy(1);
+
+            ////Configure the entity to use the sequence
+            //modelBuilder.Entity<JobModel>()
+            //    .Property(j => j.Id)
+            //    .HasDefaultValueSql("NEXT VALUE FOR dbo.JobSeq");
+
+
+
 
             OnModelCreatingPartial(modelBuilder);
         }

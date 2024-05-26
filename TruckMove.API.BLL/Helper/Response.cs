@@ -1,28 +1,16 @@
-﻿using TruckMove.API.BLL.Models.Primary;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using TruckMove.API.BLL.Models.Primary;
 
 namespace TruckMove.API.BLL.Helper
 {
-    //public class Response<T>
-    //{
-    //    public bool Success { get; set; }
-
-    //    public T Object { get; set; }
-    //    public List<T> Objects { get; set; }
-
-    //    public ErrorCode ErrorType { get; set; }
-    //    public string ErrorMessage { get; set; }
-
-    //    public static implicit operator Response<T>(Response<CompanyDto> v)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
 
     public class Response
     {
         public bool Success { get; set; }
         public ErrorCode ErrorType { get; set; }
         public string? ErrorMessage { get; set; }
+
+        public string? data { get; set; }
 
 
     }
@@ -31,8 +19,7 @@ namespace TruckMove.API.BLL.Helper
         public T? Object { get; set; }
         public List<T>? Objects { get; set; }
 
-
-    }
+}
     public enum ErrorCode
     {
         NotFound = 404,
@@ -41,6 +28,7 @@ namespace TruckMove.API.BLL.Helper
         dbError = 600,
         fileNotFound = 300,
         alreadyExists = 409,
-        invalidLogin = 401
+        invalidLogin = 401,
+        validationError = 422
     }
 }

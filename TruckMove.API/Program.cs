@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 using System.Text;
 using System.Text.Json.Serialization;
 using TruckMove.API.BLL;
@@ -11,10 +13,12 @@ using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Services;
+using TruckMove.API.BLL.Services.JobServices;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.BLL.Services.PrimaryServices;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
+using TruckMove.API.DAL.Repositories.Job;
 using TruckMove.API.DAL.Repositories.Primary;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
@@ -58,6 +62,27 @@ internal class Program
            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
            .AddEnvironmentVariables();
+
+
+        Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console()
+                    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+                     .Filter.ByExcluding(e => e.Level == LogEventLevel.Debug && // Exclude logs with Debug level for specific categories
+                                    (e.MessageTemplate.Text.Contains("Execution plan") || // Exclude logs related to execution plans
+                                     e.MessageTemplate.Text.Contains("Executing controller factory") || // Exclude logs related to controller factory execution
+                                     e.MessageTemplate.Text.Contains("Executed controller factory") || // Exclude logs related to controller factory execution
+                                     e.MessageTemplate.Text.Contains("List of registered output formatters") || // Exclude logs related to output formatters
+                                     e.MessageTemplate.Text.Contains("No information found on request") || // Exclude logs related to content negotiation
+                                     e.MessageTemplate.Text.Contains("Attempting to select an output formatter") || // Exclude logs related to output formatter selection
+                                     e.MessageTemplate.Text.Contains("Selected output formatter"))) // Exclude logs related to selected output formatter
+                    .CreateLogger();
+
+       builder.Host.UseSerilog();
+
+
+
 
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
         var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtSettings:SecretKey"]);
@@ -125,13 +150,17 @@ internal class Program
         builder.Services.AddScoped<IContactService, ContactService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IMasterDataService, MasterDataService>();
+        builder.Services.AddScoped<IJobRepository, JobRepository>();
+        builder.Services.AddScoped<IJobService, JobService>();
 
         builder.Services.AddScoped<IRepository<CompanyModel>, Repository<CompanyModel>>();
         builder.Services.AddScoped<IRepository<ContactModel>, Repository<ContactModel>>();
         builder.Services.AddScoped<IRepository<UserModel>, Repository<UserModel>>();
+        builder.Services.AddScoped<IRepository<JobModel>, Repository<JobModel>>();
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();
+        
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IAuthUserService, AuthUserService>();
@@ -139,7 +168,14 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddDbContext<TrukMoveLocalContext>(option =>
-        option.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+      
+        option.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection"))
+                               .EnableSensitiveDataLogging(false) // Disable sensitive data logging
+                                .UseLoggerFactory(LoggerFactory.Create(loggingBuilder =>
+                                {
+                                    loggingBuilder.AddFilter((category, level) =>
+                                        !category.Contains("Microsoft.EntityFrameworkCore")); // Exclude EF Core logs
+                                }))); // Disable EF Core logging);
 
         builder.Services.AddSingleton<JwtTokenGenerator>();
 
@@ -168,15 +204,16 @@ internal class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        app.UseSerilogRequestLogging();
         app.UseCors("AllowAll");
 
 
         app.UseHttpsRedirection();
-
         app.UseAuthentication();
         app.UseAuthorization();
+        
 
-
+        app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
 

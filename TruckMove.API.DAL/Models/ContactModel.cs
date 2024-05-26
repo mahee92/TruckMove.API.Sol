@@ -39,5 +39,7 @@ namespace TruckMove.API.DAL.Models
       
         public string? Image { get; set; }
 
+        public ICollection<JobModel> jobs { get; set; }
+
     }
 }

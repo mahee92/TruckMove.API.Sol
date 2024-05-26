@@ -12,8 +12,8 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveLocalContext))]
-    [Migration("20240519141239_tk-4-full.1")]
-    partial class tk4full1
+    [Migration("20240526025603_first")]
+    partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,9 @@ namespace TruckMove.API.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.HasSequence<int>("JobSeq", "dbo")
+                .StartsAt(2475L);
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.CompanyModel", b =>
                 {
@@ -68,6 +71,9 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Logo")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -118,6 +124,12 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<string>("ContactsEmail")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CreatedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
@@ -126,21 +138,70 @@ namespace TruckMove.API.DAL.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
 
-                    b.Property<int?>("UserModelId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("UserModelId1")
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("UserModelId");
+                    b.HasIndex("CreatedById");
 
-                    b.HasIndex("UserModelId1");
+                    b.HasIndex("UpdatedById");
 
                     b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("TruckMove.API.DAL.Models.JobModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ContactId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Controller")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CreatedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("Controller");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("Jobs");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.RoleModel", b =>
@@ -196,6 +257,9 @@ namespace TruckMove.API.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int?>("CreatedById")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -210,7 +274,9 @@ namespace TruckMove.API.DAL.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -226,7 +292,10 @@ namespace TruckMove.API.DAL.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<DateTime?>("UreatedDate")
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -242,10 +311,24 @@ namespace TruckMove.API.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int?>("CreatedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UpdatedById")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -253,7 +336,11 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedById");
+
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UpdatedById");
 
                     b.HasIndex("UserId");
 
@@ -285,32 +372,91 @@ namespace TruckMove.API.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TruckMove.API.DAL.Models.UserModel", null)
+                    b.HasOne("TruckMove.API.DAL.Models.UserModel", "CreatedBy")
                         .WithMany("CreatedContacts")
-                        .HasForeignKey("UserModelId");
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("TruckMove.API.DAL.Models.UserModel", null)
+                    b.HasOne("TruckMove.API.DAL.Models.UserModel", "UpdatedBy")
                         .WithMany("UpdatedContacts")
-                        .HasForeignKey("UserModelId1");
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Company");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("TruckMove.API.DAL.Models.JobModel", b =>
+                {
+                    b.HasOne("TruckMove.API.DAL.Models.CompanyModel", "Company")
+                        .WithMany("jobs")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TruckMove.API.DAL.Models.ContactModel", "Contact")
+                        .WithMany("jobs")
+                        .HasForeignKey("ContactId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("TruckMove.API.DAL.Models.UserModel", "ControlledUser")
+                        .WithMany("ControlledJobs")
+                        .HasForeignKey("Controller")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("TruckMove.API.DAL.Models.UserModel", "CreatedBy")
+                        .WithMany("CreatedJobs")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("TruckMove.API.DAL.Models.UserModel", "UpdatedBy")
+                        .WithMany("UpdatedJobs")
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Contact");
+
+                    b.Navigation("ControlledUser");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.UserRoleModel", b =>
                 {
+                    b.HasOne("TruckMove.API.DAL.Models.UserModel", "CreatedBy")
+                        .WithMany("CreatedRoles")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("TruckMove.API.DAL.Models.RoleModel", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TruckMove.API.DAL.Models.UserModel", "UpdatedBy")
+                        .WithMany("UpdatedRoles")
+                        .HasForeignKey("UpdatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("TruckMove.API.DAL.Models.UserModel", "User")
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("CreatedBy");
+
                     b.Navigation("Role");
+
+                    b.Navigation("UpdatedBy");
 
                     b.Navigation("User");
                 });
@@ -318,17 +464,36 @@ namespace TruckMove.API.DAL.Migrations
             modelBuilder.Entity("TruckMove.API.DAL.Models.CompanyModel", b =>
                 {
                     b.Navigation("Contacts");
+
+                    b.Navigation("jobs");
+                });
+
+            modelBuilder.Entity("TruckMove.API.DAL.Models.ContactModel", b =>
+                {
+                    b.Navigation("jobs");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.UserModel", b =>
                 {
+                    b.Navigation("ControlledJobs");
+
                     b.Navigation("CreatedCompanies");
 
                     b.Navigation("CreatedContacts");
 
+                    b.Navigation("CreatedJobs");
+
+                    b.Navigation("CreatedRoles");
+
                     b.Navigation("UpdatedCompanies");
 
                     b.Navigation("UpdatedContacts");
+
+                    b.Navigation("UpdatedJobs");
+
+                    b.Navigation("UpdatedRoles");
+
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

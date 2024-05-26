@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
-using TruckMove.API.DAL.Repositories.Primary;
 using TruckMove.API.DAL.Repositories;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
