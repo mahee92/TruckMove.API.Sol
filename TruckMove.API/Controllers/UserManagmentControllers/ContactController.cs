@@ -19,7 +19,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator,OpsManager")]
     public class ContactController : ControllerBase
     {
 
