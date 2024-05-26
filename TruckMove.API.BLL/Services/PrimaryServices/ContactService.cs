@@ -10,20 +10,23 @@ using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
+using TruckMove.API.DAL.Repositories.Primary;
 
 namespace TruckMove.API.BLL.Services.PrimaryServices
 {
     public class ContactService : IContactService
     {
-        private readonly IRepository<ContactModel> _contactRepository;
+        private readonly IRepository<ContactModel> _repository;
         private readonly ICompanyService _companyService;
         private readonly IMapper _mapper;
+        private IContactRepository _contactRepository;
 
-        public ContactService(IRepository<ContactModel> repository, ICompanyService companyService, IMapper mapper)
+        public ContactService(IRepository<ContactModel> repository, ICompanyService companyService, IMapper mapper,IContactRepository contactRepository)
         {
-            _contactRepository = repository;
+            _repository = repository;
             _companyService = companyService;
             _mapper = mapper;
+            _contactRepository = contactRepository;
 
         }
 
@@ -47,7 +50,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
                     var ContactModel = _mapper.Map<ContactModel> (contact); 
                     ContactModel.CreatedDate = DateTime.Now;
 
-                    var res = await _contactRepository.AddAsync(ContactModel);
+                    var res = await _repository.AddAsync(ContactModel);
 
                     response.Success = true;
                     response.Object = _mapper.Map<ContactDto>(res);;
@@ -71,7 +74,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
             try
             {
 
-                var contact = await _contactRepository.GetAsync(id);
+                var contact = await _repository.GetAsync(id);
 
                 if (contact == null)
                 {
@@ -82,7 +85,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
                 else
                 {
                     contact.IsActive = false;
-                    await _contactRepository.DeleteAsync(contact);
+                    await _repository.DeleteAsync(contact);
                     response.Success = true;
                 }
 
@@ -104,7 +107,8 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
             Response<ContactDto> response = new Response<ContactDto>();
             try
             {
-                var contacts = await _contactRepository.GetAllWithIncludesAsync(contact => contact.Company);
+                //var contacts = await _contactRepository.GetAllWithIncludesAsync(contact => contact.Company);
+                var contacts = await _contactRepository.GetAllAsync();
                 response.Success = true;
                 if (contacts.Count > 0)
                 {
@@ -132,7 +136,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
             try
             {
                 //var contact = await _contactRepository.GetWithIncludesAsync(id, contact => contact.Company);
-                var contact = await _contactRepository.GetAsync(id);
+                var contact = await _repository.GetAsync(id);
                 if (contact == null)
                 {
                     response.Success = false;
@@ -160,7 +164,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
             Response<ContactUpdateDto> response = new Response<ContactUpdateDto>();
             try
             {
-                var contact = await _contactRepository.GetAsync(updatedContact.Id);
+                var contact = await _repository.GetAsync(updatedContact.Id);
                 if (contact == null)
                 {
                     response.Success = false;
@@ -174,7 +178,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
                     var res = updater.Map(updatedContact, contact);
                     res.LastModifiedDate = DateTime.Now;
 
-                    await _contactRepository.UpdateAsync(res);
+                    await _repository.UpdateAsync(res);
                     response.Success = true;
                     //response.UpdatedObject = CompanyConvertor.ConvertToCompany(res);
                 }

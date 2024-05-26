@@ -8,5 +8,7 @@ namespace TruckMove.API.DAL.Repositories.Primary
     {
          Task<List<ContactModel>> GetContactsByCompany(int companyId);
 
+         Task<List<ContactModel>> GetAllAsync();
+
     }
 }
