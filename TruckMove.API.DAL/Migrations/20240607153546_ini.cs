@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TruckMove.API.DAL.Migrations
 {
-    public partial class i : Migration
+    public partial class ini : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,9 +48,9 @@ namespace TruckMove.API.DAL.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "(CONVERT([bit],(1)))"),
-                    UpdatedById = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedById = table.Column<int>(type: "int", nullable: true),
                     CreatedById = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -83,9 +83,9 @@ namespace TruckMove.API.DAL.Migrations
                     CompanyABN = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
                     Logo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "(CONVERT([bit],(1)))"),
-                    UpdatedById = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedById = table.Column<int>(type: "int", nullable: true),
                     CreatedById = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -112,9 +112,9 @@ namespace TruckMove.API.DAL.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "(CONVERT([bit],(1)))"),
-                    UpdatedById = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedById = table.Column<int>(type: "int", nullable: true),
                     CreatedById = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -157,9 +157,9 @@ namespace TruckMove.API.DAL.Migrations
                     CompanyId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "(CONVERT([bit],(1)))"),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedById = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedById = table.Column<int>(type: "int", nullable: true),
                     CreatedById = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -193,9 +193,10 @@ namespace TruckMove.API.DAL.Migrations
                     CompanyId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "(CONVERT([bit],(1)))"),
                     JobId = table.Column<int>(type: "int", nullable: false),
-                    UpdatedById = table.Column<int>(type: "int", nullable: true),
+                    PickupLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedById = table.Column<int>(type: "int", nullable: true),
                     CreatedById = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

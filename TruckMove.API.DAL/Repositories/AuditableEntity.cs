@@ -12,10 +12,6 @@ namespace TruckMove.API.DAL.Repositories
     {
 
 
-       
-
-       
-
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
        

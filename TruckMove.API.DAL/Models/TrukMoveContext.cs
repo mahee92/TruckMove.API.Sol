@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class TrukMove6Context : DbContext
+    public partial class TrukMoveContext : DbContext
     {
-        public TrukMove6Context()
+        public TrukMoveContext()
         {
         }
 
-        public TrukMove6Context(DbContextOptions<TrukMove6Context> options)
+        public TrukMoveContext(DbContextOptions<TrukMoveContext> options)
             : base(options)
         {
         }
@@ -19,7 +19,7 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
         public virtual DbSet<Job> Jobs { get; set; } = null!;
-        public virtual DbSet<JobSequence> JobSequences { get; set; } = null!;
+
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
@@ -29,7 +29,7 @@ namespace TruckMove.API.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-6;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-10;Trusted_Connection=True;");
             }
         }
 
@@ -44,26 +44,26 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.AccountsEmail).HasMaxLength(100);
 
                 entity.Property(e => e.CompanyAbn)
-                    .HasMaxLength(11)
-                    .HasColumnName("CompanyABN");
+                       .HasMaxLength(11)
+                       .HasColumnName("CompanyABN");
 
                 entity.Property(e => e.CompanyName).HasMaxLength(100);
 
                 entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+                       .IsRequired()
+                       .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
                 entity.Property(e => e.PrimaryEmail).HasMaxLength(100);
 
                 entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.CompanyCreatedBies)
-                    .HasForeignKey(d => d.CreatedById);
+                       .WithMany(p => p.CompanyCreatedBies)
+                       .HasForeignKey(d => d.CreatedById);
 
                 entity.HasOne(d => d.UpdatedBy)
-                    .WithMany(p => p.CompanyUpdatedBies)
-                    .HasForeignKey(d => d.UpdatedById);
+                       .WithMany(p => p.CompanyUpdatedBies)
+                       .HasForeignKey(d => d.UpdatedById);
             });
 
             modelBuilder.Entity<Contact>(entity =>
@@ -101,6 +101,8 @@ namespace TruckMove.API.DAL.Models
 
                 entity.HasIndex(e => e.UpdatedById, "IX_Jobs_UpdatedById");
 
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.IsActive)
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
@@ -122,12 +124,7 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.UpdatedById);
             });
 
-            modelBuilder.Entity<JobSequence>(entity =>
-            {
-                entity.HasNoKey();
 
-                entity.ToTable("JobSequence");
-            });
 
             modelBuilder.Entity<Role>(entity =>
             {
@@ -194,6 +191,12 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
+            modelBuilder.Entity<JobSequence>(entity =>
+                       {
+                           entity.HasNoKey();
+
+                           entity.ToTable("JobSequence");
+                       });
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

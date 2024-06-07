@@ -8,9 +8,9 @@ namespace TruckMove.API.DAL.Repositories.Primary
     {
         private readonly DbContext _context;
         private readonly DbSet<Contact> _dbSet;
-        public CompanyRepository(DbContextOptions<TrukMove6Context> options)
+        public CompanyRepository(DbContextOptions<TrukMoveContext> options)
         {
-            _context = new TrukMove6Context(options);
+            _context = new TrukMoveContext(options);
             _dbSet = _context.Set<Contact>();
         }
 

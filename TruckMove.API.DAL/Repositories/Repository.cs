@@ -15,9 +15,9 @@ namespace TruckMove.API.DAL.Repositories
 
         private readonly DbContext _context;
         private readonly DbSet<TEntity> _dbSet;
-        public Repository(DbContextOptions<TrukMove6Context> options)
+        public Repository(DbContextOptions<TrukMoveContext> options)
         {
-            _context = new TrukMove6Context(options);
+            _context = new TrukMoveContext(options);
             _dbSet = _context.Set<TEntity>();
         }
 

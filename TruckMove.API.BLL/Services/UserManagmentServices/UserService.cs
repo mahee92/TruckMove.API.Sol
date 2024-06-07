@@ -258,9 +258,9 @@ namespace TruckMove.API.BLL.Services.Primary
 
                         response.Object = _mapper.Map<UserOutputDto>(user);
                         
-                        if (user.UserRoles!=null)
+                        if (user.UserRoleUsers != null)
                         {
-                            var roles = user.UserRoles.Select(ur => ur.Role).ToList();
+                            var roles = user.UserRoleUsers.Select(ur => ur.Role).ToList();
                             response.Object.Roles = new List<RoleDto>();
                             response.Object.Roles.AddRange(_mapper.Map<List<RoleDto>>(roles));
                         }

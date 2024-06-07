@@ -9,9 +9,9 @@ namespace TruckMove.API.DAL.Repositories.Primary
         private readonly DbContext _context;
         private readonly DbSet<User> _dbSet;
         private readonly DbSet<UserRole> _RoledbSet;
-        public UserRepository(DbContextOptions<TrukMove6Context> options)
+        public UserRepository(DbContextOptions<TrukMoveContext> options)
         {
-            _context = new TrukMove6Context(options);
+            _context = new TrukMoveContext(options);
             _dbSet = _context.Set<User>();
             _RoledbSet = _context.Set<UserRole>();
         }
