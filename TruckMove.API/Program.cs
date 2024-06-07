@@ -40,17 +40,17 @@ internal class Program
         {
             var profile = new MapProfile();
             cfg.AddProfile(profile);
-            profile.CreateGenericMap<UserInputDto, UserModel>();
-            profile.CreateGenericMap<UserModel, UserOutputDto>();
-            profile.CreateGenericMap<RoleModel, RoleDto>();
-            profile.CreateGenericMap<CompanyModel, CompanyDto>();
-            profile.CreateGenericMap<CompanyDto, CompanyModel>();
-            profile.CreateGenericMap<CompanyDtoUpdate, CompanyModel>();
-            profile.CreateGenericMap<CompanyModel, CompanyDtoUpdate>();
-            profile.CreateGenericMap<ContactModel, ContactDto>();
-            profile.CreateGenericMap<ContactDto, ContactModel>();
-            profile.CreateGenericMap<ContactModel, CompanyDtoUpdate>();
-            profile.CreateGenericMap<CompanyDtoUpdate, ContactModel>();
+            profile.CreateGenericMap<UserInputDto, User>();
+            profile.CreateGenericMap<User, UserOutputDto>();
+            profile.CreateGenericMap<Role, RoleDto>();
+            profile.CreateGenericMap<Company, CompanyDto>();
+            profile.CreateGenericMap<CompanyDto, Company>();
+            profile.CreateGenericMap<CompanyDtoUpdate, Company>();
+            profile.CreateGenericMap<Company, CompanyDtoUpdate>();
+            profile.CreateGenericMap<Contact, ContactDto>();
+            profile.CreateGenericMap<ContactDto, Contact>();
+            profile.CreateGenericMap<Contact, CompanyDtoUpdate>();
+            profile.CreateGenericMap<CompanyDtoUpdate, Contact>();
 
         }, typeof(Program));
 
@@ -126,9 +126,9 @@ internal class Program
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 
-        builder.Services.AddScoped<IRepository<CompanyModel>, Repository<CompanyModel>>();
-        builder.Services.AddScoped<IRepository<ContactModel>, Repository<ContactModel>>();
-        builder.Services.AddScoped<IRepository<UserModel>, Repository<UserModel>>();
+        builder.Services.AddScoped<IRepository<Company>, Repository<Company>>();
+        builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
+        builder.Services.AddScoped<IRepository<User>, Repository<User>>();
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();

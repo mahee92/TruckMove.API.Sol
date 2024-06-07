@@ -7,21 +7,21 @@ namespace TruckMove.API.DAL.Repositories.Primary
     public class UserRepository : IUserRepository
     {
         private readonly DbContext _context;
-        private readonly DbSet<UserModel> _dbSet;
-        private readonly DbSet<UserRoleModel> _roleModeldbSet;
-        public UserRepository(DbContextOptions<TrukMoveLocalContext> options)
+        private readonly DbSet<User> _dbSet;
+        private readonly DbSet<UserRole> _RoledbSet;
+        public UserRepository(DbContextOptions<TrukMove6Context> options)
         {
-            _context = new TrukMoveLocalContext(options);
-            _dbSet = _context.Set<UserModel>();
-            _roleModeldbSet = _context.Set<UserRoleModel>();
+            _context = new TrukMove6Context(options);
+            _dbSet = _context.Set<User>();
+            _RoledbSet = _context.Set<UserRole>();
         }
 
         public async Task AddRolesAsync(int id, List<int> roles)
         {
 
             using var transaction = await _context.Database.BeginTransactionAsync();
-            var userRoles = await _roleModeldbSet.Where(x => x.UserId == id).ToListAsync();
-            foreach (var role in userRoles)
+            var UserRole = await _RoledbSet.Where(x => x.UserId == id).ToListAsync();
+            foreach (var role in UserRole)
             {
                 role.IsActive = false;
             }
@@ -31,20 +31,20 @@ namespace TruckMove.API.DAL.Repositories.Primary
 
             foreach (var roleId in roles)
             {
-                var role = userRoles.FirstOrDefault(x => x.RoleId == roleId);
+                var role = UserRole.FirstOrDefault(x => x.RoleId == roleId);
                 if (role != null)
                 {
                     role.IsActive = true;
                 }
                 else
                 {
-                    var userRole = new UserRoleModel
+                    var userRole = new UserRole
                     {
                         UserId = id,
                         RoleId = roleId,
                         IsActive = true
                     };
-                    await _roleModeldbSet.AddAsync(userRole);
+                    await _RoledbSet.AddAsync(userRole);
                 }
 
             }
@@ -62,22 +62,22 @@ namespace TruckMove.API.DAL.Repositories.Primary
         }
 
 
-        public async Task<List<RoleModel>> GetRolesByUserId(int id)
+        public async Task<List<Role>> GetRolesByUserId(int id)
         {
-            var userRoles = await _roleModeldbSet
+            var UserRole = await _RoledbSet
                 .Where(ur => ur.UserId == id && ur.IsActive)
                 .Include(ur => ur.Role)
                 .ToListAsync();
 
-            var roles = userRoles.Select(ur => ur.Role).ToList();
+            var roles = UserRole.Select(ur => ur.Role).ToList();
             return roles;
         }
 
-        public async Task<UserModel> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(user => user.Email == email && user.IsActive);
         }
-        public async Task<UserModel> GetUserByEmailWithRoles(string email)
+        public async Task<User> GetUserByEmailWithRoles(string email)
         {
             
             return await _dbSet

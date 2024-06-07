@@ -16,11 +16,11 @@ namespace TruckMove.API.BLL.Services.Primary
     {
 
 
-        private readonly IRepository<CompanyModel> _companyRepository;
+        private readonly IRepository<Company> _companyRepository;
         private readonly IMapper _mapper;
         private readonly IContactRepository _contactRepository;
 
-        public CompanyService(IRepository<CompanyModel> repository, IMapper mapper, IContactRepository contactRepository)
+        public CompanyService(IRepository<Company> repository, IMapper mapper, IContactRepository contactRepository)
         {
          
             _companyRepository = repository;
@@ -92,8 +92,8 @@ namespace TruckMove.API.BLL.Services.Primary
                 {
 
 
-                    //var res  = _mapper.Map<CompanyModel>(updatedcompany);
-                    ObjectUpdater<CompanyDtoUpdate, CompanyModel> updater = new ObjectUpdater<CompanyDtoUpdate, CompanyModel>();
+                    //var res  = _mapper.Map<Company>(updatedcompany);
+                    ObjectUpdater<CompanyDtoUpdate, Company> updater = new ObjectUpdater<CompanyDtoUpdate, Company>();
                     var res = updater.Map(updatedcompany, company);
                     res.LastModifiedDate= DateTime.Now;
 
@@ -117,9 +117,9 @@ namespace TruckMove.API.BLL.Services.Primary
             Response<CompanyDto> response = new Response<CompanyDto>();
             try
             {
-                var companyModel = _mapper.Map<CompanyModel>(company);
-                companyModel.CreatedDate = DateTime.Now;
-                var res = await _companyRepository.AddAsync(companyModel);
+                var Company = _mapper.Map<Company>(company);
+                Company.CreatedDate = DateTime.Now;
+                var res = await _companyRepository.AddAsync(Company);
                 response.Success = true;
                 response.Object = _mapper.Map<CompanyDto>(res);
 
