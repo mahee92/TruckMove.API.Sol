@@ -1,86 +1,86 @@
-﻿//using Microsoft.EntityFrameworkCore;
-//using Microsoft.Extensions.Options;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Linq.Expressions;
-//using System.Text;
-//using System.Threading.Tasks;
-//using TruckMove.API.DAL.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+using TruckMove.API.DAL.Models;
 
-//namespace TruckMove.API.DAL.Repositories
-//{
-//    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IActiveEntity
-//    { 
+namespace TruckMove.API.DAL.Repositories
+{
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IActiveEntity
+    { 
 
-//        private readonly DbContext _context;
-//        private readonly DbSet<TEntity> _dbSet;
-//        public Repository(DbContextOptions<TrukMoveContext> options)
-//        {
-//            _context = new TrukMoveContext(options);
-//            _dbSet = _context.Set<TEntity>();
-//        }
+        private readonly DbContext _context;
+        private readonly DbSet<TEntity> _dbSet;
+        public Repository(DbContextOptions<TrukMoveContext> options)
+        {
+            _context = new TrukMoveContext(options);
+            _dbSet = _context.Set<TEntity>();
+        }
 
         
-//        public async Task<TEntity> AddAsync(TEntity entity)
-//        {
-//            await _dbSet.AddAsync(entity);
-//            await _context.SaveChangesAsync();
-//            return entity;
+        public async Task<TEntity> AddAsync(TEntity entity)
+        {
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
 
-//        }
+        }
 
        
-//        public async Task<TEntity> GetAsync(int id)
-//        {
+        public async Task<TEntity> GetAsync(int id)
+        {
           
-//            return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
-//        }
+            return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
+        }
 
-//        public async Task UpdateAsync(TEntity entity)
-//        {
-//            _context.Entry(entity).State = EntityState.Modified;
-//            await _context.SaveChangesAsync();
-//            //return entity;
-//        }
+        public async Task UpdateAsync(TEntity entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            //return entity;
+        }
 
-//        public async Task DeleteAsync(TEntity entity)
-//        {
-//            _context.Entry(entity).State = EntityState.Modified;
-//             await _context.SaveChangesAsync();
-//        }
+        public async Task DeleteAsync(TEntity entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+             await _context.SaveChangesAsync();
+        }
 
    
-//        public async Task<List<TEntity>> GetAllAsync()
-//        {
-//            return await _dbSet.Where(e => e.IsActive).OrderByDescending(x=>x.CreatedDate).ToListAsync();
-//        }
+        public async Task<List<TEntity>> GetAllAsync()
+        {
+            return await _dbSet.Where(e => e.IsActive).OrderByDescending(x=>x.CreatedDate).ToListAsync();
+        }
 
-//        public async Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes)
-//        {
-//            IQueryable<TEntity> query = _dbSet;
+        public async Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = _dbSet;
 
-//            foreach (var include in includes)
-//            {
-//                query = query.Include(include);
-//            }
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
 
-//            return await query.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
-//        }
+            return await query.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
+        }
 
-//        public async Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes)
-//        {
-//            IQueryable<TEntity> query = _dbSet;
+        public async Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = _dbSet;
 
-//            foreach (var include in includes)
-//            {
-//                query = query.Include(include);
-//            }
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
 
-//            return await query.Where(e => e.IsActive).ToListAsync();
-//        }
+            return await query.Where(e => e.IsActive).ToListAsync();
+        }
 
 
 
-//    }
-//}
+    }
+}

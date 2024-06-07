@@ -16,12 +16,12 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
 {
     public class ContactService : IContactService
     {
-        private readonly IRepository<ContactModel> _repository;
+        private readonly IRepository<Contact> _repository;
         private readonly ICompanyService _companyService;
         private readonly IMapper _mapper;
         private IContactRepository _contactRepository;
 
-        public ContactService(IRepository<ContactModel> repository, ICompanyService companyService, IMapper mapper,IContactRepository contactRepository)
+        public ContactService(IRepository<Contact> repository, ICompanyService companyService, IMapper mapper,IContactRepository contactRepository)
         {
             _repository = repository;
             _companyService = companyService;
@@ -47,10 +47,10 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
                 else
                 {
 
-                    var ContactModel = _mapper.Map<ContactModel> (contact); 
-                    ContactModel.CreatedDate = DateTime.Now;
+                    var Contact = _mapper.Map<Contact> (contact); 
+                    Contact.CreatedDate = DateTime.Now;
 
-                    var res = await _repository.AddAsync(ContactModel);
+                    var res = await _repository.AddAsync(Contact);
 
                     response.Success = true;
                     response.Object = _mapper.Map<ContactDto>(res);;
@@ -174,7 +174,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
                 else
                 {
 
-                    ObjectUpdater<ContactUpdateDto, ContactModel> updater = new ObjectUpdater<ContactUpdateDto, ContactModel>();
+                    ObjectUpdater<ContactUpdateDto, Contact> updater = new ObjectUpdater<ContactUpdateDto, Contact>();
                     var res = updater.Map(updatedContact, contact);
                     res.LastModifiedDate = DateTime.Now;
 

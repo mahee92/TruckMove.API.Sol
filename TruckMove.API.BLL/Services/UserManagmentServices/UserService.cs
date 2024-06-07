@@ -10,12 +10,12 @@ namespace TruckMove.API.BLL.Services.Primary
 {
     public class UserService  : IUserService
     {
-        private readonly IRepository<UserModel> _repository;
+        private readonly IRepository<User> _repository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
     
-        public UserService(IRepository<UserModel> repository, IUserRepository userRepository, IMapper mapper)
+        public UserService(IRepository<User> repository, IUserRepository userRepository, IMapper mapper)
         {
             _repository = repository;
             _userRepository = userRepository;
@@ -85,7 +85,7 @@ namespace TruckMove.API.BLL.Services.Primary
 
                 var user = await _userRepository.GetUserByEmail(updatedUser.Email);
 
-                ObjectUpdater<UserUpdateDto, UserModel> updater = new ObjectUpdater<UserUpdateDto, UserModel>();
+                ObjectUpdater<UserUpdateDto, User> updater = new ObjectUpdater<UserUpdateDto, User>();
                 var res = updater.Map(updatedUser, user);
               
                 if(!String.IsNullOrEmpty(updatedUser.Password))
@@ -96,7 +96,7 @@ namespace TruckMove.API.BLL.Services.Primary
                 {
                     res.Email = updatedUser.NewEmail;
                 }
-                res.UpdatedDate = DateTime.Now;
+                res.LastModifiedDate = DateTime.Now;
 
                 await _repository.UpdateAsync(res);
                 response.Success = true;
@@ -125,11 +125,11 @@ namespace TruckMove.API.BLL.Services.Primary
                 }
                 {
                    
-                    UserModel userModel = _mapper.Map<UserModel>(user);
-                    userModel.PasswordHash = PasswordHelper.HashPassword(user.Password);
-                    userModel.CreatedDate = DateTime.Now;
+                    User User = _mapper.Map<User>(user);
+                    User.PasswordHash = PasswordHelper.HashPassword(user.Password);
+                    User.CreatedDate = DateTime.Now;
 
-                    var res = await _repository.AddAsync(userModel);
+                    var res = await _repository.AddAsync(User);
                     response.Success = true;
                     response.Object = _mapper.Map<UserOutputDto>(res);
                 }
@@ -258,9 +258,9 @@ namespace TruckMove.API.BLL.Services.Primary
 
                         response.Object = _mapper.Map<UserOutputDto>(user);
                         
-                        if (user.UserRoles!=null)
+                        if (user.UserRoleUsers != null)
                         {
-                            var roles = user.UserRoles.Select(ur => ur.Role).ToList();
+                            var roles = user.UserRoleUsers.Select(ur => ur.Role).ToList();
                             response.Object.Roles = new List<RoleDto>();
                             response.Object.Roles.AddRange(_mapper.Map<List<RoleDto>>(roles));
                         }

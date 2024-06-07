@@ -40,7 +40,7 @@ namespace TruckMove.API.BLL.Helper
     //{
     //    public UserProfile()
     //    {
-    //        CreateMap<UserInputDto, UserModel>()
+    //        CreateMap<UserInputDto, User>()
     //            .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
     //            .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true)) // or any default value
     //            .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
