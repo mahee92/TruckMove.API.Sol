@@ -18,10 +18,10 @@ namespace TruckMove.API.BLL.Services.JobServices
     public class JobService : IJobService
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<JobModel> _repository;
+        private readonly IRepository<Job> _repository;
         private readonly IJobRepository _jobRepository;
 
-        public JobService(IMapper mapper,IRepository<JobModel> repository,IJobRepository jobRepository)
+        public JobService(IMapper mapper,IRepository<Job> repository,IJobRepository jobRepository)
         {
             _mapper = mapper;
             _repository = repository;
@@ -43,20 +43,20 @@ namespace TruckMove.API.BLL.Services.JobServices
                 }
                
                 
-                JobModel existingJob = await _jobRepository.GetJobById(job.JobId);
+                Job existingJob = await _jobRepository.GetJobById(job.JobId);
                 
                 if (existingJob==null)
                 {
-                    var jobModel = _mapper.Map<JobModel>(job);
-                    jobModel.CreatedDate = DateTime.Now;
-                    jobModel.CreatedById = userId;
-                    var res = await _repository.AddAsync(jobModel);
+                    var Job = _mapper.Map<Job>(job);
+                    Job.CreatedDate = DateTime.Now;
+                    Job.CreatedById = userId;
+                    var res = await _repository.AddAsync(Job);
                     response.Success = true;
                     response.Object = _mapper.Map<JobDto>(res);
                 }
                 else
                 {
-                    ObjectUpdater<JobDto, JobModel> updater = new ObjectUpdater<JobDto, JobModel>();
+                    ObjectUpdater<JobDto, Job> updater = new ObjectUpdater<JobDto, Job>();
                     var res = updater.Map(job, existingJob);
                     res.LastModifiedDate = DateTime.Now;
                     res.UpdatedById = userId;

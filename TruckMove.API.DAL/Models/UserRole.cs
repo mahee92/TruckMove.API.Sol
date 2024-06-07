@@ -11,8 +11,6 @@ namespace TruckMove.API.DAL.Models
         public int RoleId { get; set; }
         public bool IsActive { get; set; }
        
-
-     
         public virtual Role Role { get; set; } = null!;
      
         public virtual User User { get; set; } = null!;

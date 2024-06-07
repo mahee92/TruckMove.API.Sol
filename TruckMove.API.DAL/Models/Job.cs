@@ -4,7 +4,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class Job : AuditableEntity
+    public partial class Job : AuditableEntity,IActiveEntity
     {       
         public int? Controller { get; set; }
         public int CompanyId { get; set; }
