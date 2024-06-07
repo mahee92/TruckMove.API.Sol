@@ -5,7 +5,7 @@ using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Services;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.Controllers.PrimaryControllers;
-using TruckMove.API.DAL.Repositories.Primary;
+using TruckMove.API.DAL.Repositories.PrimaryRepositories;
 
 using TruckMove.API.Settings;
 using static TruckMove.API.DAL.MasterData.MasterData;

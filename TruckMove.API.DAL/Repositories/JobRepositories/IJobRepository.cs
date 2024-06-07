@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
 
-namespace TruckMove.API.DAL.Repositories.Job
+namespace TruckMove.API.DAL.Repositories.JobRepositories
 {
     public interface IJobRepository
     {
-        Task<TruckMove.API.DAL.Models.Job> GetJobById(int id);
+        Task<Job> GetJobById(int id);
         Task<int> GetNextJobId();
         bool IsValidSequence(int inputNumber);
 

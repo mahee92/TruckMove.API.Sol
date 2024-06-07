@@ -9,6 +9,7 @@ namespace TruckMove.API.DAL.Models
         public int? Controller { get; set; }
         public int CompanyId { get; set; }
         public bool IsActive { get; set; }
+        
         public int Id { get; set; }
        
         public string PickupLocation { get; set; } = null!;

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
-using TruckMove.API.DAL.Repositories.Job;
+using TruckMove.API.DAL.Repositories.JobRepositories;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.JobDTOs;
@@ -31,46 +31,46 @@ namespace TruckMove.API.BLL.Services.JobServices
         public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
         {
             Response<JobDto> response = new Response<JobDto>();
-            try
-            {
+            //try
+            //{
                
-                if (!IsPossibleToAdd(job))
-                {
-                    response.Success = false;
-                    response.ErrorType = ErrorCode.validationError;
-                    response.ErrorMessage = ErrorMessages.Invalid;
-                    return response;
-                }
+            //    if (!IsPossibleToAdd(job))
+            //    {
+            //        response.Success = false;
+            //        response.ErrorType = ErrorCode.validationError;
+            //        response.ErrorMessage = ErrorMessages.Invalid;
+            //        return response;
+            //    }
                
                 
-                Job existingJob = await _jobRepository.GetJobById(job.JobId);
+            //    Job existingJob = await _jobRepository.GetJobById(job.JobId);
                 
-                if (existingJob==null)
-                {
-                    var Job = _mapper.Map<Job>(job);
-                    Job.CreatedDate = DateTime.Now;
-                    Job.CreatedById = userId;
-                    var res = await _repository.AddAsync(Job);
-                    response.Success = true;
-                    response.Object = _mapper.Map<JobDto>(res);
-                }
-                else
-                {
-                    ObjectUpdater<JobDto, Job> updater = new ObjectUpdater<JobDto, Job>();
-                    var res = updater.Map(job, existingJob);
-                    res.LastModifiedDate = DateTime.Now;
-                    res.UpdatedById = userId;
-                    await _repository.UpdateAsync(res);
-                    response.Success = true;
-                }               
+            //    if (existingJob==null)
+            //    {
+            //        var Job = _mapper.Map<Job>(job);
+            //        Job.CreatedDate = DateTime.Now;
+            //        Job.CreatedById = userId;
+            //        var res = await _repository.AddAsync(Job);
+            //        response.Success = true;
+            //        response.Object = _mapper.Map<JobDto>(res);
+            //    }
+            //    else
+            //    {
+            //        ObjectUpdater<JobDto, Job> updater = new ObjectUpdater<JobDto, Job>();
+            //        var res = updater.Map(job, existingJob);
+            //        res.LastModifiedDate = DateTime.Now;
+            //        res.UpdatedById = userId;
+            //        await _repository.UpdateAsync(res);
+            //        response.Success = true;
+            //    }               
 
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.ErrorType = ErrorCode.dbError;
-                response.ErrorMessage = ex.Message;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    response.Success = false;
+            //    response.ErrorType = ErrorCode.dbError;
+            //    response.ErrorMessage = ex.Message;
+            //}
             return response;
         }
 

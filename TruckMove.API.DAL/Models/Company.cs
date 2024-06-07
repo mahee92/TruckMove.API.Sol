@@ -19,7 +19,7 @@ namespace TruckMove.API.DAL.Models
         public string PrimaryEmail { get; set; } = null!;
         public string AccountsEmail { get; set; } = null!;
         public string CompanyStreetAddress { get; set; } = null!;
-        public string CompanyAbn { get; set; } = null!;
+        public string CompanyABN { get; set; } = null!;
         public string? Logo { get; set; }
         public bool IsActive { get; set; }
       

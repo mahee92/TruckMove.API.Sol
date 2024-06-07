@@ -20,7 +20,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Administrator")]
+   // [Authorize(Roles = "Administrator")]
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;

@@ -2,7 +2,7 @@
 using System.Security.Cryptography.X509Certificates;
 using TruckMove.API.DAL.Models;
 
-namespace TruckMove.API.DAL.Repositories.Primary
+namespace TruckMove.API.DAL.Repositories.PrimaryRepositories
 {
     public class UserRepository : IUserRepository
     {

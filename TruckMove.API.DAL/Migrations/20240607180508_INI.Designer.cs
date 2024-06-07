@@ -12,14 +12,14 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    [Migration("20240607155046_2024-6-7-2")]
-    partial class _2024672
+    [Migration("20240607180508_INI")]
+    partial class INI
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.29")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -40,11 +40,9 @@ namespace TruckMove.API.DAL.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("CompanyAbn")
+                    b.Property<string>("CompanyABN")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)")
-                        .HasColumnName("CompanyABN");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CompanyAddress")
                         .IsRequired()
@@ -158,7 +156,7 @@ namespace TruckMove.API.DAL.Migrations
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Job", b =>
                 {
-                    b.Property<int>("JobId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("CompanyId")
@@ -177,12 +175,6 @@ namespace TruckMove.API.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -198,8 +190,7 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("int");
 
-                    b.HasKey("JobId")
-                        .HasName("PK_Jobs_1");
+                    b.HasKey("Id");
 
                     b.HasIndex(new[] { "CompanyId" }, "IX_Jobs_CompanyId");
 

@@ -8,18 +8,18 @@ using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
 
-namespace TruckMove.API.DAL.Repositories.Job
+namespace TruckMove.API.DAL.Repositories.JobRepositories
 {
     public class JobRepository : IJobRepository
     {
         private readonly DbContext _context;
-        private readonly DbSet<TruckMove.API.DAL.Models.Job> _dbSet;
-        private readonly DbSet<TruckMove.API.DAL.Models.JobSequence> _Sequence;
+        private readonly DbSet<Job> _dbSet;
+        private readonly DbSet<JobSequence> _Sequence;
         public JobRepository(DbContextOptions<TrukMoveContext> options)
         {
             
             _context = new TrukMoveContext(options);
-            _dbSet = _context.Set<TruckMove.API.DAL.Models.Job>();
+            _dbSet = _context.Set<Job>();
             _Sequence = _context.Set<TruckMove.API.DAL.Models.JobSequence>();
         }
 

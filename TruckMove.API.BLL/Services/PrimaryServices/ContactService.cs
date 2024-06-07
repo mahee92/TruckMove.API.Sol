@@ -10,7 +10,7 @@ using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
-using TruckMove.API.DAL.Repositories.Primary;
+using TruckMove.API.DAL.Repositories.PrimaryRepositories;
 
 namespace TruckMove.API.BLL.Services.PrimaryServices
 {

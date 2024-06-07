@@ -43,9 +43,7 @@ namespace TruckMove.API.DAL.Models
 
                 entity.Property(e => e.AccountsEmail).HasMaxLength(100);
 
-                entity.Property(e => e.CompanyAbn)
-                       .HasMaxLength(11)
-                       .HasColumnName("CompanyABN");
+               
 
                 entity.Property(e => e.CompanyName).HasMaxLength(100);
 

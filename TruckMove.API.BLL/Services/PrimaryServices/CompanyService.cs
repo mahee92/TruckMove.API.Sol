@@ -6,7 +6,7 @@ using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
-using TruckMove.API.DAL.Repositories.Primary;
+using TruckMove.API.DAL.Repositories.PrimaryRepositories;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TruckMove.API.BLL.Services.Primary

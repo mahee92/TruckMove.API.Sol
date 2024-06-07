@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TruckMove.API.DAL.Migrations
 {
-    public partial class ini : Migration
+    public partial class INI : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -80,7 +80,7 @@ namespace TruckMove.API.DAL.Migrations
                     PrimaryEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     AccountsEmail = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CompanyStreetAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyABN = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    CompanyABN = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Logo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "(CONVERT([bit],(1)))"),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -187,13 +187,12 @@ namespace TruckMove.API.DAL.Migrations
                 name: "Jobs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Controller = table.Column<int>(type: "int", nullable: true),
                     CompanyId = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "(CONVERT([bit],(1)))"),
-                    JobId = table.Column<int>(type: "int", nullable: false),
                     PickupLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DropOfLocation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedById = table.Column<int>(type: "int", nullable: true),

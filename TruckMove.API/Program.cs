@@ -11,11 +11,13 @@ using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Services;
+using TruckMove.API.BLL.Services.JobServices;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.BLL.Services.PrimaryServices;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
-using TruckMove.API.DAL.Repositories.Primary;
+using TruckMove.API.DAL.Repositories.JobRepositories;
+using TruckMove.API.DAL.Repositories.PrimaryRepositories;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
 
@@ -124,13 +126,16 @@ internal class Program
         builder.Services.AddScoped<ICompanyService, CompanyService>();
         builder.Services.AddScoped<IContactService, ContactService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IJobService, JobService>();
         builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 
         builder.Services.AddScoped<IRepository<Company>, Repository<Company>>();
         builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
         builder.Services.AddScoped<IRepository<User>, Repository<User>>();
+        builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IJobRepository, JobRepository>();
         builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();
 
         builder.Services.AddHttpContextAccessor();
