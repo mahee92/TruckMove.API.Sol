@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class User
+    public partial class User : AuditableEntity, IActiveEntity
     {
         public User()
         {
@@ -27,14 +28,10 @@ namespace TruckMove.API.DAL.Models
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
-        public bool? IsActive { get; set; }
-        public int? UpdatedById { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public DateTime? LastModifiedDate { get; set; }
-        public int? CreatedById { get; set; }
+        public bool IsActive { get; set; }
+     
 
-        public virtual User? CreatedBy { get; set; }
-        public virtual User? UpdatedBy { get; set; }
+     
         public virtual ICollection<Company> CompanyCreatedBies { get; set; }
         public virtual ICollection<Company> CompanyUpdatedBies { get; set; }
         public virtual ICollection<Contact> ContactCreatedBies { get; set; }

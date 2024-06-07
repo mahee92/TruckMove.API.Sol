@@ -20,8 +20,8 @@ namespace TruckMove.API.DAL.Repositories.Primary
         {
 
             using var transaction = await _context.Database.BeginTransactionAsync();
-            var UserRole = await _RoledbSet.Where(x => x.UserId == id).ToListAsync();
-            foreach (var role in UserRole)
+            var userRoles = await _RoledbSet.Where(x => x.UserId == id).ToListAsync();
+            foreach (var role in userRoles)
             {
                 role.IsActive = false;
             }
@@ -31,7 +31,7 @@ namespace TruckMove.API.DAL.Repositories.Primary
 
             foreach (var roleId in roles)
             {
-                var role = UserRole.FirstOrDefault(x => x.RoleId == roleId);
+                var role = userRoles.FirstOrDefault(x => x.RoleId == roleId);
                 if (role != null)
                 {
                     role.IsActive = true;
@@ -64,12 +64,12 @@ namespace TruckMove.API.DAL.Repositories.Primary
 
         public async Task<List<Role>> GetRolesByUserId(int id)
         {
-            var UserRole = await _RoledbSet
+            var userRoles = await _RoledbSet
                 .Where(ur => ur.UserId == id && ur.IsActive)
                 .Include(ur => ur.Role)
                 .ToListAsync();
 
-            var roles = UserRole.Select(ur => ur.Role).ToList();
+            var roles = userRoles.Select(ur => ur.Role).ToList();
             return roles;
         }
 
@@ -81,7 +81,7 @@ namespace TruckMove.API.DAL.Repositories.Primary
         {
             
             return await _dbSet
-              .Include(u => u.UserRoles)
+              .Include(u => u.UserRoleUsers)
               .ThenInclude(ur => ur.Role)
               .FirstOrDefaultAsync(user => user.Email == email && user.IsActive);
 
