@@ -10,7 +10,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 {
     public interface IJobService
     {
-        Task<Response<JobDto>> AddAsync(JobDto job);
+        Task<Response<JobDto>> PostPutAsync(JobDto job,int userId);
         Task<Response> GetNextJobId();
     }
 }

@@ -14,15 +14,21 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         [Key]
         public int Id { get; set; }
 
+        public int JobId { get; set; }
+
         [AllowNull]
         public int? Controller { get; set; }
 
 
+        [Required]
         public int CompanyId { get; set; }
-      
-        public int? ContactId { get; set; }
 
 
+        [Required]       
+        public string Pickuplocation { get; set; }
+
+        [Required]        
+        public string Dropofflocation { get; set; }
 
         public int? CreatedById { get; set; }
     }

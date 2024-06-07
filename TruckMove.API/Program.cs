@@ -169,7 +169,7 @@ internal class Program
 
         builder.Services.AddEndpointsApiExplorer();
 
-        builder.Services.AddDbContext<TrukMoveLocalContext>(option =>
+        builder.Services.AddDbContext<TrukMoveContext>(option =>
       
         option.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection"))
                                .EnableSensitiveDataLogging(false) // Disable sensitive data logging

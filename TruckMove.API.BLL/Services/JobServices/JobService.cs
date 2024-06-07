@@ -11,6 +11,7 @@ using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.JobDTOs;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Microsoft.Data.SqlClient.Server;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -27,7 +28,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _jobRepository = jobRepository;
         }
 
-        public async Task<Response<JobDto>> AddAsync(JobDto job)
+        public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
         {
             Response<JobDto> response = new Response<JobDto>();
             try
@@ -40,12 +41,28 @@ namespace TruckMove.API.BLL.Services.JobServices
                     response.ErrorMessage = ErrorMessages.Invalid;
                     return response;
                 }
-                var jobModel = _mapper.Map<JobModel>(job);
-                jobModel.CreatedDate = DateTime.Now;
-                jobModel.JobId= await _jobRepository.GetNextJobId();
-                var res = await _repository.AddAsync(jobModel);
-                response.Success = true;
-                response.Object = _mapper.Map<JobDto>(res);
+               
+                
+                JobModel existingJob = await _jobRepository.GetJobById(job.JobId);
+                
+                if (existingJob==null)
+                {
+                    var jobModel = _mapper.Map<JobModel>(job);
+                    jobModel.CreatedDate = DateTime.Now;
+                    jobModel.CreatedById = userId;
+                    var res = await _repository.AddAsync(jobModel);
+                    response.Success = true;
+                    response.Object = _mapper.Map<JobDto>(res);
+                }
+                else
+                {
+                    ObjectUpdater<JobDto, JobModel> updater = new ObjectUpdater<JobDto, JobModel>();
+                    var res = updater.Map(job, existingJob);
+                    res.LastModifiedDate = DateTime.Now;
+                    res.UpdatedById = userId;
+                    await _repository.UpdateAsync(res);
+                    response.Success = true;
+                }               
 
             }
             catch (Exception ex)
@@ -59,6 +76,10 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public bool IsPossibleToAdd(JobDto job)
         {
+            if (job.JobId < 1 || job.CompanyId < 1)
+            {
+                return false; 
+            }
             return true;
         }
 
