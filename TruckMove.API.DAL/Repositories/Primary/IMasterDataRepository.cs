@@ -9,6 +9,6 @@ namespace TruckMove.API.DAL.Repositories.Primary
 {
     public interface IMasterDataRepository
     {
-        Task<List<RoleModel>> GetAllRoles();
+        Task<List<Role>> GetAllRoles();
     }
 }

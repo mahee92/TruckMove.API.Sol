@@ -11,17 +11,17 @@ namespace TruckMove.API.DAL.Repositories.Primary
     public class MasterDataRepository : IMasterDataRepository
     {
         private readonly DbContext _context;
-        private readonly DbSet<RoleModel> _roleModeldbSet;
-        public MasterDataRepository(DbContextOptions<TrukMoveLocalContext> options)
+        private readonly DbSet<Role> _RoledbSet;
+        public MasterDataRepository(DbContextOptions<TrukMove6Context> options)
         {
-            _context = new TrukMoveLocalContext(options);
-            _roleModeldbSet = _context.Set<RoleModel>();
+            _context = new TrukMove6Context(options);
+            _RoledbSet = _context.Set<Role>();
 
         }
         // create method to get all roles
-        public async Task<List<RoleModel>> GetAllRoles()
+        public async Task<List<Role>> GetAllRoles()
         {
-            return await _roleModeldbSet.ToListAsync();
+            return await _RoledbSet.ToListAsync();
         }
 
       

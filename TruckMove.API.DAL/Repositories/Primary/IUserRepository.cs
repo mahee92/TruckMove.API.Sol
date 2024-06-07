@@ -11,11 +11,11 @@ namespace TruckMove.API.DAL.Repositories.Primary
     {
         Task AddRolesAsync(int id, List<int> roles);
         Task<bool> CheckUserEmailExits(string email);
-        Task<UserModel> GetUserByEmail(string email);
+        Task<User> GetUserByEmail(string email);
 
-        Task<UserModel> GetUserByEmailWithRoles(string email);
+        Task<User> GetUserByEmailWithRoles(string email);
 
-        Task<List<RoleModel>> GetRolesByUserId(int id);
+        Task<List<Role>> GetRolesByUserId(int id);
         
     }
 }

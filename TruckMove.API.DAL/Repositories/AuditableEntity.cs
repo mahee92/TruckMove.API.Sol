@@ -12,16 +12,22 @@ namespace TruckMove.API.DAL.Repositories
     {
 
 
-        public int? UpdatedById { get; set; }
+       
 
-        [ForeignKey("UpdatedById")]
-        public virtual UserModel? UpdatedBy { get; set; }
+       
 
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
-        public int? CreatedById { get; set; }
+       
 
+        public int? UpdatedById { get; set; }
+
+        [ForeignKey("UpdatedById")]
+        public virtual User? UpdatedBy { get; set; }
+
+
+        public int? CreatedById { get; set; }
         [ForeignKey("CreatedById")]
-        public virtual UserModel? CreatedBy { get; set; }
+        public virtual User? CreatedBy { get; set; }
     }
 }
