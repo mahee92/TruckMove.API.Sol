@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.DAL.Models
 {
@@ -29,12 +30,19 @@ namespace TruckMove.API.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-10;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-11;Trusted_Connection=True;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Role>().HasData(
+          new Role { Id = (int)RoleEnum.Administrator, RoleName = RoleEnum.Administrator.ToString() },
+          new Role { Id = (int)RoleEnum.OpsManager, RoleName = RoleEnum.OpsManager.ToString() },
+          new Role { Id = (int)RoleEnum.AdminTeam, RoleName = RoleEnum.AdminTeam.ToString() },
+          new Role { Id = (int)RoleEnum.PayrollTeam, RoleName = RoleEnum.PayrollTeam.ToString() },
+          new Role { Id = (int)RoleEnum.Drivers, RoleName = RoleEnum.Drivers.ToString() }
+          );
             modelBuilder.Entity<Company>(entity =>
             {
                 entity.HasIndex(e => e.CreatedById, "IX_Companies_CreatedById");

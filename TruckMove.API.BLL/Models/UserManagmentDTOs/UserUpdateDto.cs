@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace TruckMove.API.BLL.Models.UserManagmentDTO
 {
-    public class UserUpdateDto : UserInputDto
+    public class UserUpdateDto : UserDto
     {
+        public string Password { get; set; }
         public string NewEmail { get; set; }
         public int ? UpdatedById { get; set; }
 
