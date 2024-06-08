@@ -31,25 +31,12 @@ internal class Program
 
         var builder = WebApplication.CreateBuilder(args);
 
-        // Configure Serilog
-        //var logger = new LoggerConfiguration()
-        //    .ReadFrom.Configuration(builder.Configuration)
-        //    .Enrich.FromLogContext()
-        //    .CreateLogger();
-
-        //builder.Logging.ClearProviders();
-        //builder.Logging.AddSerilog(logger);
-
-        // Log immediately after setting up the logger
-        //Log.Information("Logger setup complete.");
-
-        // Add services to the container
+        
         ConfigureServices(builder);
 
         var app = builder.Build();
 
-         Log.Information("Application started successfully.");
-
+       
 
         // Configure the HTTP request pipeline
         ConfigureMiddleware(app, builder.Configuration);
