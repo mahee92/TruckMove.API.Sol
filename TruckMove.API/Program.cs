@@ -27,30 +27,35 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        // Configure Serilog
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
-            .CreateLogger();
-      
-        
+  
+
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add Serilog
-        builder.Host.UseSerilog();
+        // Configure Serilog
+        var logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(builder.Configuration)
+            .Enrich.FromLogContext()
+            .CreateLogger();
+
+        builder.Logging.ClearProviders();
+        builder.Logging.AddSerilog(logger);
+
+        // Log immediately after setting up the logger
+        Log.Information("Logger setup complete.");
 
         // Add services to the container
         ConfigureServices(builder);
 
         var app = builder.Build();
 
+         Log.Information("Application started successfully.");
+
+
         // Configure the HTTP request pipeline
         ConfigureMiddleware(app, builder.Configuration);
 
         app.Run();
+        Log.CloseAndFlush();
     }
 
     private static void ConfigureServices(WebApplicationBuilder builder)
@@ -94,7 +99,7 @@ internal class Program
 
         // Add other necessary services
         builder.Services.AddHttpContextAccessor();
-        
+
     }
     private static void ConfigureAutoMapper(WebApplicationBuilder builder)
     {
@@ -188,7 +193,7 @@ internal class Program
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
         builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySettings"));
 
-        
+
     }
     private static void ConfigureDI(WebApplicationBuilder builder)
     {
@@ -237,9 +242,11 @@ internal class Program
         app.UseAuthorization();
 
         // Custom middleware
+        app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
 
         app.MapControllers();
+
     }
 }

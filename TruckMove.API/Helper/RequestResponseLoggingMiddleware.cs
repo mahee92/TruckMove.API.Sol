@@ -14,7 +14,8 @@ namespace TruckMove.API.Helper
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var requestId = Guid.NewGuid().ToString();
+            Log.Information("fuck");
+           var requestId = Guid.NewGuid().ToString();
             var startTimestamp = DateTime.UtcNow;
 
             // Enable buffering for request to allow reading multiple times
