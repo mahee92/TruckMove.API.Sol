@@ -32,16 +32,16 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Configure Serilog
-        var logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(builder.Configuration)
-            .Enrich.FromLogContext()
-            .CreateLogger();
+        //var logger = new LoggerConfiguration()
+        //    .ReadFrom.Configuration(builder.Configuration)
+        //    .Enrich.FromLogContext()
+        //    .CreateLogger();
 
-        builder.Logging.ClearProviders();
-        builder.Logging.AddSerilog(logger);
+        //builder.Logging.ClearProviders();
+        //builder.Logging.AddSerilog(logger);
 
         // Log immediately after setting up the logger
-        Log.Information("Logger setup complete.");
+        //Log.Information("Logger setup complete.");
 
         // Add services to the container
         ConfigureServices(builder);
@@ -242,7 +242,7 @@ internal class Program
         app.UseAuthorization();
 
         // Custom middleware
-        app.UseMiddleware<RequestResponseLoggingMiddleware>();
+       // app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
 

@@ -141,5 +141,29 @@ namespace TruckMove.API.BLL.Services.JobServices
 
 
         }
+        public async Task<Response<JobDto>> GetAllAsync()
+        {
+            Response<JobDto> response = new Response<JobDto>();
+            try
+            {
+                var jobs = await _repository.GetAllAsync();
+                response.Success = true;
+                if (jobs.Count > 0)
+                {
+
+                    response.Objects = new List<JobDto>();
+                    response.Objects.AddRange(_mapper.Map<List<JobDto>>(jobs));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+
+            return response;
+        }
     }
 }
