@@ -14,7 +14,7 @@ namespace TruckMove.API.Helper
 
         public async Task InvokeAsync(HttpContext context)
         {
-            Log.Information("fuck");
+          
            var requestId = Guid.NewGuid().ToString();
             var startTimestamp = DateTime.UtcNow;
 
@@ -23,6 +23,7 @@ namespace TruckMove.API.Helper
 
             // Log request details
             var requestBody = await ReadRequestBody(context.Request);
+            Log.Information("--------------------Start-------------------------------------");
             Log.Information("Request {RequestId}: {Timestamp} - Path: {RequestPath} - Method: {RequestMethod} - Body: {RequestBody}",
                             requestId, startTimestamp, context.Request.Path, context.Request.Method, requestBody);
 
@@ -45,6 +46,7 @@ namespace TruckMove.API.Helper
                                 requestId, endTimestamp, context.Response.StatusCode, response);
                 Log.Information("Request {RequestId} processed in {ElapsedMilliseconds} ms",
                                 requestId, elapsedMilliseconds);
+                Log.Information("--------------------End-------------------------------------");
 
                 await responseBody.CopyToAsync(originalBodyStream);
             }

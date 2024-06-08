@@ -27,16 +27,29 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-  
+
 
         var builder = WebApplication.CreateBuilder(args);
 
-        
+        // Add services to the container.
+        var logger = new LoggerConfiguration()
+          .ReadFrom.Configuration(builder.Configuration)
+          .Enrich.FromLogContext()
+          .CreateLogger(); ;
+
+        Log.Logger = logger; // Set the global logger
+
+        Log.Information("Logger setup complete."); // Log after the logger is configured
+
+        builder.Logging.ClearProviders();
+        builder.Logging.AddSerilog(logger);
+        // Add services to the container
         ConfigureServices(builder);
 
         var app = builder.Build();
 
-       
+         Log.Information("Application started successfully.");
+
 
         // Configure the HTTP request pipeline
         ConfigureMiddleware(app, builder.Configuration);
@@ -229,7 +242,7 @@ internal class Program
         app.UseAuthorization();
 
         // Custom middleware
-       // app.UseMiddleware<RequestResponseLoggingMiddleware>();
+        app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
 
