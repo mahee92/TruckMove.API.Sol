@@ -39,8 +39,6 @@ internal class Program
 
         Log.Logger = logger; // Set the global logger
 
-        Log.Information("Logger setup complete."); // Log after the logger is configured
-
         builder.Logging.ClearProviders();
         builder.Logging.AddSerilog(logger);
         // Add services to the container
@@ -48,7 +46,7 @@ internal class Program
 
         var app = builder.Build();
 
-         Log.Information("Application started successfully.");
+        Log.Information("Application started successfully.");
 
 
         // Configure the HTTP request pipeline
