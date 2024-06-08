@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog.Events;
+using Serilog;
 using System.Text;
 using TruckMove.API.BLL;
 using TruckMove.API.BLL.Helper;
@@ -25,7 +27,20 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        // Configure Serilog
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+      
+        
         var builder = WebApplication.CreateBuilder(args);
+
+        // Add Serilog
+        builder.Host.UseSerilog();
 
         // Add services to the container
         ConfigureServices(builder);
