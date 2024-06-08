@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.JobDTOs;
@@ -13,6 +14,7 @@ namespace TruckMove.API.Controllers.JobControllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Administrator,OpsManager")]
     public class JobController : ControllerBase
     {
 
