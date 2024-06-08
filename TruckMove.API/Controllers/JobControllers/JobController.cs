@@ -41,7 +41,7 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("PostPut")]
         public async Task<IActionResult> PostPutAsync([FromBody] JobDto job)
         {           
             Response<JobDto> response = await _jobService.PostPutAsync(job, Convert.ToInt32(_authUserService.GetUserId()));
@@ -53,6 +53,21 @@ namespace TruckMove.API.Controllers.JobControllers
             else
             {
 
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAsync(int id)
+        {
+
+            Response<JobDto> response = await _jobService.GetAsync(id);
+
+            if (response.Success)
+            {
+                return Ok(response.Object);
+            }
+            else
+            {
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }

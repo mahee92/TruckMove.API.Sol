@@ -12,9 +12,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
     public class JobDto
     {
         [Key]
-        public int Id { get; set; }
-
-        public int JobId { get; set; }
+        public int Id { get; set; }       
 
         [AllowNull]
         public int? Controller { get; set; }
@@ -25,11 +23,13 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
 
         [Required]       
-        public string Pickuplocation { get; set; }
-
+        public string PickupLocation { get; set; }
+        
         [Required]        
-        public string Dropofflocation { get; set; }
+        public string DropOfLocation { get; set; }
 
-        public int? CreatedById { get; set; }
+        
+
+        
     }
 }

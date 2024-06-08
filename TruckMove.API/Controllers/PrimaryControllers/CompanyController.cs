@@ -49,9 +49,9 @@ namespace TruckMove.API.Controllers.Primary
             {
                 
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
-                
             }
-        }
+        }      
+          
 
 
         [HttpGet]

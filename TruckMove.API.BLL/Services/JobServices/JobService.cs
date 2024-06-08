@@ -12,6 +12,7 @@ using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.JobDTOs;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Microsoft.Data.SqlClient.Server;
+using TruckMove.API.DAL.Repositories.PrimaryRepositories;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -31,52 +32,57 @@ namespace TruckMove.API.BLL.Services.JobServices
         public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
         {
             Response<JobDto> response = new Response<JobDto>();
-            //try
-            //{
-               
-            //    if (!IsPossibleToAdd(job))
-            //    {
-            //        response.Success = false;
-            //        response.ErrorType = ErrorCode.validationError;
-            //        response.ErrorMessage = ErrorMessages.Invalid;
-            //        return response;
-            //    }
-               
-                
-            //    Job existingJob = await _jobRepository.GetJobById(job.JobId);
-                
-            //    if (existingJob==null)
-            //    {
-            //        var Job = _mapper.Map<Job>(job);
-            //        Job.CreatedDate = DateTime.Now;
-            //        Job.CreatedById = userId;
-            //        var res = await _repository.AddAsync(Job);
-            //        response.Success = true;
-            //        response.Object = _mapper.Map<JobDto>(res);
-            //    }
-            //    else
-            //    {
-            //        ObjectUpdater<JobDto, Job> updater = new ObjectUpdater<JobDto, Job>();
-            //        var res = updater.Map(job, existingJob);
-            //        res.LastModifiedDate = DateTime.Now;
-            //        res.UpdatedById = userId;
-            //        await _repository.UpdateAsync(res);
-            //        response.Success = true;
-            //    }               
+            try
+            {
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    response.Success = false;
-            //    response.ErrorType = ErrorCode.dbError;
-            //    response.ErrorMessage = ex.Message;
-            //}
+                if (!IsPossibleToAdd(job))
+                {
+                    response.Success = false;
+                    response.ErrorType = ErrorCode.validationError;
+                    response.ErrorMessage = ErrorMessages.Invalid;
+                    return response;
+                }
+
+
+                var existingJob = await _repository.GetAsync(job.Id);
+
+
+
+                if (existingJob == null)
+                {
+                    var Job = _mapper.Map<Job>(job);
+                    Job.CreatedDate = DateTime.Now;
+                    Job.CreatedById = userId;
+
+                    var res = await _repository.AddAsync(Job);
+                    response.Success = true;
+                    response.Object = _mapper.Map<JobDto>(res);
+                }
+                else
+                {
+                    ObjectUpdater<JobDto, Job> updater = new ObjectUpdater<JobDto, Job>();
+                    var res = updater.Map(job, existingJob);
+                    res.CreatedDate = existingJob.CreatedDate;
+                    res.CreatedById = existingJob.CreatedById;
+                    res.LastModifiedDate = DateTime.Now;
+                    res.UpdatedById = userId;
+                    await _repository.UpdateAsync(res);
+                    response.Success = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
             return response;
         }
 
         public bool IsPossibleToAdd(JobDto job)
         {
-            if (job.JobId < 1 || job.CompanyId < 1)
+            if (job.Id < 1 || job.CompanyId < 1)
             {
                 return false; 
             }
@@ -104,6 +110,36 @@ namespace TruckMove.API.BLL.Services.JobServices
             
         }
 
+        public async Task<Response<JobDto>> GetAsync(int id)
+        {
+            Response<JobDto> response = new Response<JobDto>();
+            try
+            {
+                // get only isactive companies
 
+
+                var job = await _repository.GetAsync(id);
+
+                if (job == null)
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.NotFound;
+                    response.ErrorType = ErrorCode.NotFound;
+                }
+                else
+                {
+                    response.Success = true;
+                    response.Object = _mapper.Map<JobDto>(job);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+
+
+        }
     }
 }

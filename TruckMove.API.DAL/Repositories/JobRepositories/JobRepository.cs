@@ -20,13 +20,10 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             
             _context = new TrukMoveContext(options);
             _dbSet = _context.Set<Job>();
-            _Sequence = _context.Set<TruckMove.API.DAL.Models.JobSequence>();
+            _Sequence = _context.Set<JobSequence>();
         }
 
-        public async Task<TruckMove.API.DAL.Models.Job> GetJobById(int Id)
-        {
-            return await _dbSet.FirstOrDefaultAsync(x => x.Id == Id && x.IsActive == true);
-        }
+       
 
 
         public async Task<int> GetNextJobId()
