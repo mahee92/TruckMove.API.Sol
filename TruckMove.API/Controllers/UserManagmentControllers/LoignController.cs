@@ -34,12 +34,12 @@ namespace TruckMove.API.Controllers.UserManagmentControllers
             }
 
         }
-        [HttpGet("protected")]
-        [Authorize]
-        public IActionResult Protected()
-        {
-            return Ok("You have accessed a protected endpoint.");
-        }
+        //[HttpGet("protected")]
+        //[Authorize]
+        //public IActionResult Protected()
+        //{
+        //    return Ok("You have accessed a protected endpoint.");
+        //}
 
         [HttpPost("logout")]
 
