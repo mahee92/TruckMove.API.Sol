@@ -12,7 +12,8 @@ namespace TruckMove.API.BLL.Services.JobServices
     {
         Task<Response<JobDto>> PostPutAsync(JobDto job,int userId);
         Task<Response> GetNextJobId();
-        Task<Response<JobDto>> GetAsync(int id);
+        Task<Response<JobOutPutDTO>> GetAsync(int id);
         Task<Response<JobDto>> GetAllAsync();
+        Task<Response> ContactAddDelete(int id, List<int> contacts);
     }
 }

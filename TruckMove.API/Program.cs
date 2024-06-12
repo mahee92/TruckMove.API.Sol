@@ -119,6 +119,7 @@ internal class Program
             profile.CreateGenericMap<CompanyDtoUpdate, Contact>();
             profile.CreateGenericMap<JobDto, Job>();
             profile.CreateGenericMap<Job, JobDto>();
+            profile.CreateGenericMap<Job, JobOutPutDTO>();
         }, typeof(Program));
     }
     private static void ConfigureAuthentication(WebApplicationBuilder builder)
@@ -205,6 +206,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
         builder.Services.AddScoped<IRepository<User>, Repository<User>>();
         builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
+        builder.Services.AddScoped<IRepository<JobContact>, Repository<JobContact>>();
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IJobRepository, JobRepository>();

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TruckMove.API.DAL.dbFirstModel
+namespace TruckMove.API.DAL.dbFirst
 {
     public partial class JobSequence
     {

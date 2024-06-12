@@ -19,7 +19,10 @@ namespace TruckMove.API.Controllers.PrimaryControllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Administrator,OpsManager")]
+#if DEBUG
+#else
+     [Authorize(Roles = "Administrator,OpsManager")]
+#endif
     public class ContactController : ControllerBase
     {
 
@@ -49,7 +52,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
             }
             else
             {
-                _logger.BeginScope(response.ErrorMessage);
+              
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
 
             }

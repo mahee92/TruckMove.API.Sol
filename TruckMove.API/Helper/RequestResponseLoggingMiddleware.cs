@@ -16,42 +16,51 @@ namespace TruckMove.API.Helper
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var requestId = Guid.NewGuid().ToString();
-            var startTimestamp = DateTime.UtcNow;
-
-            // Enable buffering for request to allow reading multiple times
-            context.Request.EnableBuffering();
-
-            // Read request body and mask sensitive data if necessary
-            var requestBody = await ReadAndMaskRequestBody(context.Request);
-
-            Log.Information("--------------------Start-------------------------------------");
-            Log.Information("Request {RequestId}: {Timestamp} - Path: {RequestPath} - Method: {RequestMethod} - Body: {RequestBody}",
-                            requestId, startTimestamp, context.Request.Path, context.Request.Method, requestBody);
-
-            var originalBodyStream = context.Response.Body;
-            using (var responseBody = new MemoryStream())
+            try
             {
-                context.Response.Body = responseBody;
+                var requestId = Guid.NewGuid().ToString();
+                var startTimestamp = DateTime.UtcNow;
 
-                await _next(context);
+                // Enable buffering for request to allow reading multiple times
+                context.Request.EnableBuffering();
 
-                context.Response.Body.Seek(0, SeekOrigin.Begin);
-                var response = await ReadAndMaskResponseBody(context.Response);
-                context.Response.Body.Seek(0, SeekOrigin.Begin);
+                // Read request body and mask sensitive data if necessary
+                var requestBody = await ReadAndMaskRequestBody(context.Request);
 
-                var endTimestamp = DateTime.UtcNow;
-                var elapsedMilliseconds = (endTimestamp - startTimestamp).TotalMilliseconds;
+                Log.Information("--------------------Start-------------------------------------");
+                Log.Information("Request {RequestId}: {Timestamp} - Path: {RequestPath} - Method: {RequestMethod} - Body: {RequestBody}",
+                                requestId, startTimestamp, context.Request.Path, context.Request.Method, requestBody);
 
-                // Log the response details
-                Log.Information("Response {RequestId}: {Timestamp} - StatusCode: {StatusCode} - Body: {ResponseBody}",
-                                requestId, endTimestamp, context.Response.StatusCode, response);
-                Log.Information("Request {RequestId} processed in {ElapsedMilliseconds} ms",
-                                requestId, elapsedMilliseconds);
-                Log.Information("--------------------End-------------------------------------");
+                var originalBodyStream = context.Response.Body;
+                //using (var responseBody = new MemoryStream())
+                //{
+                //    //context.Response.Body = responseBody;
 
-                await responseBody.CopyToAsync(originalBodyStream);
+                    await _next(context);
+
+                //    //context.Response.Body.Seek(0, SeekOrigin.Begin);
+                //    //var response = await ReadAndMaskResponseBody(context.Response);
+                //    //context.Response.Body.Seek(0, SeekOrigin.Begin);
+
+                //    var endTimestamp = DateTime.UtcNow;
+                //    var elapsedMilliseconds = (endTimestamp - startTimestamp).TotalMilliseconds;
+
+                //    // Log the response details
+                //    //Log.Information("Response {RequestId}: {Timestamp} - StatusCode: {StatusCode} - Body: {ResponseBody}",
+                //    //                requestId, endTimestamp, context.Response.StatusCode, response);
+                //    Log.Information("Request {RequestId} processed in {ElapsedMilliseconds} ms",
+                //                    requestId, elapsedMilliseconds);
+                    Log.Information("--------------------End-------------------------------------");
+
+                //   // await responseBody.CopyToAsync(originalBodyStream);
+                //}
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "An unhandled exception has occurred while processing the request");
+                await _next(context);
+            }
+            
         }
 
         private async Task<string> ReadAndMaskRequestBody(HttpRequest request)

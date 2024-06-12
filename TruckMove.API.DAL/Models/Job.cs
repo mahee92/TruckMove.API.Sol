@@ -5,19 +5,22 @@ using TruckMove.API.DAL.Repositories;
 namespace TruckMove.API.DAL.Models
 {
     public partial class Job : AuditableEntity,IActiveEntity
-    {       
+    {
+        public Job()
+        {
+            JobContacts = new HashSet<JobContact>();
+        }
+
         public int? Controller { get; set; }
         public int CompanyId { get; set; }
         public bool IsActive { get; set; }
-        
         public int Id { get; set; }
-       
         public string PickupLocation { get; set; } = null!;
-        public string DropOfLocation { get; set; } = null!;
-
+        public string DropOfLocation { get; set; }
 
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }
-    
+        public virtual ICollection<JobContact> JobContacts { get; set; }
+
     }
 }

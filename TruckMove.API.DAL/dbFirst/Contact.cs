@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using TruckMove.API.DAL.Repositories;
 
-namespace TruckMove.API.DAL.Models
+namespace TruckMove.API.DAL.dbFirst
 {
-    public partial class Contact : AuditableEntity, IActiveEntity
+    public partial class Contact
     {
         public Contact()
         {
@@ -18,12 +17,16 @@ namespace TruckMove.API.DAL.Models
         public string? ContactsEmail { get; set; }
         public string? ContactStreetAddress { get; set; }
         public int CompanyId { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public string? Image { get; set; }
-
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
+        public int? UpdatedById { get; set; }
+        public int? CreatedById { get; set; }
 
         public virtual Company Company { get; set; } = null!;
+        public virtual User? CreatedBy { get; set; }
+        public virtual User? UpdatedBy { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
-
     }
 }

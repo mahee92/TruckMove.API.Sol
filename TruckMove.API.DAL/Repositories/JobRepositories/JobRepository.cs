@@ -22,10 +22,6 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             _dbSet = _context.Set<Job>();
             _Sequence = _context.Set<JobSequence>();
         }
-
-       
-
-
         public async Task<int> GetNextJobId()
         {
 
@@ -67,5 +63,13 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             }
             return false;
         }
+
+       
+
+        public async Task<List<JobContact>> GetJobContactsByJobId(int jobId)
+        {
+            return await _context.Set<JobContact>().Where(x => x.JobId == jobId).ToListAsync();
+        }
+       
     }
 }

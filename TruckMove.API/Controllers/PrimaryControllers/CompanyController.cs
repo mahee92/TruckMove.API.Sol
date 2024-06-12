@@ -16,7 +16,10 @@ namespace TruckMove.API.Controllers.Primary
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Administrator,OpsManager")]
+#if DEBUG
+#else
+     [Authorize(Roles = "Administrator,OpsManager")]
+#endif
     public class CompanyController : ControllerBase
     {
 

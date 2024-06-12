@@ -14,7 +14,10 @@ namespace TruckMove.API.Controllers.JobControllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Administrator,OpsManager")]
+#if DEBUG
+#else
+     [Authorize(Roles = "Administrator,OpsManager")]
+#endif
     public class JobController : ControllerBase
     {
 
@@ -62,7 +65,7 @@ namespace TruckMove.API.Controllers.JobControllers
         public async Task<IActionResult> GetAsync(int id)
         {
 
-            Response<JobDto> response = await _jobService.GetAsync(id);
+            Response<JobOutPutDTO> response = await _jobService.GetAsync(id);
 
             if (response.Success)
             {
@@ -84,6 +87,20 @@ namespace TruckMove.API.Controllers.JobControllers
             else
             {
 
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+        [HttpPost("{id}/Contacts/AddDelete")]
+        public async Task<IActionResult> AddDelete(int id, [FromBody] List<int> contacts)
+        {
+            var response = await _jobService.ContactAddDelete(id, contacts);
+            if (response.Success)
+            {
+                return Ok();
+            }
+            else
+            {              
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }

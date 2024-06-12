@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240609071249_2024-9-6")]
+    partial class _202496
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -212,35 +214,14 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int>("ContactId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CreatedById")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
                     b.Property<int>("JobId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedById")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("ContactId");
 
-                    b.HasIndex("UpdatedById");
-
-                    b.HasIndex(new[] { "ContactId" }, "IX_JobContacts_ContactId");
-
-                    b.HasIndex(new[] { "JobId" }, "IX_JobContacts_JobId");
+                    b.HasIndex("JobId");
 
                     b.ToTable("JobContacts");
                 });
@@ -475,27 +456,15 @@ namespace TruckMove.API.DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_JobContacts_Contacts");
 
-                    b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
                     b.HasOne("TruckMove.API.DAL.Models.Job", "Job")
                         .WithMany("JobContacts")
                         .HasForeignKey("JobId")
                         .IsRequired()
                         .HasConstraintName("FK_JobContacts_Jobs");
 
-                    b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
-                        .WithMany()
-                        .HasForeignKey("UpdatedById");
-
                     b.Navigation("Contact");
 
-                    b.Navigation("CreatedBy");
-
                     b.Navigation("Job");
-
-                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.User", b =>

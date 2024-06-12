@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TruckMove.API.DAL.dbFirstModel
+namespace TruckMove.API.DAL.dbFirst
 {
     public partial class Company
     {
@@ -21,9 +21,9 @@ namespace TruckMove.API.DAL.dbFirstModel
         public string CompanyAbn { get; set; } = null!;
         public string? Logo { get; set; }
         public bool? IsActive { get; set; }
-        public int? UpdatedById { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+        public int? UpdatedById { get; set; }
         public int? CreatedById { get; set; }
 
         public virtual User? CreatedBy { get; set; }

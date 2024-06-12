@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TruckMove.API.DAL.dbFirstModel
+namespace TruckMove.API.DAL.dbFirst
 {
     public partial class User
     {
@@ -28,9 +28,9 @@ namespace TruckMove.API.DAL.dbFirstModel
         public string PhoneNumber { get; set; } = null!;
         public string PasswordHash { get; set; } = null!;
         public bool? IsActive { get; set; }
-        public int? UpdatedById { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+        public int? UpdatedById { get; set; }
         public int? CreatedById { get; set; }
 
         public virtual User? CreatedBy { get; set; }

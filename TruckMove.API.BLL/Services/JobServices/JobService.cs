@@ -13,6 +13,7 @@ using TruckMove.API.BLL.Models.JobDTOs;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Microsoft.Data.SqlClient.Server;
 using TruckMove.API.DAL.Repositories.PrimaryRepositories;
+using TruckMove.API.BLL.Models.PrimaryDTO;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -20,13 +21,15 @@ namespace TruckMove.API.BLL.Services.JobServices
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Job> _repository;
+        private readonly IRepository<JobContact> _repositoryJobContact;
         private readonly IJobRepository _jobRepository;
 
-        public JobService(IMapper mapper,IRepository<Job> repository,IJobRepository jobRepository)
+        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact)
         {
             _mapper = mapper;
             _repository = repository;
             _jobRepository = jobRepository;
+            _repositoryJobContact = repositoryJobContact;
         }
 
         public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
@@ -110,15 +113,13 @@ namespace TruckMove.API.BLL.Services.JobServices
             
         }
 
-        public async Task<Response<JobDto>> GetAsync(int id)
+        public async Task<Response<JobOutPutDTO>> GetAsync(int id)
         {
-            Response<JobDto> response = new Response<JobDto>();
+            Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
             try
             {
-                // get only isactive companies
-
-
-                var job = await _repository.GetAsync(id);
+                
+                var job = await _repository.GetWithNestedIncludesAsync("JobContacts.Contact", "Company");
 
                 if (job == null)
                 {
@@ -128,8 +129,13 @@ namespace TruckMove.API.BLL.Services.JobServices
                 }
                 else
                 {
+                    
+                    response.Object = _mapper.Map<JobOutPutDTO>(job);
+
+                    response.Object.Company = _mapper.Map<CompanyDto>(job.Company);
+                    response.Object.Contacts = new List<ContactDto>();
+                    response.Object.Contacts = job.JobContacts.Select(jc => _mapper.Map<ContactDto>(jc.Contact)).ToList();
                     response.Success = true;
-                    response.Object = _mapper.Map<JobDto>(job);
                 }
             }
             catch (Exception ex)
@@ -165,5 +171,41 @@ namespace TruckMove.API.BLL.Services.JobServices
 
             return response;
         }
+
+        public async Task<Response> ContactAddDelete(int id, List<int> contacts)
+        {
+            Response response = new Response();
+            try
+            {
+                var jobs = await _jobRepository.GetJobContactsByJobId(id);
+                if (jobs.Count > 0)
+                {
+                    await _repositoryJobContact.DeleteByIdsAsync(jobs.Select(x => x.Id).ToList());
+                }
+                List<JobContact> newcontacts = CreateContactList(id, contacts);                
+                await _repositoryJobContact.AddRangeAsync(newcontacts);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+
+            return response;
+        }
+
+        public List<JobContact> CreateContactList(int jobId, List<int> contacts)
+        {
+            List<JobContact> jobContacts = new List<JobContact>();
+            foreach (var contact in contacts.Where(x=>x>0))
+            {
+                jobContacts.Add(new JobContact { JobId = jobId, ContactId = contact });
+            }
+            return jobContacts;
+        }
+
+
     }
 }

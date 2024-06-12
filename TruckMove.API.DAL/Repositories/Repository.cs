@@ -79,6 +79,41 @@ namespace TruckMove.API.DAL.Repositories
 
             return await query.Where(e => e.IsActive).ToListAsync();
         }
+        public async Task<List<TEntity>> GetAllWithNestedIncludesAsync(params string[] includeProperties)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return await query.Where(e => e.IsActive).ToListAsync();
+        }
+        public async Task<TEntity> GetWithNestedIncludesAsync(params string[] includeProperties)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return await query.FirstOrDefaultAsync(e => e.IsActive);
+        }
+
+        public async Task DeleteByIdsAsync(IEnumerable<int> ids)
+        {
+            var entities = await _dbSet.Where(e => ids.Contains(e.Id)).ToListAsync();
+            _dbSet.RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<List<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+            return entities.ToList();
+        }
 
 
 

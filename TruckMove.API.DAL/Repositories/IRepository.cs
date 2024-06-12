@@ -16,8 +16,12 @@ namespace TruckMove.API.DAL.Repositories
         Task DeleteAsync(TEntity entity);
         Task<List<TEntity>> GetAllAsync();
         Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes);
-
         Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes);
+
+        Task<List<TEntity>>  GetAllWithNestedIncludesAsync(params string[] includeProperties);
+        Task<TEntity> GetWithNestedIncludesAsync(params string[] includeProperties);
+        Task DeleteByIdsAsync(IEnumerable<int> ids);
+        Task<List<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities);
 
     }
 }

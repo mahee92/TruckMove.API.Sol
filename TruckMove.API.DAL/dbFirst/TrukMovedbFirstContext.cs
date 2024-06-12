@@ -3,15 +3,15 @@
 //using Microsoft.EntityFrameworkCore;
 //using Microsoft.EntityFrameworkCore.Metadata;
 
-//namespace TruckMove.API.DAL.dbFirstModel
+//namespace TruckMove.API.DAL.dbFirst
 //{
-//    public partial class TrukMove6Context : DbContext
+//    public partial class TrukMovedbFirstContext : DbContext
 //    {
-//        public TrukMove6Context()
+//        public TrukMovedbFirstContext()
 //        {
 //        }
 
-//        public TrukMove6Context(DbContextOptions<TrukMove6Context> options)
+//        public TrukMovedbFirstContext(DbContextOptions<TrukMovedbFirstContext> options)
 //            : base(options)
 //        {
 //        }
@@ -19,6 +19,7 @@
 //        public virtual DbSet<Company> Companies { get; set; } = null!;
 //        public virtual DbSet<Contact> Contacts { get; set; } = null!;
 //        public virtual DbSet<Job> Jobs { get; set; } = null!;
+//        public virtual DbSet<JobContact> JobContacts { get; set; } = null!;
 //        public virtual DbSet<JobSequence> JobSequences { get; set; } = null!;
 //        public virtual DbSet<Role> Roles { get; set; } = null!;
 //        public virtual DbSet<User> Users { get; set; } = null!;
@@ -29,7 +30,7 @@
 //            if (!optionsBuilder.IsConfigured)
 //            {
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-6;Trusted_Connection=True;");
+//                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-dbFirst;Trusted_Connection=True;");
 //            }
 //        }
 
@@ -43,9 +44,7 @@
 
 //                entity.Property(e => e.AccountsEmail).HasMaxLength(100);
 
-//                entity.Property(e => e.CompanyAbn)
-//                    .HasMaxLength(11)
-//                    .HasColumnName("CompanyABN");
+//                entity.Property(e => e.CompanyAbn).HasColumnName("CompanyABN");
 
 //                entity.Property(e => e.CompanyName).HasMaxLength(100);
 
@@ -122,6 +121,25 @@
 //                entity.HasOne(d => d.UpdatedBy)
 //                    .WithMany(p => p.JobUpdatedBies)
 //                    .HasForeignKey(d => d.UpdatedById);
+//            });
+
+//            modelBuilder.Entity<JobContact>(entity =>
+//            {
+//                entity.HasIndex(e => e.ContactId, "IX_JobContacts_ContactId");
+
+//                entity.HasIndex(e => e.JobId, "IX_JobContacts_JobId");
+
+//                entity.HasOne(d => d.Contact)
+//                    .WithMany(p => p.JobContacts)
+//                    .HasForeignKey(d => d.ContactId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_JobContacts_Contacts");
+
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.JobContacts)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_JobContacts_Jobs");
 //            });
 
 //            modelBuilder.Entity<JobSequence>(entity =>
