@@ -119,7 +119,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             try
             {
                 
-                var job = await _repository.GetWithNestedIncludesAsync("JobContacts.Contact", "Company");
+                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company");
 
                 if (job == null)
                 {

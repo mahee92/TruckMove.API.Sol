@@ -56,52 +56,51 @@ namespace TruckMove.API.DAL.Repositories
             return await _dbSet.Where(e => e.IsActive).OrderByDescending(x=>x.CreatedDate).ToListAsync();
         }
 
-        public async Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes)
+        //public async Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes)
+        //{
+        //    IQueryable<TEntity> query = _dbSet;
+
+        //    foreach (var include in includes)
+        //    {
+        //        query = query.Include(include);
+        //    }
+
+        //    return await query.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
+        //}
+
+        //public async Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes)
+        //{
+        //    IQueryable<TEntity> query = _dbSet;
+
+        //    foreach (var include in includes)
+        //    {
+        //        query = query.Include(include);
+        //    }
+
+        //    return await query.Where(e => e.IsActive).ToListAsync();
+        //}
+        //public async Task<List<TEntity>> GetAllWithNestedIncludesAsync(params string[] includeProperties)
+        //{
+        //    IQueryable<TEntity> query = _dbSet;
+
+        //    foreach (var includeProperty in includeProperties)
+        //    {
+        //        query = query.Include(includeProperty);
+        //    }
+
+        //    return await query.Where(e => e.IsActive).ToListAsync();
+        //}
+        public async Task<TEntity> GetWithNestedIncludesAsync(int id, params string[] includeProperties)
         {
             IQueryable<TEntity> query = _dbSet;
 
-            foreach (var include in includes)
+            foreach (var includeProperty in includeProperties)
             {
-                query = query.Include(include);
+                query = query.Include(includeProperty);
             }
 
             return await query.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
         }
-
-        public async Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes)
-        {
-            IQueryable<TEntity> query = _dbSet;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return await query.Where(e => e.IsActive).ToListAsync();
-        }
-        public async Task<List<TEntity>> GetAllWithNestedIncludesAsync(params string[] includeProperties)
-        {
-            IQueryable<TEntity> query = _dbSet;
-
-            foreach (var includeProperty in includeProperties)
-            {
-                query = query.Include(includeProperty);
-            }
-
-            return await query.Where(e => e.IsActive).ToListAsync();
-        }
-        public async Task<TEntity> GetWithNestedIncludesAsync(params string[] includeProperties)
-        {
-            IQueryable<TEntity> query = _dbSet;
-
-            foreach (var includeProperty in includeProperties)
-            {
-                query = query.Include(includeProperty);
-            }
-
-            return await query.FirstOrDefaultAsync(e => e.IsActive);
-        }
-
         public async Task DeleteByIdsAsync(IEnumerable<int> ids)
         {
             var entities = await _dbSet.Where(e => ids.Contains(e.Id)).ToListAsync();

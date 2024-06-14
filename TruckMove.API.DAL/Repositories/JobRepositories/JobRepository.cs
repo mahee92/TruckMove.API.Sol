@@ -70,6 +70,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         {
             return await _context.Set<JobContact>().Where(x => x.JobId == jobId).ToListAsync();
         }
-       
+        
+
+
     }
 }

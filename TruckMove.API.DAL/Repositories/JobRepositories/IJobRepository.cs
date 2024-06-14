@@ -14,7 +14,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         bool IsValidSequence(int inputNumber);
 
         Task<List<JobContact>> GetJobContactsByJobId(int jobId);
-        
+
 
     }
 }
