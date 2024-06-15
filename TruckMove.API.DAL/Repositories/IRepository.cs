@@ -11,17 +11,26 @@ namespace TruckMove.API.DAL.Repositories
     public interface IRepository<TEntity> where TEntity : class
     {
         Task<TEntity> AddAsync(TEntity model);
-        Task<TEntity> GetAsync(int id);
-        Task UpdateAsync(TEntity entity);
+        Task<List<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities);
+                    
+        Task<TEntity> UpdateAsync(TEntity entity);
+             
         Task DeleteAsync(TEntity entity);
+        Task DeleteAsync(int id);
+        Task DeleteByIdsAsync(IEnumerable<int> ids);
+
         Task<List<TEntity>> GetAllAsync();
+        Task<TEntity> GetAsync(int id);
+        Task<TEntity> GetWithNestedIncludesAsync(int id, params string[] includeProperties);
+        
+       
+
+
+
         //Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes);
         //Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes);
 
         //Task<List<TEntity>>  GetAllWithNestedIncludesAsync(params string[] includeProperties);
-        Task<TEntity> GetWithNestedIncludesAsync(int id, params string[] includeProperties);
-        Task DeleteByIdsAsync(IEnumerable<int> ids);
-        Task<List<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities);
 
     }
 }

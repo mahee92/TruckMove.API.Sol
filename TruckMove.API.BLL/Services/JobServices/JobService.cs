@@ -10,10 +10,11 @@ using TruckMove.API.DAL.Repositories.JobRepositories;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.JobDTOs;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using Microsoft.Data.SqlClient.Server;
-using TruckMove.API.DAL.Repositories.PrimaryRepositories;
 using TruckMove.API.BLL.Models.PrimaryDTO;
+using TruckMove.API.BLL.Models.VehicleDtos;
+using TruckMove.API.BLL.Models.VehicleDTOs;
+
+
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -23,13 +24,19 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<Job> _repository;
         private readonly IRepository<JobContact> _repositoryJobContact;
         private readonly IJobRepository _jobRepository;
+        private readonly IRepository<Vehicle> _repositoryVehicle;
+        private readonly IRepository<VehicleNote> _repositoryVehicleNote;
+        private readonly IRepository<VehicleImage> _repositoryVehicleImage;
 
-        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact)
+        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle,IRepository<VehicleNote> repositoryVehicleNote, IRepository<VehicleImage> repositoryVehicleImage)
         {
             _mapper = mapper;
             _repository = repository;
             _jobRepository = jobRepository;
             _repositoryJobContact = repositoryJobContact;
+            _repositoryVehicle = repositoryVehicle;
+            _repositoryVehicleNote = repositoryVehicleNote;
+            _repositoryVehicleImage = repositoryVehicleImage;
         }
 
         public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
@@ -119,8 +126,8 @@ namespace TruckMove.API.BLL.Services.JobServices
             try
             {
                 
-                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company");
-
+                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.VehicleNotes", "VehicleNavigation.VehicleImages");
+                //
                 if (job == null)
                 {
                     response.Success = false;
@@ -134,6 +141,20 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     response.Object.Company = _mapper.Map<CompanyDto>(job.Company);
                     response.Object.Contacts = new List<ContactDto>();
+        
+                    response.Object.Vehicle = _mapper.Map<VehicleOutputDto>(job.VehicleNavigation);
+                    if(job.VehicleNavigation != null && job.VehicleNavigation.VehicleNotes != null)
+                    {
+                        response.Object.Vehicle.VehicleNotes = job.VehicleNavigation.VehicleNotes.Select(jc => _mapper.Map<VehicleNoteDto>(jc)).ToList();
+                    }
+
+                    
+                    if (job.VehicleNavigation != null && job.VehicleNavigation.VehicleImages != null)
+                    {
+                        response.Object.Vehicle.VehicleImages = job.VehicleNavigation.VehicleImages.Select(jc => _mapper.Map<VehicleImageDto>(jc)).ToList();
+                    }
+
+
                     response.Object.Contacts = job.JobContacts.Select(jc => _mapper.Map<ContactDto>(jc.Contact)).ToList();
                     response.Success = true;
                 }
@@ -206,6 +227,177 @@ namespace TruckMove.API.BLL.Services.JobServices
             return jobContacts;
         }
 
+        
+        #region Vehicle
+        public async Task<Response<VehicleDto>> VehiclePostPutAsync(VehicleDto vehicle, int userId)
+        {
+            Response<VehicleDto> response = new Response<VehicleDto>();
+            try
+            {
+               
+                if (vehicle.Id == 0)
+                {
+                    Vehicle newvehicle = _mapper.Map<Vehicle>(vehicle);
 
+                    newvehicle.CreatedDate = DateTime.Now;
+                    newvehicle.CreatedById = userId;
+
+                    var res = await _repositoryVehicle.AddAsync(newvehicle);
+                    response.Success = true;
+                    response.Object = _mapper.Map<VehicleDto>(res);
+                }
+                else
+                {
+                    var existingVehicle = await _repositoryVehicle.GetAsync(vehicle.Id);
+
+                    if(existingVehicle==null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        ObjectUpdater<VehicleDto, Vehicle> updater = new ObjectUpdater<VehicleDto, Vehicle>();
+                        var res = updater.Map(vehicle, existingVehicle);
+                        res.CreatedDate = existingVehicle.CreatedDate;
+                        res.CreatedById = existingVehicle.CreatedById;
+                        res.LastModifiedDate = DateTime.Now;
+                        res.UpdatedById = userId;
+                        var updatedVehicle = await _repositoryVehicle.UpdateAsync(res);
+                        response.Success = true;
+                        response.Object = _mapper.Map<VehicleDto>(updatedVehicle);
+
+                       
+                    }
+                   
+
+                }
+
+                return response;
+
+            }
+            catch(Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
+
+        public async Task<Response<VehicleNoteDto>> VehicleNotePostPutAsync(VehicleNoteDto note, int userId)
+        {
+            Response<VehicleNoteDto> response = new Response<VehicleNoteDto>();
+            try
+            {
+
+                if (note.Id == 0)
+                {
+                    VehicleNote newNote = _mapper.Map<VehicleNote>(note);
+
+                    newNote.CreatedDate = DateTime.Now;
+                    newNote.CreatedById = userId;
+
+                    var res = await _repositoryVehicleNote.AddAsync(newNote);
+                    response.Success = true;
+                    response.Object = _mapper.Map<VehicleNoteDto>(res);
+                }
+                else
+                {
+                    var existingNote = await _repositoryVehicleNote.GetAsync(note.Id);
+
+                    if (existingNote == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        ObjectUpdater<VehicleNoteDto, VehicleNote> updater = new ObjectUpdater<VehicleNoteDto, VehicleNote>();
+                        var res = updater.Map(note, existingNote);
+                        res.CreatedDate = existingNote.CreatedDate;
+                        res.CreatedById = existingNote.CreatedById;
+                        res.LastModifiedDate = DateTime.Now;
+                        res.UpdatedById = userId;
+                        var updatednote = await _repositoryVehicleNote.UpdateAsync(res);
+                        response.Success = true;
+                        response.Object = _mapper.Map<VehicleNoteDto>(updatednote);
+                    }
+                }
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
+
+        public async Task<Response> VehicleNoteDeleteAsync(int id)
+        {
+            Response response = new Response();
+            try
+            {          
+                    await _repositoryVehicleNote.DeleteAsync(id);
+                    response.Success = true;
+            }
+            catch (Exception ex)
+            {
+
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+
+            }
+            return response;
+        }
+
+        public async Task<Response<VehicleImageDto>> VehicleImagePostAsync(VehicleImageDto image, int userId)
+        {
+            Response<VehicleImageDto> response = new Response<VehicleImageDto>();
+            try
+            {
+                var newImage = _mapper.Map<VehicleImage>(image);
+                newImage.CreatedDate = DateTime.Now;
+                newImage.CreatedById = userId;
+                var res = await _repositoryVehicleImage.AddAsync(newImage);
+                response.Success = true;
+                response.Object = _mapper.Map<VehicleImageDto>(res);
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response> VehicleImageDeleteAsync(int id)
+        {
+            Response response = new Response();
+            try
+            {
+                await _repositoryVehicleImage.DeleteAsync(id);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+
+            }
+            return response;
+        }
+        #endregion
     }
 }

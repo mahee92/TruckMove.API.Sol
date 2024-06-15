@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using static TruckMove.API.DAL.MasterData.MasterData;
@@ -26,7 +27,10 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
 
+        public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
 
+        public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
+ 	   public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -110,6 +114,9 @@ namespace TruckMove.API.DAL.Models
 
                 entity.HasIndex(e => e.UpdatedById, "IX_Jobs_UpdatedById");
 
+                entity.HasIndex(e => e.VehicleId, "UQ_Jobs_VehicleId")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.IsActive)
@@ -131,6 +138,11 @@ namespace TruckMove.API.DAL.Models
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.JobUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
+
+                entity.HasOne(d => d.Vehicle)
+                    .WithOne(p => p.Job)
+                    .HasForeignKey<Job>(d => d.VehicleId)
+                    .HasConstraintName("FK_Jobs_Vehicles");
             });
             modelBuilder.Entity<JobContact>(entity =>
 
@@ -245,7 +257,76 @@ namespace TruckMove.API.DAL.Models
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-      
+            modelBuilder.Entity<Vehicle>(entity =>
+            {
+                entity.HasIndex(e => e.JobId, "UQ_Vehicles_JobId")
+                .IsUnique();
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+
+                entity.Property(e => e.Colour)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Make)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Model)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Rego)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Vin)
+                    .HasMaxLength(100)
+                    .HasColumnName("VIN")
+                    .IsFixedLength();
+
+                entity.Property(e => e.Year)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.JobNavigation)
+                     .WithOne(p => p.VehicleNavigation)
+                     .HasForeignKey<Vehicle>(d => d.JobId)
+                     .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+            modelBuilder.Entity<VehicleImage>(entity =>
+            {
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+               
+                entity.HasOne(d => d.Vehicle)
+                    .WithMany(p => p.VehicleImages)
+                    .HasForeignKey(d => d.VehicleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_VehicleImages_Vehicles");
+            });
+
+            modelBuilder.Entity<VehicleNote>(entity =>
+            {
+                entity.Property(e => e.IsVisibleToDriver)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.HasOne(d => d.Vehicle)
+                    .WithMany(p => p.VehicleNotes)
+                    .HasForeignKey(d => d.VehicleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_VehicleNotes_Vehicles");
+            });
+
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 
             OnModelCreatingPartial(modelBuilder);

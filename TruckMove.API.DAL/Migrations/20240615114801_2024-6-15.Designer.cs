@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240615114801_2024-6-15")]
+    partial class _2024615
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,6 +195,8 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("VehicleId");
+
                     b.HasIndex(new[] { "CompanyId" }, "IX_Jobs_CompanyId");
 
                     b.HasIndex(new[] { "Controller" }, "IX_Jobs_Controller");
@@ -200,10 +204,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasIndex(new[] { "CreatedById" }, "IX_Jobs_CreatedById");
 
                     b.HasIndex(new[] { "UpdatedById" }, "IX_Jobs_UpdatedById");
-
-                    b.HasIndex(new[] { "VehicleId" }, "UQ_Jobs_VehicleId")
-                        .IsUnique()
-                        .HasFilter("[VehicleId] IS NOT NULL");
 
                     b.ToTable("Jobs");
                 });
@@ -410,10 +410,7 @@ namespace TruckMove.API.DAL.Migrations
             modelBuilder.Entity("TruckMove.API.DAL.Models.Vehicle", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Colour")
                         .HasMaxLength(100)
@@ -427,12 +424,7 @@ namespace TruckMove.API.DAL.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-                    b.Property<int>("JobId")
-                        .HasColumnType("int");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
@@ -473,100 +465,7 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.HasIndex(new[] { "JobId" }, "UQ_Vehicles_JobId")
-                        .IsUnique();
-
                     b.ToTable("Vehicles");
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.VehicleImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("CreatedById")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VehicleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("UpdatedById");
-
-                    b.HasIndex("VehicleId");
-
-                    b.ToTable("VehicleImages");
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.VehicleNote", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("CreatedById")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-                    b.Property<bool?>("IsVisibleToDriver")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("((1))");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("int");
-
-                    b.Property<int>("VehicleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("UpdatedById");
-
-                    b.HasIndex("VehicleId");
-
-                    b.ToTable("VehicleNotes");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
@@ -628,9 +527,8 @@ namespace TruckMove.API.DAL.Migrations
                         .HasForeignKey("UpdatedById");
 
                     b.HasOne("TruckMove.API.DAL.Models.Vehicle", "Vehicle")
-                        .WithOne("Job")
-                        .HasForeignKey("TruckMove.API.DAL.Models.Job", "VehicleId")
-                        .HasConstraintName("FK_Jobs_Vehicles");
+                        .WithMany("Jobs")
+                        .HasForeignKey("VehicleId");
 
                     b.Navigation("Company");
 
@@ -725,66 +623,13 @@ namespace TruckMove.API.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("TruckMove.API.DAL.Models.Job", "JobNavigation")
-                        .WithOne("VehicleNavigation")
-                        .HasForeignKey("TruckMove.API.DAL.Models.Vehicle", "JobId")
-                        .IsRequired();
-
                     b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
 
-                    b.Navigation("JobNavigation");
-
                     b.Navigation("UpdatedBy");
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.VehicleImage", b =>
-                {
-                    b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
-                        .WithMany()
-                        .HasForeignKey("UpdatedById");
-
-                    b.HasOne("TruckMove.API.DAL.Models.Vehicle", "Vehicle")
-                        .WithMany("VehicleImages")
-                        .HasForeignKey("VehicleId")
-                        .IsRequired()
-                        .HasConstraintName("FK_VehicleImages_Vehicles");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("UpdatedBy");
-
-                    b.Navigation("Vehicle");
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.VehicleNote", b =>
-                {
-                    b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
-                        .WithMany()
-                        .HasForeignKey("UpdatedById");
-
-                    b.HasOne("TruckMove.API.DAL.Models.Vehicle", "Vehicle")
-                        .WithMany("VehicleNotes")
-                        .HasForeignKey("VehicleId")
-                        .IsRequired()
-                        .HasConstraintName("FK_VehicleNotes_Vehicles");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("UpdatedBy");
-
-                    b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
@@ -802,8 +647,6 @@ namespace TruckMove.API.DAL.Migrations
             modelBuilder.Entity("TruckMove.API.DAL.Models.Job", b =>
                 {
                     b.Navigation("JobContacts");
-
-                    b.Navigation("VehicleNavigation");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Role", b =>
@@ -840,11 +683,7 @@ namespace TruckMove.API.DAL.Migrations
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Vehicle", b =>
                 {
-                    b.Navigation("Job");
-
-                    b.Navigation("VehicleImages");
-
-                    b.Navigation("VehicleNotes");
+                    b.Navigation("Jobs");
                 });
 #pragma warning restore 612, 618
         }
