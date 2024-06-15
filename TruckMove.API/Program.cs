@@ -22,6 +22,7 @@ using TruckMove.API.DAL.Repositories.JobRepositories;
 using TruckMove.API.DAL.Repositories.PrimaryRepositories;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
+using TruckMove.API.BLL.Models.VehicleDTOs;
 
 internal class Program
 {
@@ -120,6 +121,8 @@ internal class Program
             profile.CreateGenericMap<JobDto, Job>();
             profile.CreateGenericMap<Job, JobDto>();
             profile.CreateGenericMap<Job, JobOutPutDTO>();
+            profile.CreateGenericMap<Vehicle, VehicleDTO>();
+            profile.CreateGenericMap<VehicleDTO,Vehicle >();
         }, typeof(Program));
     }
     private static void ConfigureAuthentication(WebApplicationBuilder builder)
@@ -206,6 +209,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
         builder.Services.AddScoped<IRepository<User>, Repository<User>>();
         builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
+        builder.Services.AddScoped<IRepository<Vehicle>, Repository<Vehicle>>();
         builder.Services.AddScoped<IRepository<JobContact>, Repository<JobContact>>();
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();

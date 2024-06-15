@@ -37,11 +37,11 @@ namespace TruckMove.API.DAL.Repositories
             return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
         }
 
-        public async Task UpdateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            //return entity;
+            return entity;
         }
 
         public async Task DeleteAsync(TEntity entity)

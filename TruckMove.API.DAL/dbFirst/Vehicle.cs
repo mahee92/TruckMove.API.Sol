@@ -7,7 +7,6 @@ namespace TruckMove.API.DAL.dbFirst
     {
         public Vehicle()
         {
-            Jobs = new HashSet<Job>();
             VehicleImages = new HashSet<VehicleImage>();
             VehicleNotes = new HashSet<VehicleNote>();
         }
@@ -19,8 +18,10 @@ namespace TruckMove.API.DAL.dbFirst
         public string? Vin { get; set; }
         public string? Year { get; set; }
         public string? Colour { get; set; }
+        public int JobId { get; set; }
 
-        public virtual ICollection<Job> Jobs { get; set; }
+        public virtual Job JobNavigation { get; set; } = null!;
+        public virtual Job? Job { get; set; }
         public virtual ICollection<VehicleImage> VehicleImages { get; set; }
         public virtual ICollection<VehicleNote> VehicleNotes { get; set; }
     }

@@ -24,5 +24,6 @@ namespace TruckMove.API.DAL.Models
         public virtual User? ControllerNavigation { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
         public virtual Vehicle? Vehicle { get; set; }
+        public virtual Vehicle? VehicleNavigation { get; set; }
     }
 }

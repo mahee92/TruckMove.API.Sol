@@ -12,7 +12,7 @@ namespace TruckMove.API.DAL.Repositories
     {
         Task<TEntity> AddAsync(TEntity model);
         Task<TEntity> GetAsync(int id);
-        Task UpdateAsync(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
         Task DeleteAsync(TEntity entity);
         Task<List<TEntity>> GetAllAsync();
         //Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes);

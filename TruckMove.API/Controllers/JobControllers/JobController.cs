@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.Primary;
+using TruckMove.API.BLL.Models.VehicleDTOs;
 using TruckMove.API.BLL.Services.JobServices;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.Controllers.Primary;
@@ -16,7 +17,7 @@ namespace TruckMove.API.Controllers.JobControllers
     [Route("[controller]")]
 #if DEBUG
 #else
-     [Authorize(Roles = "Administrator,OpsManager")]
+    [Authorize(Roles = "Administrator,OpsManager")]
 #endif
     public class JobController : ControllerBase
     {
@@ -24,14 +25,14 @@ namespace TruckMove.API.Controllers.JobControllers
         private readonly IAuthUserService _authUserService;
         private readonly IJobService _jobService;
 
-        public JobController(IAuthUserService authUserService,IJobService jobService)
+        public JobController(IAuthUserService authUserService, IJobService jobService)
         {
-            
+
             _authUserService = authUserService;
             _jobService = jobService;
         }
 
-        
+        #region Job
         [HttpGet("GetNextJobId")]
         public async Task<IActionResult> GetNextJobId()
         {
@@ -48,11 +49,11 @@ namespace TruckMove.API.Controllers.JobControllers
 
         [HttpPost("PostPut")]
         public async Task<IActionResult> PostPutAsync([FromBody] JobDto job)
-        {           
+        {
             Response<JobDto> response = await _jobService.PostPutAsync(job, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
-        
+
                 return Ok(response.Object);
             }
             else
@@ -77,6 +78,7 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
         [HttpGet]
+
         public async Task<IActionResult> GetAllAsync()
         {
             var response = await _jobService.GetAllAsync();
@@ -91,6 +93,9 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
 
+        #endregion
+
+        #region Contacts
         [HttpPost("{id}/Contacts/AddDelete")]
         public async Task<IActionResult> AddDelete(int id, [FromBody] List<int> contacts)
         {
@@ -100,10 +105,31 @@ namespace TruckMove.API.Controllers.JobControllers
                 return Ok();
             }
             else
-            {              
+            {
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+        #endregion
+
+        #region Vehicle
+        [HttpPost("Vehicle/PostPut")]
+        public async Task<IActionResult> PostPutAsync([FromBody] VehicleDTO vehicle)
+        {
+            Response<VehicleDTO> response = await _jobService.VehiclePostPutAsync(vehicle, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+        #endregion
+
 
 
     }

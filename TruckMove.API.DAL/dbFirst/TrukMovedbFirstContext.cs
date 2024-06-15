@@ -103,6 +103,9 @@
 
 //                entity.HasIndex(e => e.UpdatedById, "IX_Jobs_UpdatedById");
 
+//                entity.HasIndex(e => e.VehicleId, "UQ_Jobs_VehicleId")
+//                    .IsUnique();
+
 //                entity.Property(e => e.Id).ValueGeneratedNever();
 
 //                entity.Property(e => e.IsActive)
@@ -126,8 +129,8 @@
 //                    .HasForeignKey(d => d.UpdatedById);
 
 //                entity.HasOne(d => d.Vehicle)
-//                    .WithMany(p => p.Jobs)
-//                    .HasForeignKey(d => d.VehicleId)
+//                    .WithOne(p => p.Job)
+//                    .HasForeignKey<Job>(d => d.VehicleId)
 //                    .HasConstraintName("FK_Jobs_Vehicles");
 //            });
 
@@ -225,7 +228,8 @@
 
 //            modelBuilder.Entity<Vehicle>(entity =>
 //            {
-//                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.HasIndex(e => e.JobId, "UQ_Vehicles_JobId2")
+//                    .IsUnique();
 
 //                entity.Property(e => e.Colour)
 //                    .HasMaxLength(100)
@@ -251,6 +255,12 @@
 //                entity.Property(e => e.Year)
 //                    .HasMaxLength(100)
 //                    .IsFixedLength();
+
+//                entity.HasOne(d => d.JobNavigation)
+//                    .WithOne(p => p.VehicleNavigation)
+//                    .HasForeignKey<Vehicle>(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Vehicles_Jobs_JobId2");
 //            });
 
 //            modelBuilder.Entity<VehicleImage>(entity =>

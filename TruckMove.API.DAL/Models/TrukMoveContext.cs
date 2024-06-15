@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using static TruckMove.API.DAL.MasterData.MasterData;
@@ -113,6 +114,9 @@ namespace TruckMove.API.DAL.Models
 
                 entity.HasIndex(e => e.UpdatedById, "IX_Jobs_UpdatedById");
 
+                entity.HasIndex(e => e.VehicleId, "UQ_Jobs_VehicleId")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.IsActive)
@@ -134,12 +138,11 @@ namespace TruckMove.API.DAL.Models
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.JobUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
-               
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.Jobs)
-                    .HasForeignKey(d => d.VehicleId)
-                    .HasConstraintName("FK_Jobs_Vehicles");
 
+                entity.HasOne(d => d.Vehicle)
+                    .WithOne(p => p.Job)
+                    .HasForeignKey<Job>(d => d.VehicleId)
+                    .HasConstraintName("FK_Jobs_Vehicles");
             });
             modelBuilder.Entity<JobContact>(entity =>
 
@@ -256,7 +259,9 @@ namespace TruckMove.API.DAL.Models
 
             modelBuilder.Entity<Vehicle>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.HasIndex(e => e.JobId, "UQ_Vehicles_JobId")
+                .IsUnique();
+              
 
                 entity.Property(e => e.Colour)
                     .HasMaxLength(100)
@@ -282,6 +287,11 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Year)
                     .HasMaxLength(100)
                     .IsFixedLength();
+
+                entity.HasOne(d => d.JobNavigation)
+                     .WithOne(p => p.VehicleNavigation)
+                     .HasForeignKey<Vehicle>(d => d.JobId)
+                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
             modelBuilder.Entity<VehicleImage>(entity =>
             {

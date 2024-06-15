@@ -27,6 +27,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual User? CreatedBy { get; set; }
         public virtual User? UpdatedBy { get; set; }
         public virtual Vehicle? Vehicle { get; set; }
+        public virtual Vehicle? VehicleNavigation { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
     }
 }

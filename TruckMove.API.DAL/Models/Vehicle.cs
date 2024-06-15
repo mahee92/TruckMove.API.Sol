@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using TruckMove.API.DAL.dbFirst;
 using TruckMove.API.DAL.Repositories;
 
@@ -9,11 +10,12 @@ namespace TruckMove.API.DAL.Models
     {
         public Vehicle()
         {
-            Jobs = new HashSet<Job>();
+           
             VehicleImages = new HashSet<VehicleImage>();
             VehicleNotes = new HashSet<VehicleNote>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Make { get; set; } = null!;
         public string? Model { get; set; }
@@ -21,8 +23,10 @@ namespace TruckMove.API.DAL.Models
         public string? Vin { get; set; }
         public string? Year { get; set; }
         public string? Colour { get; set; }
+        public int JobId { get; set; }
 
-        public virtual ICollection<Job> Jobs { get; set; }
+        public virtual Job JobNavigation { get; set; } = null!;
+        public virtual Job? Job { get; set; }
         public bool IsActive { get; set; }
         public virtual ICollection<VehicleImage> VehicleImages { get; set; }
         public virtual ICollection<VehicleNote> VehicleNotes { get; set; }

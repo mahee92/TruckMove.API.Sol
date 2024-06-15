@@ -19,7 +19,8 @@ namespace TruckMove.API.DAL.Migrations
                 name: "Vehicles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Make = table.Column<string>(type: "nchar(100)", fixedLength: true, maxLength: 100, nullable: false),
                     Model = table.Column<string>(type: "nchar(100)", fixedLength: true, maxLength: 100, nullable: true),
                     Rego = table.Column<string>(type: "nchar(100)", fixedLength: true, maxLength: 100, nullable: true),
