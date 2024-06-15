@@ -27,7 +27,7 @@ namespace TruckMove.API.DAL.Migrations
                     VIN = table.Column<string>(type: "nchar(100)", fixedLength: true, maxLength: 100, nullable: true),
                     Year = table.Column<string>(type: "nchar(100)", fixedLength: true, maxLength: 100, nullable: true),
                     Colour = table.Column<string>(type: "nchar(100)", fixedLength: true, maxLength: 100, nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValueSql: "((1))"),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedById = table.Column<int>(type: "int", nullable: true),

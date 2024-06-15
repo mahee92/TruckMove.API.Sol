@@ -49,8 +49,17 @@ namespace TruckMove.API.DAL.Repositories
             _context.Entry(entity).State = EntityState.Modified;
              await _context.SaveChangesAsync();
         }
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+           
+        }
 
-   
         public async Task<List<TEntity>> GetAllAsync()
         {
             return await _dbSet.Where(e => e.IsActive).OrderByDescending(x=>x.CreatedDate).ToListAsync();

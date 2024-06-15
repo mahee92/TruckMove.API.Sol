@@ -261,7 +261,11 @@ namespace TruckMove.API.DAL.Models
             {
                 entity.HasIndex(e => e.JobId, "UQ_Vehicles_JobId")
                 .IsUnique();
-              
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
 
                 entity.Property(e => e.Colour)
                     .HasMaxLength(100)
@@ -295,6 +299,10 @@ namespace TruckMove.API.DAL.Models
             });
             modelBuilder.Entity<VehicleImage>(entity =>
             {
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+               
                 entity.HasOne(d => d.Vehicle)
                     .WithMany(p => p.VehicleImages)
                     .HasForeignKey(d => d.VehicleId)
@@ -307,6 +315,10 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.IsVisibleToDriver)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
                 entity.HasOne(d => d.Vehicle)
                     .WithMany(p => p.VehicleNotes)
