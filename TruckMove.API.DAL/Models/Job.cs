@@ -18,9 +18,11 @@ namespace TruckMove.API.DAL.Models
         public string PickupLocation { get; set; } = null!;
         public string DropOfLocation { get; set; }
 
+        public int? VehicleId { get; set; }
+
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
-
+        public virtual Vehicle? Vehicle { get; set; }
     }
 }

@@ -20,11 +20,13 @@ namespace TruckMove.API.DAL.dbFirst
         public DateTime? LastModifiedDate { get; set; }
         public int? UpdatedById { get; set; }
         public int? CreatedById { get; set; }
+        public int? VehicleId { get; set; }
 
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }
         public virtual User? CreatedBy { get; set; }
         public virtual User? UpdatedBy { get; set; }
+        public virtual Vehicle? Vehicle { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
 
-
+        public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -245,7 +245,37 @@ namespace TruckMove.API.DAL.Models
                     .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
-      
+            modelBuilder.Entity<Vehicle>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Colour)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Make)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Model)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Rego)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Vin)
+                    .HasMaxLength(100)
+                    .HasColumnName("VIN")
+                    .IsFixedLength();
+
+                entity.Property(e => e.Year)
+                    .HasMaxLength(100)
+                    .IsFixedLength();
+            });
+
+
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 
             OnModelCreatingPartial(modelBuilder);
