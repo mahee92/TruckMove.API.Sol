@@ -28,6 +28,9 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
 
+        public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
+ 	   public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -131,6 +134,12 @@ namespace TruckMove.API.DAL.Models
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.JobUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
+               
+                entity.HasOne(d => d.Vehicle)
+                    .WithMany(p => p.Jobs)
+                    .HasForeignKey(d => d.VehicleId)
+                    .HasConstraintName("FK_Jobs_Vehicles");
+
             });
             modelBuilder.Entity<JobContact>(entity =>
 
@@ -274,7 +283,27 @@ namespace TruckMove.API.DAL.Models
                     .HasMaxLength(100)
                     .IsFixedLength();
             });
+            modelBuilder.Entity<VehicleImage>(entity =>
+            {
+                entity.HasOne(d => d.Vehicle)
+                    .WithMany(p => p.VehicleImages)
+                    .HasForeignKey(d => d.VehicleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_VehicleImages_Vehicles");
+            });
 
+            modelBuilder.Entity<VehicleNote>(entity =>
+            {
+                entity.Property(e => e.IsVisibleToDriver)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.Vehicle)
+                    .WithMany(p => p.VehicleNotes)
+                    .HasForeignKey(d => d.VehicleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_VehicleNotes_Vehicles");
+            });
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TruckMove.API.DAL.dbFirst;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
@@ -9,6 +10,8 @@ namespace TruckMove.API.DAL.Models
         public Vehicle()
         {
             Jobs = new HashSet<Job>();
+            VehicleImages = new HashSet<VehicleImage>();
+            VehicleNotes = new HashSet<VehicleNote>();
         }
 
         public int Id { get; set; }
@@ -21,5 +24,7 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Job> Jobs { get; set; }
         public bool IsActive { get; set; }
+        public virtual ICollection<VehicleImage> VehicleImages { get; set; }
+        public virtual ICollection<VehicleNote> VehicleNotes { get; set; }
     }
 }
