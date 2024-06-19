@@ -43,7 +43,7 @@ namespace TruckMove.API.Controllers
         public async Task<IActionResult> GetDrivers()
         {
 
-            var response = await _masterdataService.GetUsersByRoleAsync(RoleEnum.Drivers);
+            var response = await _masterdataService.GetUsersByRoleAsync(RoleEnum.Driver);
             if (response.Success)
             {
                 return Ok(response.Objects);

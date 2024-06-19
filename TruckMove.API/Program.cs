@@ -195,6 +195,15 @@ internal class Program
                 }
             };
             c.AddSecurityRequirement(securityRequirement);
+
+            // Define the custom header 'isDriver'
+            c.AddSecurityDefinition("isDriver", new OpenApiSecurityScheme
+            {
+                Name = "fromMobile",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Description = "Custom boolean header to indicate if the request is made by a driver (optional)"
+            });
         });
 
         builder.Services.AddEndpointsApiExplorer();
