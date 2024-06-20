@@ -83,9 +83,9 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
         [HttpGet]
+
         public async Task<IActionResult> GetAllAsync()
         {
-
             var response = await _jobService.GetAllAsync();
             if (response.Success)
             {

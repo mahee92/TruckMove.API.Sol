@@ -14,7 +14,7 @@ namespace TruckMove.API.DAL.MasterData
             OpsManager = 2,
             AdminTeam = 3,
             PayrollTeam = 4,
-            Driver = 5
+            Drivers = 5
         }
     }
 }

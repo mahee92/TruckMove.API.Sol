@@ -4,6 +4,5 @@
     {
         string GetUserId();
         string GetUserName();
-        string IsDriver();
     }
 }
