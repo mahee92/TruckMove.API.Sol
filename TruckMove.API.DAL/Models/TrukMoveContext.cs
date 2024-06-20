@@ -32,6 +32,8 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
  	   public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
 
+        public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -378,6 +380,20 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.VehicleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_VehicleNotes_Vehicles");
+            });
+            modelBuilder.Entity<WayPoint>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.HasOne(d => d.Job)
+
+                    .WithMany(p => p.WayPoints)
+
+                    .HasForeignKey(d => d.JobId)
+
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+
+                    .HasConstraintName("FK_WayPoints_Jobs");
+
             });
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
