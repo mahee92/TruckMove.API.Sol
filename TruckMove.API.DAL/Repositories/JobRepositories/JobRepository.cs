@@ -64,13 +64,27 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             return false;
         }
 
-       
-
+      
         public async Task<List<JobContact>> GetJobContactsByJobId(int jobId)
         {
             return await _context.Set<JobContact>().Where(x => x.JobId == jobId).ToListAsync();
         }
-        
+
+        public async Task<List<Job>> GetAllJobsByDriverAsync(int driverid, params string[] includeProperties)
+        {
+            IQueryable<Job> query =  _dbSet;
+
+            //foreach (var include in includeProperties)
+            //{
+            //    query = query.Include(include);
+            //}
+            //Add the driver Id
+            return await query.Where(e => e.IsActive).ToListAsync();
+        }
+        public IQueryable<Job> GetAllAsync()
+        {
+            return _dbSet.Where(e => e.IsActive).OrderBy(x=>x.CreatedDate).AsQueryable();
+        }
 
 
     }

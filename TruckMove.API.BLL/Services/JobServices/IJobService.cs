@@ -7,6 +7,7 @@ using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.VehicleDtos;
 using TruckMove.API.BLL.Models.VehicleDTOs;
+using TruckMove.API.DAL.Models;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -15,7 +16,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response<JobDto>> PostPutAsync(JobDto job,int userId);
         Task<Response> GetNextJobId();
         Task<Response<JobOutPutDTO>> GetAsync(int id);
-        Task<Response<JobDto>> GetAllAsync();
+        //Task<Response<JobDto>> GetAllAsync();
         Task<Response> ContactAddDelete(int id, List<int> contacts);
         Task<Response<VehicleDto>> VehiclePostPutAsync(VehicleDto vehicle, int userId);
         Task<Response<VehicleNoteDto>> VehicleNotePostPutAsync(VehicleNoteDto note, int userId);
@@ -23,5 +24,11 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response<VehicleImageDto>> VehicleImagePostAsync(VehicleImageDto image, int userId);
 
         Task<Response> VehicleImageDeleteAsync(int id);
+
+        Response<DriverJobStatus> GetDriverJobStaus(int driverId);
+        Response<JobOutPutDTO> GetAllAsync(int i);
+
+        IQueryable<MobileJobDto> GetAllAsync2(int i);
+
     }
 }

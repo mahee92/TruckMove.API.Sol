@@ -4,7 +4,7 @@ using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
 using TruckMove.API.DAL.Repositories.PrimaryRepositories;
-
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.BLL.Services.Primary
 {
@@ -281,6 +281,11 @@ namespace TruckMove.API.BLL.Services.Primary
                 response.ErrorType = ErrorCode.dbError;
             }
             return response;
+        }
+
+        public bool IsDriver(List<RoleDto> Roles)
+        {
+           return Roles.Any(x => x.Id == (int)RoleEnum.Driver);
         }
     }
 }

@@ -13,8 +13,9 @@ using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Models.VehicleDtos;
 using TruckMove.API.BLL.Models.VehicleDTOs;
-
-
+using AutoMapper.QueryableExtensions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.EntityFrameworkCore;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -168,18 +169,43 @@ namespace TruckMove.API.BLL.Services.JobServices
 
 
         }
-        public async Task<Response<JobDto>> GetAllAsync()
+        //public async Task<Response<JobDto>> GetAllAsync()
+        //{
+        //    Response<JobDto> response = new Response<JobDto>();
+        //    try
+        //    {
+        //        var jobs = await _repository.GetAllAsync();
+        //        response.Success = true;
+        //        if (jobs.Count > 0)
+        //        {
+
+        //            response.Objects = new List<JobDto>();
+        //            response.Objects.AddRange(_mapper.Map<List<JobDto>>(jobs));
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.Success = false;
+        //        response.ErrorType = ErrorCode.dbError;
+        //        response.ErrorMessage = ex.Message;
+        //    }
+
+        //    return response;
+        //}
+        public Response<JobOutPutDTO> GetAllAsync(int i)
         {
-            Response<JobDto> response = new Response<JobDto>();
+            Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
             try
             {
-                var jobs = await _repository.GetAllAsync();
+                var jobs1 = _jobRepository.GetAllAsync();
+                var jobs = _jobRepository.GetAllAsync().ToList();
                 response.Success = true;
                 if (jobs.Count > 0)
                 {
 
-                    response.Objects = new List<JobDto>();
-                    response.Objects.AddRange(_mapper.Map<List<JobDto>>(jobs));
+                    ////response.Objects = new List<JobDto>();
+                    ////response.Objects.AddRange(_mapper.Map<List<JobDto>>(jobs));
                 }
 
             }
@@ -192,7 +218,15 @@ namespace TruckMove.API.BLL.Services.JobServices
 
             return response;
         }
-
+        public IQueryable<MobileJobDto> GetAllAsync2(int i)
+        {
+            var x = _jobRepository.GetAllAsync();
+            var sql = x.ToQueryString();
+             var jobDtos = x.ProjectTo<MobileJobDto>(_mapper.ConfigurationProvider);
+            return jobDtos;
+           
+       }
+      
         public async Task<Response> ContactAddDelete(int id, List<int> contacts)
         {
             Response response = new Response();
@@ -399,5 +433,45 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
         #endregion
+
+        #region Mobile
+        public Response<DriverJobStatus> GetDriverJobStaus(int driverId)
+        {
+            Response<DriverJobStatus> response = new Response<DriverJobStatus>();
+            response.Success = true;
+            response.Object.HasCurrentJob = false;
+            return response;
+        }
+
+       
+        //public IQueryable<Job> GetAllAsync(int driverId)
+        //{
+        //   //// Response<JobDto> response = new Response<JobDto>();
+        //   // try
+        //   // {
+        //   //     //var jobs = await _jobRepository.GetAllJobsByDriverAsync(driverId, "VehicleNavigation");
+        //   //     //var jobs = await _jobRepository.GetAllJobsByDriverAsync(driverId, "VehicleNavigation");
+        //       var jobs = _jobRepository.GetAllAsyn();
+        //    return jobs;
+        //   //     //response.Success = true;
+        //   //     //if (jobs.Count > 0)
+        //   //     //{
+
+        //    //     //    response.Objects = new List<JobDto>();
+        //    //     //    response.Objects.AddRange(_mapper.Map<List<JobDto>>(jobs));
+        //    //     //}
+
+        //    // }
+        //    // catch (Exception ex)
+        //    // {
+        //    //     response.Success = false;
+        //    //     response.ErrorType = ErrorCode.dbError;
+        //    //     response.ErrorMessage = ex.Message;
+        //    // }
+
+        //    // return response;
+        //}
+        #endregion
+
     }
 }
