@@ -16,5 +16,7 @@ namespace TruckMove.API.BLL.Services.Primary
 
         Task<Response<RoleDto>> GetRolesByUser(int id);
         Task<Response<UserOutputDto>> Auth(LoginDto loginModel);
+
+        bool IsDriver(List<RoleDto> Roles);
     }
 }

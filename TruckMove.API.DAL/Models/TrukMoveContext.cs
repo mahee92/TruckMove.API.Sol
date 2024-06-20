@@ -48,7 +48,7 @@ namespace TruckMove.API.DAL.Models
           new Role { Id = (int)RoleEnum.OpsManager, RoleName = RoleEnum.OpsManager.ToString() },
           new Role { Id = (int)RoleEnum.AdminTeam, RoleName = RoleEnum.AdminTeam.ToString() },
           new Role { Id = (int)RoleEnum.PayrollTeam, RoleName = RoleEnum.PayrollTeam.ToString() },
-          new Role { Id = (int)RoleEnum.Drivers, RoleName = RoleEnum.Drivers.ToString() }
+          new Role { Id = (int)RoleEnum.Driver, RoleName = RoleEnum.Driver.ToString() }
           );
             modelBuilder.Entity<Company>(entity =>
             {

@@ -64,7 +64,7 @@ namespace TruckMove.API.DAL.Repositories
         {
             return await _dbSet.Where(e => e.IsActive).OrderByDescending(x=>x.CreatedDate).ToListAsync();
         }
-
+       
         //public async Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes)
         //{
         //    IQueryable<TEntity> query = _dbSet;

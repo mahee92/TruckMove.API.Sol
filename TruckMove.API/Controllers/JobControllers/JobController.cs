@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.Extensions.Options;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.JobDTOs;
@@ -30,7 +31,7 @@ namespace TruckMove.API.Controllers.JobControllers
 
         public JobController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings)
         {
-
+           
             _authUserService = authUserService;
             _jobService = jobService;
             _mySettings = mySettings.Value;
@@ -82,21 +83,43 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
-        [HttpGet]
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllAsync()
+        //{
+        //    var response = await _jobService.GetAllAsync();
+        //    if (response.Success)
+        //    {
+        //        return Ok(response.Objects);
+        //    }
+        //    else
+        //    {
 
-        public async Task<IActionResult> GetAllAsync()
-        {
-            var response = await _jobService.GetAllAsync();
-            if (response.Success)
-            {
-                return Ok(response.Objects);
-            }
-            else
-            {
+        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
+        //    }
+        //}
+        //[HttpGet("Odata/GetAll")]       
+        //[EnableQuery(PageSize = 10)]
+        //public  IActionResult GetAllAsync()
+        //{
+        //    var response =  _jobService.GetAllAsync(1);
+        //    if (response.Success)
+        //    {
+        //        return Ok(response.Objects);
+        //    }
+        //    else
+        //    {
 
-                return StatusCode((int)response.ErrorType, response.ErrorMessage);
-            }
-        }
+        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
+        //    }
+        //}
+
+        //[HttpGet("Odata/GetAll")]
+        //[EnableQuery(PageSize = 10)]
+        //public IActionResult Get()
+        //{
+            
+        //    return Ok(_jobService.GetAllAsync2(1));
+        //}
 
         #endregion
 
@@ -218,6 +241,25 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         #endregion
 
+        #region Mobile
+
+        //[HttpGet("Mobile/GetDriverJobStaus")]
+        //public async Task<IActionResult> GetDriverJobStaus()
+        //{
+        //    Response<DriverJobStatus> response = _jobService.GetDriverJobStaus(Convert.ToInt32(_authUserService.GetUserId()));
+
+        //    if (response.Success)
+        //    {
+        //        return Ok(response.Object);
+        //    }
+        //    else
+        //    {
+        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
+        //    }
+        //}
+
+
+        #endregion
 
 
     }

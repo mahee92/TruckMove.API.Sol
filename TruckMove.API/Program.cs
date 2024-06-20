@@ -24,6 +24,10 @@ using TruckMove.API.Helper;
 using TruckMove.API.Settings;
 using TruckMove.API.BLL.Models.VehicleDtos;
 using TruckMove.API.BLL.Models.VehicleDTOs;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OData.ModelBuilder;
+using Microsoft.OData.Edm; // Added for OData
+
 
 internal class Program
 {
@@ -60,7 +64,11 @@ internal class Program
 
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddOData(options =>
+        {
+            options.Select().Filter().OrderBy().Expand().SetMaxTop(100); // Added Top option
+        });
+
 
         // Configure CORS
         builder.Services.AddCors(options =>
@@ -122,15 +130,15 @@ internal class Program
             profile.CreateGenericMap<JobDto, Job>();
             profile.CreateGenericMap<Job, JobDto>();
             profile.CreateGenericMap<Job, JobOutPutDTO>();
-            profile.CreateGenericMap<Vehicle, VehicleDto>();
-            profile.CreateGenericMap<VehicleDto,Vehicle >();
+            profile.CreateGenericMap<Job, JobDto>();
+            profile.CreateGenericMap<VehicleDto, Vehicle>();
             profile.CreateGenericMap<VehicleNote, VehicleNoteDto>();
             profile.CreateGenericMap<VehicleNoteDto, VehicleNote>();
             profile.CreateGenericMap<VehicleOutputDto, Vehicle>();
             profile.CreateGenericMap<Vehicle, VehicleOutputDto>();
             profile.CreateGenericMap<VehicleImage, VehicleImageDto>();
             profile.CreateGenericMap<VehicleImageDto, VehicleImage>();
-            
+
 
 
         }, typeof(Program));
@@ -194,6 +202,30 @@ internal class Program
                     new string[] {}
                 }
             };
+            c.AddSecurityDefinition("fromMobile", new OpenApiSecurityScheme
+            {
+                Name = "fromMobile",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Description = "Custom boolean header to indicate if the request is made by mobile (optional)"
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "fromMobile"
+                        }
+                    },
+                    new string[] {}
+                }
+            });
+
+
             c.AddSecurityRequirement(securityRequirement);
         });
 
@@ -261,6 +293,15 @@ internal class Program
         app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
+        // Configure OData
+        // Configure OData (Uncomment the following lines to add OData support)
+        
+        //var modelBuilder = new ODataConventionModelBuilder(app.Services);
+        //modelBuilder.EntitySet<Product>("Products");
+        //app.UseEndpoints(endpoints =>
+        //{
+        //    endpoints.MapODataRoute("odata", "odata", modelBuilder.GetEdmModel());
+        //});
 
         app.MapControllers();
 

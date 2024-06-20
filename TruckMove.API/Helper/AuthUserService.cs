@@ -26,7 +26,17 @@ namespace TruckMove.API.Helper
 
         public string GetUserName()
         {
+           
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
+        }
+        public bool IsFromMobile()
+        {
+            if (_httpContextAccessor.HttpContext?.Request.Headers.TryGetValue("fromMobile", out var fromMobileHeader) == true)
+            {
+                string fromMobile = fromMobileHeader.FirstOrDefault();
+                return bool.TryParse(fromMobile, out bool isFromMobile) && isFromMobile;
+            }
+            return false;
         }
     }
 }
