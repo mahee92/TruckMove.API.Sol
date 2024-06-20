@@ -112,6 +112,8 @@
 //                    .IsRequired()
 //                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
+//                entity.Property(e => e.PickupDate).HasColumnType("datetime");
+
 //                entity.HasOne(d => d.Company)
 //                    .WithMany(p => p.Jobs)
 //                    .HasForeignKey(d => d.CompanyId);
@@ -123,6 +125,11 @@
 //                entity.HasOne(d => d.CreatedBy)
 //                    .WithMany(p => p.JobCreatedBies)
 //                    .HasForeignKey(d => d.CreatedById);
+
+//                entity.HasOne(d => d.DriverNavigation)
+//                    .WithMany(p => p.JobDriverNavigations)
+//                    .HasForeignKey(d => d.Driver)
+//                    .HasConstraintName("FK_Jobs_Users");
 
 //                entity.HasOne(d => d.UpdatedBy)
 //                    .WithMany(p => p.JobUpdatedBies)

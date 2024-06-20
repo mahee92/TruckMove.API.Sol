@@ -15,6 +15,7 @@ namespace TruckMove.API.DAL.dbFirst
             InverseUpdatedBy = new HashSet<User>();
             JobControllerNavigations = new HashSet<Job>();
             JobCreatedBies = new HashSet<Job>();
+            JobDriverNavigations = new HashSet<Job>();
             JobUpdatedBies = new HashSet<Job>();
             UserRoleCreatedBies = new HashSet<UserRole>();
             UserRoleUpdatedBies = new HashSet<UserRole>();
@@ -43,6 +44,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual ICollection<User> InverseUpdatedBy { get; set; }
         public virtual ICollection<Job> JobControllerNavigations { get; set; }
         public virtual ICollection<Job> JobCreatedBies { get; set; }
+        public virtual ICollection<Job> JobDriverNavigations { get; set; }
         public virtual ICollection<Job> JobUpdatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleCreatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleUpdatedBies { get; set; }
