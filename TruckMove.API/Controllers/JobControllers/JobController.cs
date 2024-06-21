@@ -68,6 +68,7 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+     
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
@@ -241,6 +242,23 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         #endregion
 
+        #region WayPoint
+        [HttpPost("WayPoint/AddDelete")]
+        public async Task<IActionResult> AddDeleteWayPoint([FromBody] List<WayPointDto> wayPoints)
+        {
+            var response = await _jobService.WayPointAddDelete(wayPoints);
+            if (response.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
+      
+        
         #region Mobile
 
         //[HttpGet("Mobile/GetDriverJobStaus")]

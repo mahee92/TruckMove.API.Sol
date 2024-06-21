@@ -34,6 +34,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
 
+        public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -52,6 +54,23 @@ namespace TruckMove.API.DAL.Models
           new Role { Id = (int)RoleEnum.PayrollTeam, RoleName = RoleEnum.PayrollTeam.ToString() },
           new Role { Id = (int)RoleEnum.Driver, RoleName = RoleEnum.Driver.ToString() }
           );
+            modelBuilder.Entity<JobStatus>().HasData(
+                   new JobStatus { Id = (int)JobStatusEnum.Planned, Status = JobStatusEnum.Planned.ToString(), Description = "A job that has been created in the system but does not have the minimum required information to complete the booking" },
+                   new JobStatus { Id = (int)JobStatusEnum.Booked, Status = JobStatusEnum.Booked.ToString(), Description = "A job that has the minimum required information (pickup location, dropoff location, vehicle information, assigned driver)" },
+                   new JobStatus { Id = (int)JobStatusEnum.ReadyForPickup, Status = JobStatusEnum.ReadyForPickup.ToString(), Description = "A booked job that is on or passed the pickup date." },
+                   new JobStatus { Id = (int)JobStatusEnum.PreDepartureChecked, Status = JobStatusEnum.PreDepartureChecked.ToString(), Description = "Status once the driver has arrived to pick up the truck and is done the pre departure check" },
+                   new JobStatus { Id = (int)JobStatusEnum.Acknowledged, Status = JobStatusEnum.Acknowledged.ToString(), Description = "Driver has completed the acknowledgement " },
+                   new JobStatus { Id = (int)JobStatusEnum.InProgress, Status = JobStatusEnum.InProgress.ToString(), Description = "A job that is currently in progress" },
+                   new JobStatus { Id = (int)JobStatusEnum.Stopped, Status = JobStatusEnum.Stopped.ToString(), Description = "status when driver stops for the night" },
+                   new JobStatus { Id = (int)JobStatusEnum.Delayed, Status = JobStatusEnum.Delayed.ToString(), Description = "status when driver stops for the night" },
+                   new JobStatus { Id = (int)JobStatusEnum.Arrived, Status = JobStatusEnum.Arrived.ToString(), Description = "A job that has arrived at the destination" },
+                   new JobStatus { Id = (int)JobStatusEnum.ArrivalChecked, Status = JobStatusEnum.ArrivalChecked.ToString(), Description = "status when driver is competed arrival checklist" },
+                   new JobStatus { Id = (int)JobStatusEnum.QADone, Status = JobStatusEnum.QADone.ToString(), Description = "QA completed" },
+                   new JobStatus { Id = (int)JobStatusEnum.PaymentDone, Status = JobStatusEnum.PaymentDone.ToString(), Description = "Payment Done" },
+                   new JobStatus { Id = (int)JobStatusEnum.BillingDone, Status = JobStatusEnum.BillingDone.ToString(), Description = "Billing Done" },
+                   new JobStatus { Id = (int)JobStatusEnum.Completed, Status = JobStatusEnum.Completed.ToString(), Description = "A job that has been completed successfully" }
+               );
+
             modelBuilder.Entity<Company>(entity =>
             {
                 entity.HasIndex(e => e.CreatedById, "IX_Companies_CreatedById");
@@ -107,95 +126,41 @@ namespace TruckMove.API.DAL.Models
             });
 
             modelBuilder.Entity<Job>(entity =>
-
             {
-
                 entity.HasIndex(e => e.CompanyId, "IX_Jobs_CompanyId");
-
-
-
                 entity.HasIndex(e => e.Controller, "IX_Jobs_Controller");
-
-
-
                 entity.HasIndex(e => e.CreatedById, "IX_Jobs_CreatedById");
-
-
-
                 entity.HasIndex(e => e.UpdatedById, "IX_Jobs_UpdatedById");
-
-
-
                 entity.HasIndex(e => e.VehicleId, "UQ_Jobs_VehicleId")
-
                     .IsUnique();
-
-
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
-
-
-
                 entity.Property(e => e.IsActive)
-
                     .IsRequired()
-
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-
-
                 entity.Property(e => e.PickupDate).HasColumnType("datetime");
-
-
-
                 entity.HasOne(d => d.Company)
-
                     .WithMany(p => p.Jobs)
-
                     .HasForeignKey(d => d.CompanyId);
-
-
-
                 entity.HasOne(d => d.ControllerNavigation)
-
                     .WithMany(p => p.JobControllerNavigations)
-
                     .HasForeignKey(d => d.Controller);
-
-
-
                 entity.HasOne(d => d.CreatedBy)
-
                     .WithMany(p => p.JobCreatedBies)
-
                     .HasForeignKey(d => d.CreatedById);
-
-
-
                 entity.HasOne(d => d.DriverNavigation)
-
                     .WithMany(p => p.JobDriverNavigations)
-
                     .HasForeignKey(d => d.Driver)
-
                     .HasConstraintName("FK_Jobs_Users");
-
-
-
+                entity.HasOne(d => d.StatusNavigation)
+                   .WithMany(p => p.Jobs)
+                   .HasForeignKey(d => d.Status)
+                   .HasConstraintName("FK_Jobs_JobStatus");
                 entity.HasOne(d => d.UpdatedBy)
-
                     .WithMany(p => p.JobUpdatedBies)
-
                     .HasForeignKey(d => d.UpdatedById);
-
-
-
                 entity.HasOne(d => d.Vehicle)
-
                     .WithOne(p => p.Job)
-
                     .HasForeignKey<Job>(d => d.VehicleId)
-
                     .HasConstraintName("FK_Jobs_Vehicles");
 
             });
@@ -245,6 +210,15 @@ namespace TruckMove.API.DAL.Models
 
             });
 
+            modelBuilder.Entity<JobStatus>(entity =>
+
+            {
+                entity.ToTable("JobStatus");
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Description).HasMaxLength(200);
+                entity.Property(e => e.Status).HasMaxLength(50);
+
+            });
 
             modelBuilder.Entity<Role>(entity =>
             {

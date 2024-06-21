@@ -125,5 +125,6 @@ namespace TruckMove.API.DAL.Repositories
 
 
 
+
     }
 }

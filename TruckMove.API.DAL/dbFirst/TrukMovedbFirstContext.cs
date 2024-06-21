@@ -21,6 +21,7 @@
 //        public virtual DbSet<Job> Jobs { get; set; } = null!;
 //        public virtual DbSet<JobContact> JobContacts { get; set; } = null!;
 //        public virtual DbSet<JobSequence> JobSequences { get; set; } = null!;
+//        public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
 //        public virtual DbSet<Role> Roles { get; set; } = null!;
 //        public virtual DbSet<User> Users { get; set; } = null!;
 //        public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
@@ -132,6 +133,11 @@
 //                    .HasForeignKey(d => d.Driver)
 //                    .HasConstraintName("FK_Jobs_Users");
 
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.Jobs)
+//                    .HasForeignKey(d => d.Status)
+//                    .HasConstraintName("FK_Jobs_JobStatus");
+
 //                entity.HasOne(d => d.UpdatedBy)
 //                    .WithMany(p => p.JobUpdatedBies)
 //                    .HasForeignKey(d => d.UpdatedById);
@@ -166,6 +172,17 @@
 //                entity.HasNoKey();
 
 //                entity.ToTable("JobSequence");
+//            });
+
+//            modelBuilder.Entity<JobStatus>(entity =>
+//            {
+//                entity.ToTable("JobStatus");
+
+//                entity.Property(e => e.Id).ValueGeneratedNever();
+
+//                entity.Property(e => e.Description).HasMaxLength(200);
+
+//                entity.Property(e => e.Status).HasMaxLength(50);
 //            });
 
 //            modelBuilder.Entity<Role>(entity =>

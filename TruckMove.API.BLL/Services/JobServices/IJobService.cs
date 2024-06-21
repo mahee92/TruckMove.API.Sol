@@ -29,6 +29,6 @@ namespace TruckMove.API.BLL.Services.JobServices
         Response<JobOutPutDTO> GetAllAsync(int i);
 
         IQueryable<MobileJobDto> GetAllAsync2(int i);
-
+        Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints);
     }
 }

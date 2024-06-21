@@ -16,6 +16,7 @@ using TruckMove.API.BLL.Models.VehicleDTOs;
 using AutoMapper.QueryableExtensions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -24,12 +25,13 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IMapper _mapper;
         private readonly IRepository<Job> _repository;
         private readonly IRepository<JobContact> _repositoryJobContact;
+        private readonly IRepository<WayPoint> _repositoryWayPoint;
         private readonly IJobRepository _jobRepository;
         private readonly IRepository<Vehicle> _repositoryVehicle;
         private readonly IRepository<VehicleNote> _repositoryVehicleNote;
         private readonly IRepository<VehicleImage> _repositoryVehicleImage;
 
-        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle,IRepository<VehicleNote> repositoryVehicleNote, IRepository<VehicleImage> repositoryVehicleImage)
+        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle,IRepository<VehicleNote> repositoryVehicleNote, IRepository<VehicleImage> repositoryVehicleImage, IRepository<WayPoint> repositoryWayPoint)
         {
             _mapper = mapper;
             _repository = repository;
@@ -38,6 +40,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryVehicle = repositoryVehicle;
             _repositoryVehicleNote = repositoryVehicleNote;
             _repositoryVehicleImage = repositoryVehicleImage;
+            _repositoryWayPoint = repositoryWayPoint;
         }
 
         public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
@@ -127,7 +130,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             try
             {
                 
-                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.VehicleNotes", "VehicleNavigation.VehicleImages");
+                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.VehicleNotes", "VehicleNavigation.VehicleImages", "WayPoints");
                 //
                 if (job == null)
                 {
@@ -443,7 +446,9 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-       
+
+
+
         //public IQueryable<Job> GetAllAsync(int driverId)
         //{
         //   //// Response<JobDto> response = new Response<JobDto>();
@@ -472,6 +477,53 @@ namespace TruckMove.API.BLL.Services.JobServices
         //    // return response;
         //}
         #endregion
+
+        #region WayPoint
+        ////public Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints)
+        ////{
+        ////    //create this method
+        ////    throw new NotImplementedException();
+        ////}
+        ///
+
+        // create method WayPointAddDelete to add or delete waypoints
+        public async Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints)
+        {
+            Response<WayPointDto> response = new Response<WayPointDto>();
+            try
+            {
+                  
+                List<WayPoint> existingWayPoints = await _jobRepository.GetWayPointsByJobId(wayPoints[0].JobId);
+                if (existingWayPoints.Count > 0)
+                {
+                    await _repositoryWayPoint.DeleteByIdsAsync(existingWayPoints.Select(x => x.Id).ToList());
+                }
+
+                List<WayPoint> newWayPoints = CreateWayPointList(wayPoints);
+                await _repositoryWayPoint.AddRangeAsync(newWayPoints);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+        // create method CreateWayPointList to create list of waypoints
+        public List<WayPoint> CreateWayPointList(List<WayPointDto> wayPoints)
+        {
+            List<WayPoint> wayPointList = new List<WayPoint>();
+            foreach (var wayPoint in wayPoints)
+            {
+                wayPointList.Add(new WayPoint { JobId = wayPoint.JobId, Location = wayPoint.Location, Coordinates = wayPoint.Coordinates});
+            }
+            return wayPointList;
+        }
+        #endregion
+
 
     }
 }

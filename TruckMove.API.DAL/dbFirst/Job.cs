@@ -35,6 +35,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual User? ControllerNavigation { get; set; }
         public virtual User? CreatedBy { get; set; }
         public virtual User? DriverNavigation { get; set; }
+        public virtual JobStatus? StatusNavigation { get; set; }
         public virtual User? UpdatedBy { get; set; }
         public virtual Vehicle? Vehicle { get; set; }
         public virtual Vehicle? VehicleNavigation { get; set; }

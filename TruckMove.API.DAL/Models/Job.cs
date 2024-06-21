@@ -35,7 +35,7 @@ namespace TruckMove.API.DAL.Models
         public virtual Vehicle? Vehicle { get; set; }
         public virtual Vehicle? VehicleNavigation { get; set; }
         public virtual User? DriverNavigation { get; set; }
-
         public virtual ICollection<WayPoint> WayPoints { get; set; }
+        public virtual JobStatus? StatusNavigation { get; set; }
     }
 }

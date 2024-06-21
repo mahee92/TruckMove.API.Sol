@@ -138,6 +138,7 @@ internal class Program
             profile.CreateGenericMap<Vehicle, VehicleOutputDto>();
             profile.CreateGenericMap<VehicleImage, VehicleImageDto>();
             profile.CreateGenericMap<VehicleImageDto, VehicleImage>();
+            profile.CreateGenericMap<WayPoint, WayPointDto>();
 
 
 
@@ -255,6 +256,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<VehicleNote>, Repository<VehicleNote>>();
         builder.Services.AddScoped<IRepository<JobContact>, Repository<JobContact>>();
         builder.Services.AddScoped<IRepository<VehicleImage>, Repository<VehicleImage>>();
+        builder.Services.AddScoped<IRepository<WayPoint>, Repository<WayPoint>>();
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IJobRepository, JobRepository>();

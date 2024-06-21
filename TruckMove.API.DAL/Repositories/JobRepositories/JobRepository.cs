@@ -85,6 +85,10 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         {
             return _dbSet.Where(e => e.IsActive).OrderBy(x=>x.CreatedDate).AsQueryable();
         }
+        public async Task<List<WayPoint>> GetWayPointsByJobId(int jobId)
+        {
+            return await _context.Set<WayPoint>().Where(x => x.JobId == jobId).ToListAsync();
+        }
 
 
     }

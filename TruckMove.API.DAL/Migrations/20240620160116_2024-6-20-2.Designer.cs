@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240620160116_2024-6-20-2")]
+    partial class _20246202
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -217,8 +219,6 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.HasIndex("Driver");
 
-                    b.HasIndex("Status");
-
                     b.HasIndex(new[] { "CompanyId" }, "IX_Jobs_CompanyId");
 
                     b.HasIndex(new[] { "Controller" }, "IX_Jobs_Controller");
@@ -284,111 +284,6 @@ namespace TruckMove.API.DAL.Migrations
                         .HasColumnType("bigint");
 
                     b.ToTable("JobSequence", (string)null);
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.JobStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("JobStatus", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "A job that has been created in the system but does not have the minimum required information to complete the booking",
-                            Status = "Planned"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "A job that has the minimum required information (pickup location, dropoff location, vehicle information, assigned driver)",
-                            Status = "Booked"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "A booked job that is on or passed the pickup date.",
-                            Status = "ReadyForPickup"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Status once the driver has arrived to pick up the truck and is done the pre departure check",
-                            Status = "PreDepartureChecked"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Driver has completed the acknowledgement ",
-                            Status = "Acknowledged"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Description = "A job that is currently in progress",
-                            Status = "InProgress"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Description = "status when driver stops for the night",
-                            Status = "Stopped"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Description = "status when driver stops for the night",
-                            Status = "Delayed"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Description = "A job that has arrived at the destination",
-                            Status = "Arrived"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Description = "status when driver is competed arrival checklist",
-                            Status = "ArrivalChecked"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Description = "QA completed",
-                            Status = "QADone"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Description = "Payment Done",
-                            Status = "PaymentDone"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Description = "Billing Done",
-                            Status = "BillingDone"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Description = "A job that has been completed successfully",
-                            Status = "Completed"
-                        });
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Role", b =>
@@ -799,11 +694,6 @@ namespace TruckMove.API.DAL.Migrations
                         .HasForeignKey("Driver")
                         .HasConstraintName("FK_Jobs_Users");
 
-                    b.HasOne("TruckMove.API.DAL.Models.JobStatus", "StatusNavigation")
-                        .WithMany("Jobs")
-                        .HasForeignKey("Status")
-                        .HasConstraintName("FK_Jobs_JobStatus");
-
                     b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
                         .WithMany("JobUpdatedBies")
                         .HasForeignKey("UpdatedById");
@@ -820,8 +710,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("CreatedBy");
 
                     b.Navigation("DriverNavigation");
-
-                    b.Navigation("StatusNavigation");
 
                     b.Navigation("UpdatedBy");
 
@@ -1014,11 +902,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("VehicleNavigation");
 
                     b.Navigation("WayPoints");
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.JobStatus", b =>
-                {
-                    b.Navigation("Jobs");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Role", b =>
