@@ -9,21 +9,13 @@ using TruckMove.API.BLL.Models.VehicleDtos;
 
 namespace TruckMove.API.BLL.Models.JobDTOs
 {
-    public class MobileJobDto
+    public partial class WayPointDto
     {
-        [Key]
         public int Id { get; set; }
+        public int JobId { get; set; }
+        public string? Location { get; set; }
+        public string? Coordinates { get; set; }
 
-        public string? PickupLocation { get; set; }
-
-        public string? DropOfLocation { get; set; }
-
-        public VehicleDto? VehicleNavigation { get; set; }
-
-        public DateTime? PickupDate { get; set; }
-
-        public int? Status { get; set; }
-
-
+       
     }
 }

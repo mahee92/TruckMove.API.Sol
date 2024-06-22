@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TruckMove.API.DAL.Repositories.JobRepositories
 {
@@ -24,7 +25,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         }
         public async Task<int> GetNextJobId()
         {
-
+    
             var connection = _context.Database.GetDbConnection();
             await connection.OpenAsync();
 
@@ -81,9 +82,16 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             //Add the driver Id
             return await query.Where(e => e.IsActive).ToListAsync();
         }
-        public IQueryable<Job> GetAllAsync()
+        public IQueryable<Job> GetAllAsync(int driverId)
         {
-            return _dbSet.Where(e => e.IsActive).OrderBy(x=>x.CreatedDate).AsQueryable();
+            var query = _dbSet.Where(e => e.IsActive && e.Driver == driverId).AsQueryable();
+
+           // string sqlQuery = query.ToQueryString();
+            return query;
+        }
+        public async Task<List<WayPoint>> GetWayPointsByJobId(int jobId)
+        {
+            return await _context.Set<WayPoint>().Where(x => x.JobId == jobId).ToListAsync();
         }
 
 

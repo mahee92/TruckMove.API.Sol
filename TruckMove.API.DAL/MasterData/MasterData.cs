@@ -16,5 +16,22 @@ namespace TruckMove.API.DAL.MasterData
             PayrollTeam = 4,
             Driver = 5
         }
+        public enum JobStatusEnum
+        {
+            Planned = 1,
+            Booked = 2,
+            ReadyForPickup = 3,
+            PreDepartureChecked = 4,
+            Acknowledged = 5,
+            InProgress = 6,
+            Stopped = 7,
+            Delayed=8,
+            Arrived = 9,
+            ArrivalChecked = 10,
+            QADone = 11,
+            PaymentDone = 12,
+            BillingDone = 13,
+            Completed = 14
+        }
     }
 }

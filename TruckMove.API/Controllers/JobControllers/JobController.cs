@@ -13,6 +13,7 @@ using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.Controllers.Primary;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TruckMove.API.Controllers.JobControllers
 {
@@ -68,6 +69,7 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+     
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
@@ -83,44 +85,7 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllAsync()
-        //{
-        //    var response = await _jobService.GetAllAsync();
-        //    if (response.Success)
-        //    {
-        //        return Ok(response.Objects);
-        //    }
-        //    else
-        //    {
-
-        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
-        //    }
-        //}
-        //[HttpGet("Odata/GetAll")]       
-        //[EnableQuery(PageSize = 10)]
-        //public  IActionResult GetAllAsync()
-        //{
-        //    var response =  _jobService.GetAllAsync(1);
-        //    if (response.Success)
-        //    {
-        //        return Ok(response.Objects);
-        //    }
-        //    else
-        //    {
-
-        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
-        //    }
-        //}
-
-        //[HttpGet("Odata/GetAll")]
-        //[EnableQuery(PageSize = 10)]
-        //public IActionResult Get()
-        //{
-            
-        //    return Ok(_jobService.GetAllAsync2(1));
-        //}
-
+     
         #endregion
 
         #region Contacts
@@ -241,6 +206,23 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         #endregion
 
+        #region WayPoint
+        [HttpPost("WayPoint/AddDelete")]
+        public async Task<IActionResult> AddDeleteWayPoint([FromBody] List<WayPointDto> wayPoints)
+        {
+            var response = await _jobService.WayPointAddDelete(wayPoints);
+            if (response.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
+
+
         #region Mobile
 
         //[HttpGet("Mobile/GetDriverJobStaus")]
@@ -258,7 +240,23 @@ namespace TruckMove.API.Controllers.JobControllers
         //    }
         //}
 
+        [HttpGet("/Odata/Mobile/Job/Get")]
+        [EnableQuery]
+        [Authorize(Roles = "Driver")]
+        public IActionResult Get()
+        {
+            
+            var query = _jobService.GetAllAsync(Convert.ToInt32(_authUserService.GetUserId()));
+            var count = query.Count();
+            if (count == 0)
+            {
+                
+                return Ok();
+            }
+            return Ok(query);
+        }
 
+        
         #endregion
 
 

@@ -20,6 +20,7 @@ namespace TruckMove.API.DAL.Models
             UserRoleCreatedBies = new HashSet<UserRole>();
             UserRoleUpdatedBies = new HashSet<UserRole>();
             UserRoleUsers = new HashSet<UserRole>();
+            JobDriverNavigations = new HashSet<Job>();
         }
 
         public int Id { get; set; }
@@ -44,5 +45,7 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<UserRole> UserRoleCreatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleUpdatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleUsers { get; set; }
+
+        public virtual ICollection<Job> JobDriverNavigations { get; set; }
     }
 }

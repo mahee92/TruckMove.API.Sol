@@ -16,6 +16,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         Task<List<JobContact>> GetJobContactsByJobId(int jobId);
         Task<List<Job>> GetAllJobsByDriverAsync(int driverid, params string[] includeProperties);
 
-        IQueryable<Job> GetAllAsync();
+        IQueryable<Job> GetAllAsync(int driverId);
+        Task<List<WayPoint>> GetWayPointsByJobId(int jobId);
     }
 }

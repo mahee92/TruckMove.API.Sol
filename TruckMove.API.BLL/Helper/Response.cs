@@ -29,6 +29,7 @@ namespace TruckMove.API.BLL.Helper
         fileNotFound = 300,
         alreadyExists = 409,
         invalidLogin = 401,
-        validationError = 422
+        validationError = 422,
+        noreco
     }
 }

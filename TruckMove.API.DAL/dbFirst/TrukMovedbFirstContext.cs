@@ -21,12 +21,14 @@
 //        public virtual DbSet<Job> Jobs { get; set; } = null!;
 //        public virtual DbSet<JobContact> JobContacts { get; set; } = null!;
 //        public virtual DbSet<JobSequence> JobSequences { get; set; } = null!;
+//        public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
 //        public virtual DbSet<Role> Roles { get; set; } = null!;
 //        public virtual DbSet<User> Users { get; set; } = null!;
 //        public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
 //        public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
 //        public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
 //        public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
+//        public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
@@ -108,9 +110,13 @@
 
 //                entity.Property(e => e.Id).ValueGeneratedNever();
 
+//                entity.Property(e => e.EstimatedDeliveryDate).HasColumnType("datetime");
+
 //                entity.Property(e => e.IsActive)
 //                    .IsRequired()
 //                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+//                entity.Property(e => e.PickupDate).HasColumnType("datetime");
 
 //                entity.HasOne(d => d.Company)
 //                    .WithMany(p => p.Jobs)
@@ -123,6 +129,16 @@
 //                entity.HasOne(d => d.CreatedBy)
 //                    .WithMany(p => p.JobCreatedBies)
 //                    .HasForeignKey(d => d.CreatedById);
+
+//                entity.HasOne(d => d.DriverNavigation)
+//                    .WithMany(p => p.JobDriverNavigations)
+//                    .HasForeignKey(d => d.Driver)
+//                    .HasConstraintName("FK_Jobs_Users");
+
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.Jobs)
+//                    .HasForeignKey(d => d.Status)
+//                    .HasConstraintName("FK_Jobs_JobStatus");
 
 //                entity.HasOne(d => d.UpdatedBy)
 //                    .WithMany(p => p.JobUpdatedBies)
@@ -158,6 +174,17 @@
 //                entity.HasNoKey();
 
 //                entity.ToTable("JobSequence");
+//            });
+
+//            modelBuilder.Entity<JobStatus>(entity =>
+//            {
+//                entity.ToTable("JobStatus");
+
+//                entity.Property(e => e.Id).ValueGeneratedNever();
+
+//                entity.Property(e => e.Description).HasMaxLength(200);
+
+//                entity.Property(e => e.Status).HasMaxLength(50);
 //            });
 
 //            modelBuilder.Entity<Role>(entity =>
@@ -283,6 +310,17 @@
 //                    .HasForeignKey(d => d.VehicleId)
 //                    .OnDelete(DeleteBehavior.ClientSetNull)
 //                    .HasConstraintName("FK_VehicleNotes_Vehicles");
+//            });
+
+//            modelBuilder.Entity<WayPoint>(entity =>
+//            {
+//                entity.Property(e => e.Id).ValueGeneratedNever();
+
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.WayPoints)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_WayPoints_Jobs");
 //            });
 
 //            modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
