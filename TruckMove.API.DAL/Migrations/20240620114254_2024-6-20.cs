@@ -63,6 +63,12 @@ namespace TruckMove.API.DAL.Migrations
                 column: "Driver",
                 principalTable: "Users",
                 principalColumn: "Id");
+           
+            migrationBuilder.AddColumn<DateTime>(
+               name: "EstimatedDeliveryDate",
+               table: "Jobs",
+               type: "datetime",
+               nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -105,6 +111,10 @@ namespace TruckMove.API.DAL.Migrations
                 keyValue: 5,
                 column: "RoleName",
                 value: "Drivers");
+
+            migrationBuilder.DropColumn(
+               name: "EstimatedDeliveryDate",
+               table: "Jobs");
         }
     }
 }

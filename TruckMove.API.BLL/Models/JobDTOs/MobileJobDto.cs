@@ -14,13 +14,15 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         [Key]
         public int Id { get; set; }
 
-        public string PickupLocation { get; set; }
+        public string? PickupLocation { get; set; }
 
-        public string DropOfLocation { get; set; }
+        public string? DropOfLocation { get; set; }
 
-        public VehicleDto VehicleNavigation { get; set; }
+        public VehicleDto? VehicleNavigation { get; set; }
 
-        public DateTime PickupDate { get; set; } 
+        public DateTime? PickupDate { get; set; }
+
+        public int? Status { get; set; }
 
 
     }

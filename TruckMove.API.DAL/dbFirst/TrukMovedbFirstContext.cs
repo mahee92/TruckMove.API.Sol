@@ -110,6 +110,8 @@
 
 //                entity.Property(e => e.Id).ValueGeneratedNever();
 
+//                entity.Property(e => e.EstimatedDeliveryDate).HasColumnType("datetime");
+
 //                entity.Property(e => e.IsActive)
 //                    .IsRequired()
 //                    .HasDefaultValueSql("(CONVERT([bit],(1)))");

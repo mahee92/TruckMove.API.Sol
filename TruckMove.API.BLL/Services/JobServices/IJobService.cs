@@ -16,7 +16,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response<JobDto>> PostPutAsync(JobDto job,int userId);
         Task<Response> GetNextJobId();
         Task<Response<JobOutPutDTO>> GetAsync(int id);
-        //Task<Response<JobDto>> GetAllAsync();
+       
         Task<Response> ContactAddDelete(int id, List<int> contacts);
         Task<Response<VehicleDto>> VehiclePostPutAsync(VehicleDto vehicle, int userId);
         Task<Response<VehicleNoteDto>> VehicleNotePostPutAsync(VehicleNoteDto note, int userId);
@@ -25,10 +25,11 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         Task<Response> VehicleImageDeleteAsync(int id);
 
-        Response<DriverJobStatus> GetDriverJobStaus(int driverId);
-        Response<JobOutPutDTO> GetAllAsync(int i);
 
-        IQueryable<MobileJobDto> GetAllAsync2(int i);
         Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints);
+
+        Response<DriverJobStatus> GetDriverJobStaus(int driverId);
+        IQueryable<MobileJobDto> GetAllAsync(int driverId);
+       
     }
 }

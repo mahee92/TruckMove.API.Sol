@@ -22,12 +22,15 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         public string? DropOfLocation { get; set; }
         public double? TotalDistance { get; set; }
         public double? TotalDrivingTime { get; set; }
-        public double? EstimatedDaysofTravel { get; set; }
-        //[DateFormat("yyyy-MM-dd")]
+        public double? EstimatedDaysofTravel { get; set; }      
         public DateTime? PickupDate { get; set; }
         public int? Driver { get; set; }
         public string? PickupCoordinates { get; set; }
         public string? DropOfCoordinates { get; set; }
+
+        public int? VehicleId { get; set; }
+
+        public DateTime? EstimatedDeliveryDate { get; set; }
 
 
 

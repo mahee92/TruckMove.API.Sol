@@ -134,6 +134,7 @@ namespace TruckMove.API.DAL.Models
                 entity.HasIndex(e => e.VehicleId, "UQ_Jobs_VehicleId")
                     .IsUnique();
                 entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.EstimatedDeliveryDate).HasColumnType("datetime");
                 entity.Property(e => e.IsActive)
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");

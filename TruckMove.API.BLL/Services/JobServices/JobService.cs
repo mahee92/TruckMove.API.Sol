@@ -17,6 +17,7 @@ using AutoMapper.QueryableExtensions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -42,7 +43,20 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryVehicleImage = repositoryVehicleImage;
             _repositoryWayPoint = repositoryWayPoint;
         }
+        public int DetermineJobStatus(JobDto job)
+        {
+            //JobOutPutDTO
+            if (job.CompanyId > 0 &&
+                !string.IsNullOrWhiteSpace(job.PickupLocation) &&
+                !string.IsNullOrWhiteSpace(job.DropOfLocation) &&
+                job.VehicleId.HasValue &&
+                job.Driver.HasValue)
+            {
+                return (int)JobStatusEnum.Booked;
+            }
 
+            return (int)JobStatusEnum.Planned;
+        }
         public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
         {
             Response<JobDto> response = new Response<JobDto>();
@@ -57,17 +71,14 @@ namespace TruckMove.API.BLL.Services.JobServices
                     return response;
                 }
 
-
                 var existingJob = await _repository.GetAsync(job.Id);
-
-
 
                 if (existingJob == null)
                 {
                     var Job = _mapper.Map<Job>(job);
                     Job.CreatedDate = DateTime.Now;
                     Job.CreatedById = userId;
-
+                    Job.Status = DetermineJobStatus(job);
                     var res = await _repository.AddAsync(Job);
                     response.Success = true;
                     response.Object = _mapper.Map<JobDto>(res);
@@ -80,6 +91,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     res.CreatedById = existingJob.CreatedById;
                     res.LastModifiedDate = DateTime.Now;
                     res.UpdatedById = userId;
+                    res.Status = DetermineJobStatus(job);
                     await _repository.UpdateAsync(res);
                     response.Success = true;
                 }
@@ -102,6 +114,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
             return true;
         }
+        
 
         // CREATE METHOD TO GET NEXT JOB ID
         public  async Task<Response> GetNextJobId()
@@ -172,64 +185,8 @@ namespace TruckMove.API.BLL.Services.JobServices
 
 
         }
-        //public async Task<Response<JobDto>> GetAllAsync()
-        //{
-        //    Response<JobDto> response = new Response<JobDto>();
-        //    try
-        //    {
-        //        var jobs = await _repository.GetAllAsync();
-        //        response.Success = true;
-        //        if (jobs.Count > 0)
-        //        {
-
-        //            response.Objects = new List<JobDto>();
-        //            response.Objects.AddRange(_mapper.Map<List<JobDto>>(jobs));
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.Success = false;
-        //        response.ErrorType = ErrorCode.dbError;
-        //        response.ErrorMessage = ex.Message;
-        //    }
-
-        //    return response;
-        //}
-        public Response<JobOutPutDTO> GetAllAsync(int i)
-        {
-            Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
-            try
-            {
-                var jobs1 = _jobRepository.GetAllAsync();
-                var jobs = _jobRepository.GetAllAsync().ToList();
-                response.Success = true;
-                if (jobs.Count > 0)
-                {
-
-                    ////response.Objects = new List<JobDto>();
-                    ////response.Objects.AddRange(_mapper.Map<List<JobDto>>(jobs));
-                }
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.ErrorType = ErrorCode.dbError;
-                response.ErrorMessage = ex.Message;
-            }
-
-            return response;
-        }
-        public IQueryable<MobileJobDto> GetAllAsync2(int i)
-        {
-            var x = _jobRepository.GetAllAsync();
-            var sql = x.ToQueryString();
-             var jobDtos = x.ProjectTo<MobileJobDto>(_mapper.ConfigurationProvider);
-            return jobDtos;
-           
-       }
-      
+        
+        #region Contact
         public async Task<Response> ContactAddDelete(int id, List<int> contacts)
         {
             Response response = new Response();
@@ -263,8 +220,8 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
             return jobContacts;
         }
+        #endregion
 
-        
         #region Vehicle
         public async Task<Response<VehicleDto>> VehiclePostPutAsync(VehicleDto vehicle, int userId)
         {
@@ -280,8 +237,20 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newvehicle.CreatedById = userId;
 
                     var res = await _repositoryVehicle.AddAsync(newvehicle);
-                    response.Success = true;
+                    
                     response.Object = _mapper.Map<VehicleDto>(res);
+
+                    // Update job 
+                    var job = await _repository.GetAsync(vehicle.JobId);
+                    if (job != null)
+                    {
+                        job.VehicleId = res.Id;
+                        job.Status = DetermineJobStatus(_mapper.Map<JobDto>(job));
+                       
+                        await _repository.UpdateAsync(job);
+                    }
+                    response.Success = true;
+
                 }
                 else
                 {
@@ -446,47 +415,16 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-
-
-
-        //public IQueryable<Job> GetAllAsync(int driverId)
-        //{
-        //   //// Response<JobDto> response = new Response<JobDto>();
-        //   // try
-        //   // {
-        //   //     //var jobs = await _jobRepository.GetAllJobsByDriverAsync(driverId, "VehicleNavigation");
-        //   //     //var jobs = await _jobRepository.GetAllJobsByDriverAsync(driverId, "VehicleNavigation");
-        //       var jobs = _jobRepository.GetAllAsyn();
-        //    return jobs;
-        //   //     //response.Success = true;
-        //   //     //if (jobs.Count > 0)
-        //   //     //{
-
-        //    //     //    response.Objects = new List<JobDto>();
-        //    //     //    response.Objects.AddRange(_mapper.Map<List<JobDto>>(jobs));
-        //    //     //}
-
-        //    // }
-        //    // catch (Exception ex)
-        //    // {
-        //    //     response.Success = false;
-        //    //     response.ErrorType = ErrorCode.dbError;
-        //    //     response.ErrorMessage = ex.Message;
-        //    // }
-
-        //    // return response;
-        //}
+        public IQueryable<MobileJobDto> GetAllAsync(int driverId)
+        {
+            var jobs = _jobRepository.GetAllAsync(driverId);
+            return jobs.ProjectTo<MobileJobDto>(_mapper.ConfigurationProvider); ;
+        }
+        
         #endregion
 
         #region WayPoint
-        ////public Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints)
-        ////{
-        ////    //create this method
-        ////    throw new NotImplementedException();
-        ////}
-        ///
 
-        // create method WayPointAddDelete to add or delete waypoints
         public async Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints)
         {
             Response<WayPointDto> response = new Response<WayPointDto>();
@@ -522,6 +460,10 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
             return wayPointList;
         }
+
+        
+
+
         #endregion
 
 

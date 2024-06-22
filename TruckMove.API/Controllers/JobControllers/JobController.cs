@@ -114,13 +114,7 @@ namespace TruckMove.API.Controllers.JobControllers
         //    }
         //}
 
-        //[HttpGet("Odata/GetAll")]
-        //[EnableQuery(PageSize = 10)]
-        //public IActionResult Get()
-        //{
-            
-        //    return Ok(_jobService.GetAllAsync2(1));
-        //}
+       
 
         #endregion
 
@@ -257,8 +251,8 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
         #endregion
-      
-        
+
+
         #region Mobile
 
         //[HttpGet("Mobile/GetDriverJobStaus")]
@@ -276,7 +270,14 @@ namespace TruckMove.API.Controllers.JobControllers
         //    }
         //}
 
+        [HttpGet("/Odata/Job/Get")]
+        [EnableQuery(PageSize = 10)]
+      //  [Authorize(Roles = "Driver")]
+        public IActionResult Get()
+        {
 
+            return Ok(_jobService.GetAllAsync(Convert.ToInt32(_authUserService.GetUserId())));
+        }
         #endregion
 
 
