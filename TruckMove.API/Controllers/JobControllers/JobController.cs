@@ -240,21 +240,7 @@ namespace TruckMove.API.Controllers.JobControllers
         //    }
         //}
 
-        [HttpGet("/Odata/Mobile/Job/Get")]
-        [EnableQuery]
-        [Authorize(Roles = "Driver")]
-        public IActionResult Get()
-        {
-            
-            var query = _jobService.GetAllAsync(Convert.ToInt32(_authUserService.GetUserId()));
-            var count = query.Count();
-            if (count == 0)
-            {
-                
-                return Ok();
-            }
-            return Ok(query);
-        }
+        
 
         
         #endregion
