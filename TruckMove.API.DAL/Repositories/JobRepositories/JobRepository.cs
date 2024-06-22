@@ -25,7 +25,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         }
         public async Task<int> GetNextJobId()
         {
-
+    
             var connection = _context.Database.GetDbConnection();
             await connection.OpenAsync();
 
@@ -82,13 +82,11 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             //Add the driver Id
             return await query.Where(e => e.IsActive).ToListAsync();
         }
-        public IQueryable<Job> GetAllAsync(int? driverId)
+        public IQueryable<Job> GetAllAsync(int driverId)
         {
-            var query = _dbSet.Where(e => e.IsActive).OrderByDescending(x=>x.PickupDate).AsQueryable();
-            if (driverId.HasValue)
-            {
-                query = query.Where(e => e.Driver == driverId.Value);
-            }
+            var query = _dbSet.Where(e => e.IsActive && e.Driver == driverId).AsQueryable();
+
+           // string sqlQuery = query.ToQueryString();
             return query;
         }
         public async Task<List<WayPoint>> GetWayPointsByJobId(int jobId)

@@ -22,16 +22,16 @@ namespace TruckMove.API.DAL.MasterData
             Booked = 2,
             ReadyForPickup = 3,
             PreDepartureChecked = 4,
-            Acknowledged = 6,
-            InProgress = 7,
-            Stopped = 8,
-            Delayed=9,
-            Arrived = 10,
-            ArrivalChecked = 11,
-            QADone = 12,
-            PaymentDone = 13,
-            BillingDone = 14,
-            Completed = 15
+            Acknowledged = 5,
+            InProgress = 6,
+            Stopped = 7,
+            Delayed=8,
+            Arrived = 9,
+            ArrivalChecked = 10,
+            QADone = 11,
+            PaymentDone = 12,
+            BillingDone = 13,
+            Completed = 14
         }
     }
 }

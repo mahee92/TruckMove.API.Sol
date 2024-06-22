@@ -417,8 +417,8 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public IQueryable<MobileJobDto> GetAllAsync(int driverId)
         {
-            var jobs = _jobRepository.GetAllAsync(driverId);
-            return jobs.ProjectTo<MobileJobDto>(_mapper.ConfigurationProvider); ;
+            var jobs= _jobRepository.GetAllAsync(driverId);
+            return jobs.ProjectTo<MobileJobDto>(_mapper.ConfigurationProvider); 
         }
         
         #endregion
