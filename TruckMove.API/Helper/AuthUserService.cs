@@ -18,6 +18,7 @@ namespace TruckMove.API.Helper
 #if DEBUG
             // This code will only run in debug mode
             return "2";
+           // return "21";
 #else
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 #endif
