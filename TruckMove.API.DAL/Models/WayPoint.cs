@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public  class WayPoint : AuditableEntity, IActiveEntity
+    public  class WayPoint 
     {
         public int Id { get; set; }
         public int JobId { get; set; }
@@ -12,6 +13,6 @@ namespace TruckMove.API.DAL.Models
         public string? Coordinates { get; set; }
 
         public virtual Job Job { get; set; } = null!;
-        public bool IsActive { get; set; }
+      
     }
 }

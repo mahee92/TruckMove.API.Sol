@@ -94,6 +94,19 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             return await _context.Set<WayPoint>().Where(x => x.JobId == jobId).ToListAsync();
         }
 
+        public async Task DeleteWaypointsByIdsAsync(IEnumerable<int> ids)
+        {
+            var entities = await _context.Set<WayPoint>().Where(e => ids.Contains(e.Id)).ToListAsync();
+            _context.Set<WayPoint>().RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<List<WayPoint>> AddWaypointsRangeAsync(List<WayPoint> entities)
+        {
+            await _context.Set<WayPoint>().AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+            return entities.ToList();
+        }
+
 
     }
 }

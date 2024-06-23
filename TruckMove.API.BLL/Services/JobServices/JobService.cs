@@ -26,13 +26,13 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IMapper _mapper;
         private readonly IRepository<Job> _repository;
         private readonly IRepository<JobContact> _repositoryJobContact;
-        private readonly IRepository<WayPoint> _repositoryWayPoint;
+    
         private readonly IJobRepository _jobRepository;
         private readonly IRepository<Vehicle> _repositoryVehicle;
         private readonly IRepository<VehicleNote> _repositoryVehicleNote;
         private readonly IRepository<VehicleImage> _repositoryVehicleImage;
 
-        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle,IRepository<VehicleNote> repositoryVehicleNote, IRepository<VehicleImage> repositoryVehicleImage, IRepository<WayPoint> repositoryWayPoint)
+        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle,IRepository<VehicleNote> repositoryVehicleNote, IRepository<VehicleImage> repositoryVehicleImage)
         {
             _mapper = mapper;
             _repository = repository;
@@ -41,7 +41,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryVehicle = repositoryVehicle;
             _repositoryVehicleNote = repositoryVehicleNote;
             _repositoryVehicleImage = repositoryVehicleImage;
-            _repositoryWayPoint = repositoryWayPoint;
+          
         }
         public int DetermineJobStatus(JobDto job)
         {
@@ -434,11 +434,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                 List<WayPoint> existingWayPoints = await _jobRepository.GetWayPointsByJobId(wayPoints[0].JobId);
                 if (existingWayPoints.Count > 0)
                 {
-                    await _repositoryWayPoint.DeleteByIdsAsync(existingWayPoints.Select(x => x.Id).ToList());
+                    await _jobRepository.DeleteWaypointsByIdsAsync(existingWayPoints.Select(x => x.Id).ToList());
                 }
 
                 List<WayPoint> newWayPoints = CreateWayPointList(wayPoints);
-                await _repositoryWayPoint.AddRangeAsync(newWayPoints);
+                await _jobRepository.AddWaypointsRangeAsync(newWayPoints);
                 response.Success = true;
             }
             catch (Exception ex)
