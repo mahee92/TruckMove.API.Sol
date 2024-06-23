@@ -40,7 +40,8 @@ namespace TruckMove.API.DAL.Migrations
                 name: "WayPoints",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     JobId = table.Column<int>(type: "int", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Coordinates = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -66,33 +67,7 @@ namespace TruckMove.API.DAL.Migrations
             migrationBuilder.DropTable(
                 name: "WayPoints");
 
-            migrationBuilder.DropColumn(
-                name: "DropOfCoordinates",
-                table: "Jobs");
-
-            migrationBuilder.DropColumn(
-                name: "PickupCoordinates",
-                table: "Jobs");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "PickupLocation",
-                table: "Jobs",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "DropOfLocation",
-                table: "Jobs",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
-                oldNullable: true);
+            
         }
     }
 }

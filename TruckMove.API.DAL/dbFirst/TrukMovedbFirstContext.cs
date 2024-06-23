@@ -314,8 +314,6 @@
 
 //            modelBuilder.Entity<WayPoint>(entity =>
 //            {
-//                entity.Property(e => e.Id).ValueGeneratedNever();
-
 //                entity.HasOne(d => d.Job)
 //                    .WithMany(p => p.WayPoints)
 //                    .HasForeignKey(d => d.JobId)

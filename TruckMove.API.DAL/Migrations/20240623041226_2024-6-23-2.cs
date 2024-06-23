@@ -4,7 +4,7 @@
 
 namespace TruckMove.API.DAL.Migrations
 {
-    public partial class _20246212 : Migration
+    public partial class _20246232 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

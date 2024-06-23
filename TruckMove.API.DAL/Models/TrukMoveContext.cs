@@ -34,6 +34,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
 
+       
+
         public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -41,7 +43,7 @@ namespace TruckMove.API.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-11;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-15;Trusted_Connection=True;");
             }
         }
 
@@ -358,7 +360,7 @@ namespace TruckMove.API.DAL.Models
             });
             modelBuilder.Entity<WayPoint>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+               
                 entity.HasOne(d => d.Job)
 
                     .WithMany(p => p.WayPoints)
@@ -370,6 +372,7 @@ namespace TruckMove.API.DAL.Models
                     .HasConstraintName("FK_WayPoints_Jobs");
 
             });
+
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

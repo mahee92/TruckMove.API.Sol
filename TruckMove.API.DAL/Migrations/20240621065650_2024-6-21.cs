@@ -30,16 +30,16 @@ namespace TruckMove.API.DAL.Migrations
                     { 2, "A job that has the minimum required information (pickup location, dropoff location, vehicle information, assigned driver)", "Booked" },
                     { 3, "A booked job that is on or passed the pickup date.", "ReadyForPickup" },
                     { 4, "Status once the driver has arrived to pick up the truck and is done the pre departure check", "PreDepartureChecked" },
-                    { 6, "Driver has completed the acknowledgement ", "Acknowledged" },
-                    { 7, "A job that is currently in progress", "InProgress" },
-                    { 8, "status when driver stops for the night", "Stopped" },
-                    { 9, "status when driver stops for the night", "Delayed" },
-                    { 10, "A job that has arrived at the destination", "Arrived" },
-                    { 11, "status when driver is competed arrival checklist", "ArrivalChecked" },
-                    { 12, "QA completed", "QADone" },
-                    { 13, "Payment Done", "PaymentDone" },
-                    { 14, "Billing Done", "BillingDone" },
-                    { 15, "A job that has been completed successfully", "Completed" }
+                    { 5, "Driver has completed the acknowledgement ", "Acknowledged" },
+                    { 6, "A job that is currently in progress", "InProgress" },
+                    { 7, "status when driver stops for the night", "Stopped" },
+                    { 8, "status when driver stops for the night", "Delayed" },
+                    { 9, "A job that has arrived at the destination", "Arrived" },
+                    { 10, "status when driver is competed arrival checklist", "ArrivalChecked" },
+                    { 11, "QA completed", "QADone" },
+                    { 12, "Payment Done", "PaymentDone" },
+                    { 13, "Billing Done", "BillingDone" },
+                    { 14, "A job that has been completed successfully", "Completed" }
                 });
 
             migrationBuilder.CreateIndex(

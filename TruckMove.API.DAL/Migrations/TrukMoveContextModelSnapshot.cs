@@ -17,7 +17,7 @@ namespace TruckMove.API.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.31")
+                .HasAnnotation("ProductVersion", "6.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -334,61 +334,61 @@ namespace TruckMove.API.DAL.Migrations
                         },
                         new
                         {
-                            Id = 6,
+                            Id = 5,
                             Description = "Driver has completed the acknowledgement ",
                             Status = "Acknowledged"
                         },
                         new
                         {
-                            Id = 7,
+                            Id = 6,
                             Description = "A job that is currently in progress",
                             Status = "InProgress"
                         },
                         new
                         {
-                            Id = 8,
+                            Id = 7,
                             Description = "status when driver stops for the night",
                             Status = "Stopped"
                         },
                         new
                         {
-                            Id = 9,
+                            Id = 8,
                             Description = "status when driver stops for the night",
                             Status = "Delayed"
                         },
                         new
                         {
-                            Id = 10,
+                            Id = 9,
                             Description = "A job that has arrived at the destination",
                             Status = "Arrived"
                         },
                         new
                         {
-                            Id = 11,
+                            Id = 10,
                             Description = "status when driver is competed arrival checklist",
                             Status = "ArrivalChecked"
                         },
                         new
                         {
-                            Id = 12,
+                            Id = 11,
                             Description = "QA completed",
                             Status = "QADone"
                         },
                         new
                         {
-                            Id = 13,
+                            Id = 12,
                             Description = "Payment Done",
                             Status = "PaymentDone"
                         },
                         new
                         {
-                            Id = 14,
+                            Id = 13,
                             Description = "Billing Done",
                             Status = "BillingDone"
                         },
                         new
                         {
-                            Id = 15,
+                            Id = 14,
                             Description = "A job that has been completed successfully",
                             Status = "Completed"
                         });
@@ -706,7 +706,10 @@ namespace TruckMove.API.DAL.Migrations
             modelBuilder.Entity("TruckMove.API.DAL.Models.WayPoint", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Coordinates")
                         .HasColumnType("nvarchar(max)");
