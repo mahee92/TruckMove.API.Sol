@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TruckMove.API.DAL.dbFirst;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
@@ -10,7 +11,8 @@ namespace TruckMove.API.DAL.Models
         {
             JobContacts = new HashSet<JobContact>();
             WayPoints = new HashSet<WayPoint>();
-          
+            PreDepartureChecklists = new HashSet<PreDepartureChecklist>();
+
         }
 
         public int? Controller { get; set; }
@@ -41,5 +43,7 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<WayPoint> WayPoints { get; set; }
        
         public virtual JobStatus? StatusNavigation { get; set; }
+
+        public virtual ICollection<PreDepartureChecklist> PreDepartureChecklists { get; set; }
     }
 }

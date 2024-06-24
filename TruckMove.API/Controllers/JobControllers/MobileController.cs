@@ -10,7 +10,7 @@ namespace TruckMove.API.Controllers.JobControllers
 {
     [ApiController]
     [Route("[controller]")]
-    //[Authorize(Roles = "Driver")]
+    [Authorize(Roles = "Driver")]
     public class MobileController : Controller
     {
         private readonly IAuthUserService _authUserService;

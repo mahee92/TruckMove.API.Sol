@@ -33,10 +33,9 @@ namespace TruckMove.API.DAL.Models
  	   public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
 
         public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
-
-       
-
         public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
+
+        public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -371,6 +370,34 @@ namespace TruckMove.API.DAL.Models
 
                     .HasConstraintName("FK_WayPoints_Jobs");
 
+            });
+            modelBuilder.Entity<PreDepartureChecklist>(entity =>
+            {
+                entity.ToTable("PreDepartureChecklist");
+                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
+                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
+                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
+                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
+                entity.Property(e => e.FrontDamage).HasMaxLength(10);
+                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
+                entity.Property(e => e.JackAndTools).HasMaxLength(10);
+                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
+                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
+                entity.Property(e => e.Oil).HasMaxLength(10);
+                entity.Property(e => e.OwnersManual).HasMaxLength(10);
+                entity.Property(e => e.RearDamage).HasMaxLength(10);
+                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
+                entity.Property(e => e.SpareRim).HasMaxLength(10);
+                entity.Property(e => e.TyresCondition).HasMaxLength(10);
+                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
+                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
+                entity.Property(e => e.Water).HasMaxLength(10);
+                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.PreDepartureChecklists)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
             });
 
 
