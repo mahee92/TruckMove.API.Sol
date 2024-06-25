@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.Reflection;
+using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Services.JobServices;
+using TruckMove.API.DAL.Models;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
 
@@ -10,7 +15,7 @@ namespace TruckMove.API.Controllers.JobControllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Driver")]
+   // [Authorize(Roles = "Driver")]
     public class MobileController : Controller
     {
         private readonly IAuthUserService _authUserService;
@@ -42,5 +47,27 @@ namespace TruckMove.API.Controllers.JobControllers
             }
             return Ok(query);
         }
+
+
+        [HttpGet("/DepartureCheck/PreDepartureChecklistFields")]
+        public ActionResult<IEnumerable<FieldInfomation>> GetPreDepartureChecklistFields()
+        {
+            var fieldInfos = typeof(PreDepartureChecklistDto).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Select(prop => new FieldInfomation
+                {
+                    Name = GetJsonPropertyName(prop),
+                    Type = prop.PropertyType.Name
+                })
+                .ToList();
+
+            return Ok(fieldInfos);
+        }
+
+        private string GetJsonPropertyName(PropertyInfo prop)
+        {
+            var jsonPropertyAttr = prop.GetCustomAttribute<JsonPropertyAttribute>();
+            return jsonPropertyAttr != null ? jsonPropertyAttr.PropertyName : prop.Name;
+        }
+
     }
 }

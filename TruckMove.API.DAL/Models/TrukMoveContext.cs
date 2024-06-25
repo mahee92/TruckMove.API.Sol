@@ -371,9 +371,12 @@ namespace TruckMove.API.DAL.Models
                     .HasConstraintName("FK_WayPoints_Jobs");
 
             });
+
             modelBuilder.Entity<PreDepartureChecklist>(entity =>
             {
                 entity.ToTable("PreDepartureChecklist");
+                entity.HasIndex(e => e.JobId, "UQ_PreDepartureChecklist_JobId")
+                    .IsUnique();
                 entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
                 entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
                 entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
@@ -394,12 +397,11 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Water).HasMaxLength(10);
                 entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
                 entity.HasOne(d => d.Job)
-                    .WithMany(p => p.PreDepartureChecklists)
-                    .HasForeignKey(d => d.JobId)
+                    .WithOne(p => p.PreDepartureChecklist)
+                    .HasForeignKey<PreDepartureChecklist>(d => d.JobId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PreDepartureChecklist_Jobs");
             });
-
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

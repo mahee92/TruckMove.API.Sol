@@ -4,7 +4,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class PreDepartureChecklist : AuditableEntity , IActiveEntity
+    public partial class PreDepartureChecklist : AuditableEntity, IActiveEntity
     {
         public int Id { get; set; }
         public int JobId { get; set; }
@@ -31,6 +31,7 @@ namespace TruckMove.API.DAL.Models
         public decimal? FuelLevel { get; set; }
 
         public virtual Job Job { get; set; } = null!;
+
         public bool IsActive { get; set; }
     }
 }

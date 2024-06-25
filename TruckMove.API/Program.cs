@@ -27,7 +27,7 @@ using TruckMove.API.BLL.Models.VehicleDTOs;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OData.Edm; // Added for OData
-
+using Newtonsoft.Json.Serialization;
 
 internal class Program
 {
@@ -67,6 +67,10 @@ internal class Program
         builder.Services.AddControllers().AddOData(options =>
         {
             options.Select().Filter().OrderBy().Expand().SetMaxTop(100); // Added Top option
+        })
+        .AddNewtonsoftJson(options =>
+        {
+            options.SerializerSettings.ContractResolver = new DefaultContractResolver();
         });
 
 
@@ -139,6 +143,8 @@ internal class Program
             profile.CreateGenericMap<VehicleImage, VehicleImageDto>();
             profile.CreateGenericMap<VehicleImageDto, VehicleImage>();
             profile.CreateGenericMap<WayPoint, WayPointDto>();
+            profile.CreateGenericMap<PreDepartureChecklist, PreDepartureChecklistDto>();
+            profile.CreateGenericMap<PreDepartureChecklistDto, PreDepartureChecklist>();
 
 
 

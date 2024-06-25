@@ -11,7 +11,7 @@ namespace TruckMove.API.DAL.Models
         {
             JobContacts = new HashSet<JobContact>();
             WayPoints = new HashSet<WayPoint>();
-            PreDepartureChecklists = new HashSet<PreDepartureChecklist>();
+           
 
         }
 
@@ -34,6 +34,8 @@ namespace TruckMove.API.DAL.Models
 
         public DateTime? EstimatedDeliveryDate { get; set; }
 
+        public int? PreDepatureCheckListId { get; set; }
+
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
@@ -44,6 +46,6 @@ namespace TruckMove.API.DAL.Models
        
         public virtual JobStatus? StatusNavigation { get; set; }
 
-        public virtual ICollection<PreDepartureChecklist> PreDepartureChecklists { get; set; }
+        public virtual PreDepartureChecklist? PreDepartureChecklist { get; set; }
     }
 }
