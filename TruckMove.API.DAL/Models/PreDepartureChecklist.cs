@@ -6,6 +6,10 @@ namespace TruckMove.API.DAL.Models
 {
     public partial class PreDepartureChecklist : AuditableEntity, IActiveEntity
     {
+        public PreDepartureChecklist()
+        {
+            Notes = new HashSet<Note>();
+        }
         public int Id { get; set; }
         public int JobId { get; set; }
         public string? Water { get; set; }
@@ -33,5 +37,6 @@ namespace TruckMove.API.DAL.Models
         public virtual Job Job { get; set; } = null!;
 
         public bool IsActive { get; set; }
+        public virtual ICollection<Note> Notes { get; set; }
     }
 }

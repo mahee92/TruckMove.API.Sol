@@ -22,6 +22,7 @@
 //        public virtual DbSet<JobContact> JobContacts { get; set; } = null!;
 //        public virtual DbSet<JobSequence> JobSequences { get; set; } = null!;
 //        public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
+//        public virtual DbSet<Note> Notes { get; set; } = null!;
 //        public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
 //        public virtual DbSet<Role> Roles { get; set; } = null!;
 //        public virtual DbSet<User> Users { get; set; } = null!;
@@ -186,6 +187,27 @@
 //                entity.Property(e => e.Description).HasMaxLength(200);
 
 //                entity.Property(e => e.Status).HasMaxLength(50);
+//            });
+
+//            modelBuilder.Entity<Note>(entity =>
+//            {
+//                entity.Property(e => e.Note1).HasColumnName("Note");
+
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Notes_Jobs");
+
+//                entity.HasOne(d => d.PreDeparturechecklist)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.PreDeparturechecklistId)
+//                    .HasConstraintName("FK_Notes_PreDepartureChecklist");
+
+//                entity.HasOne(d => d.Vehicle)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.VehicleId)
+//                    .HasConstraintName("FK_Notes_Vehicles");
 //            });
 
 //            modelBuilder.Entity<PreDepartureChecklist>(entity =>

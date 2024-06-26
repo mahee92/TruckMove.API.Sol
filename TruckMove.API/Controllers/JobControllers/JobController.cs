@@ -121,10 +121,10 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
 
-        [HttpPost("VehicleNote/PostPut")]
-        public async Task<IActionResult> PostPutAsync([FromBody] VehicleNoteDto note)
+        [HttpPost("Note/PostPut")]
+        public async Task<IActionResult> PostPutAsync([FromBody] NoteDto note)
         {
-            Response<VehicleNoteDto> response = await _jobService.VehicleNotePostPutAsync(note, Convert.ToInt32(_authUserService.GetUserId()));
+            Response<NoteDto> response = await _jobService.NotePostPutAsync(note, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 
@@ -137,7 +137,7 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
 
-        [HttpDelete("VehicleNote/Delete")]
+        [HttpDelete("Note/Delete")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             Response response = await _jobService.VehicleNoteDeleteAsync(id);
@@ -223,27 +223,7 @@ namespace TruckMove.API.Controllers.JobControllers
         #endregion
 
 
-        #region Mobile
-
-        //[HttpGet("Mobile/GetDriverJobStaus")]
-        //public async Task<IActionResult> GetDriverJobStaus()
-        //{
-        //    Response<DriverJobStatus> response = _jobService.GetDriverJobStaus(Convert.ToInt32(_authUserService.GetUserId()));
-
-        //    if (response.Success)
-        //    {
-        //        return Ok(response.Object);
-        //    }
-        //    else
-        //    {
-        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
-        //    }
-        //}
-
-        
-
-        
-        #endregion
+      
 
 
     }

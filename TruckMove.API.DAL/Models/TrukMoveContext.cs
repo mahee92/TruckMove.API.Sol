@@ -36,13 +36,15 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
 
         public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
-
+        public virtual DbSet<Note> Notes { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                //optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
                 optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-15;Trusted_Connection=True;");
+                
             }
         }
 
@@ -221,6 +223,155 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Status).HasMaxLength(50);
 
             });
+            modelBuilder.Entity<Note>(entity =>
+
+            {
+
+                //entity.Property(e => e.NoteText).HasColumnName("Note");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.HasOne(d => d.Job)
+
+                    .WithMany(p => p.Notes)
+
+                    .HasForeignKey(d => d.JobId)
+
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+
+                    .HasConstraintName("FK_Notes_Jobs");
+
+
+
+                entity.HasOne(d => d.PreDeparturechecklist)
+
+                    .WithMany(p => p.Notes)
+
+                    .HasForeignKey(d => d.PreDeparturechecklistId)
+
+                    .HasConstraintName("FK_Notes_PreDepartureChecklist");
+
+
+
+                entity.HasOne(d => d.Vehicle)
+
+                    .WithMany(p => p.Notes)
+
+                    .HasForeignKey(d => d.VehicleId)
+
+                    .HasConstraintName("FK_Notes_Vehicles");
+
+            });
+
+
+
+            modelBuilder.Entity<PreDepartureChecklist>(entity =>
+
+            {
+
+                entity.ToTable("PreDepartureChecklist");
+
+                entity.Property(e => e.IsActive)
+                     .IsRequired()
+                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.HasIndex(e => e.JobId, "UQ_PreDepartureChecklist_JobId")
+
+                    .IsUnique();
+
+
+
+                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.FrontDamage).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
+
+
+
+                entity.Property(e => e.JackAndTools).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.Oil).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.OwnersManual).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.RearDamage).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.SpareRim).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.TyresCondition).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.Water).HasMaxLength(10);
+
+
+
+                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
+
+
+
+                entity.HasOne(d => d.Job)
+
+                    .WithOne(p => p.PreDepartureChecklist)
+
+                    .HasForeignKey<PreDepartureChecklist>(d => d.JobId)
+
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+
+                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
+
+            });
+
+
 
             modelBuilder.Entity<Role>(entity =>
             {
@@ -372,36 +523,7 @@ namespace TruckMove.API.DAL.Models
 
             });
 
-            modelBuilder.Entity<PreDepartureChecklist>(entity =>
-            {
-                entity.ToTable("PreDepartureChecklist");
-                entity.HasIndex(e => e.JobId, "UQ_PreDepartureChecklist_JobId")
-                    .IsUnique();
-                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
-                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
-                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
-                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
-                entity.Property(e => e.FrontDamage).HasMaxLength(10);
-                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
-                entity.Property(e => e.JackAndTools).HasMaxLength(10);
-                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
-                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
-                entity.Property(e => e.Oil).HasMaxLength(10);
-                entity.Property(e => e.OwnersManual).HasMaxLength(10);
-                entity.Property(e => e.RearDamage).HasMaxLength(10);
-                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
-                entity.Property(e => e.SpareRim).HasMaxLength(10);
-                entity.Property(e => e.TyresCondition).HasMaxLength(10);
-                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
-                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
-                entity.Property(e => e.Water).HasMaxLength(10);
-                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
-                entity.HasOne(d => d.Job)
-                    .WithOne(p => p.PreDepartureChecklist)
-                    .HasForeignKey<PreDepartureChecklist>(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
-            });
+            
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

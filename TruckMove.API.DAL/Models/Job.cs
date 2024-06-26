@@ -11,7 +11,8 @@ namespace TruckMove.API.DAL.Models
         {
             JobContacts = new HashSet<JobContact>();
             WayPoints = new HashSet<WayPoint>();
-           
+            Notes = new HashSet<Note>();
+
 
         }
 
@@ -47,5 +48,7 @@ namespace TruckMove.API.DAL.Models
         public virtual JobStatus? StatusNavigation { get; set; }
 
         public virtual PreDepartureChecklist? PreDepartureChecklist { get; set; }
+
+        public virtual ICollection<Note> Notes { get; set; }
     }
 }

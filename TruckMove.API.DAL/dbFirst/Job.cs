@@ -8,6 +8,7 @@ namespace TruckMove.API.DAL.dbFirst
         public Job()
         {
             JobContacts = new HashSet<JobContact>();
+            Notes = new HashSet<Note>();
             WayPoints = new HashSet<WayPoint>();
         }
 
@@ -42,6 +43,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual PreDepartureChecklist? PreDepartureChecklist { get; set; }
         public virtual Vehicle? VehicleNavigation { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
+        public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<WayPoint> WayPoints { get; set; }
     }
 }

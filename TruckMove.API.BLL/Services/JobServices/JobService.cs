@@ -19,6 +19,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 using static TruckMove.API.DAL.MasterData.MasterData;
 
+
 namespace TruckMove.API.BLL.Services.JobServices
 {
     public class JobService : IJobService
@@ -29,19 +30,20 @@ namespace TruckMove.API.BLL.Services.JobServices
     
         private readonly IJobRepository _jobRepository;
         private readonly IRepository<Vehicle> _repositoryVehicle;
-        private readonly IRepository<VehicleNote> _repositoryVehicleNote;
+        private readonly IRepository<Note> _repositoryNote;
         private readonly IRepository<VehicleImage> _repositoryVehicleImage;
+        private readonly IRepository<PreDepartureChecklist> _repositorypreDepartureChecklist;
 
-        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle,IRepository<VehicleNote> repositoryVehicleNote, IRepository<VehicleImage> repositoryVehicleImage)
+        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<VehicleImage> repositoryVehicleImage, IRepository<PreDepartureChecklist> preDepartureChecklist)
         {
             _mapper = mapper;
             _repository = repository;
             _jobRepository = jobRepository;
             _repositoryJobContact = repositoryJobContact;
             _repositoryVehicle = repositoryVehicle;
-            _repositoryVehicleNote = repositoryVehicleNote;
+            _repositoryNote = repositoryNote;
             _repositoryVehicleImage = repositoryVehicleImage;
-          
+            _repositorypreDepartureChecklist = preDepartureChecklist;
         }
         public int DetermineJobStatus(JobDto job)
         {
@@ -143,8 +145,8 @@ namespace TruckMove.API.BLL.Services.JobServices
             try
             {
                 
-                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.VehicleNotes", "VehicleNavigation.VehicleImages", "WayPoints");
-                //
+                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.Notes", "VehicleNavigation.VehicleImages", "WayPoints");
+
                 if (job == null)
                 {
                     response.Success = false;
@@ -160,9 +162,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                     response.Object.Contacts = new List<ContactDto>();
         
                     response.Object.Vehicle = _mapper.Map<VehicleOutputDto>(job.VehicleNavigation);
-                    if(job.VehicleNavigation != null && job.VehicleNavigation.VehicleNotes != null)
+                    if(job.VehicleNavigation != null && job.VehicleNavigation.Notes != null)
                     {
-                        response.Object.Vehicle.VehicleNotes = job.VehicleNavigation.VehicleNotes.Select(jc => _mapper.Map<VehicleNoteDto>(jc)).ToList();
+                        response.Object.Vehicle.Notes = job.VehicleNavigation.Notes.Select(jc => _mapper.Map<NoteDto>(jc)).ToList();
                     }
 
                     
@@ -292,26 +294,26 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
         }
 
-        public async Task<Response<VehicleNoteDto>> VehicleNotePostPutAsync(VehicleNoteDto note, int userId)
+        public async Task<Response<NoteDto>> NotePostPutAsync(NoteDto note, int userId)
         {
-            Response<VehicleNoteDto> response = new Response<VehicleNoteDto>();
+            Response<NoteDto> response = new Response<NoteDto>();
             try
             {
 
                 if (note.Id == 0)
                 {
-                    VehicleNote newNote = _mapper.Map<VehicleNote>(note);
+                    Note newNote = _mapper.Map<Note>(note);
 
                     newNote.CreatedDate = DateTime.Now;
                     newNote.CreatedById = userId;
-
-                    var res = await _repositoryVehicleNote.AddAsync(newNote);
+                    
+                    var res = await _repositoryNote.AddAsync(newNote);
                     response.Success = true;
-                    response.Object = _mapper.Map<VehicleNoteDto>(res);
+                    response.Object = _mapper.Map<NoteDto>(res);
                 }
                 else
                 {
-                    var existingNote = await _repositoryVehicleNote.GetAsync(note.Id);
+                    var existingNote = await _repositoryNote.GetAsync(note.Id);
 
                     if (existingNote == null)
                     {
@@ -321,15 +323,15 @@ namespace TruckMove.API.BLL.Services.JobServices
                     }
                     else
                     {
-                        ObjectUpdater<VehicleNoteDto, VehicleNote> updater = new ObjectUpdater<VehicleNoteDto, VehicleNote>();
+                        ObjectUpdater<NoteDto, Note> updater = new ObjectUpdater<NoteDto, Note>();
                         var res = updater.Map(note, existingNote);
                         res.CreatedDate = existingNote.CreatedDate;
                         res.CreatedById = existingNote.CreatedById;
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
-                        var updatednote = await _repositoryVehicleNote.UpdateAsync(res);
+                        var updatednote = await _repositoryNote.UpdateAsync(res);
                         response.Success = true;
-                        response.Object = _mapper.Map<VehicleNoteDto>(updatednote);
+                        response.Object = _mapper.Map<NoteDto>(updatednote);
                     }
                 }
 
@@ -350,7 +352,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response response = new Response();
             try
             {          
-                    await _repositoryVehicleNote.DeleteAsync(id);
+                    await _repositoryNote.DeleteAsync(id);
                     response.Success = true;
             }
             catch (Exception ex)
@@ -450,7 +452,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-        // create method CreateWayPointList to create list of waypoints
+       
         public List<WayPoint> CreateWayPointList(List<WayPointDto> wayPoints)
         {
             List<WayPoint> wayPointList = new List<WayPoint>();
@@ -460,11 +462,72 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
             return wayPointList;
         }
+        #endregion
+        public async Task<Response<PreDepartureChecklistDto>> PreDepartureChecklistPutAsync(PreDepartureChecklistDto checkList, int userId)
+        {
+            Response<PreDepartureChecklistDto> response = new Response<PreDepartureChecklistDto>();
+            try
+            {
+
+                if (checkList.Id == 0)
+                {
+                    PreDepartureChecklist newChecklist = _mapper.Map<PreDepartureChecklist>(checkList);
+
+                    newChecklist.CreatedDate = DateTime.Now;
+                    newChecklist.CreatedById = userId;
+
+                    var res = await _repositorypreDepartureChecklist.AddAsync(newChecklist);
+
+                    response.Object = _mapper.Map<PreDepartureChecklistDto>(res);
+
+              
+                    response.Success = true;
+
+                }
+                else
+                {
+                    var existingCheckList = await _repositorypreDepartureChecklist.GetAsync(checkList.Id);
+
+                    if (existingCheckList == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        ObjectUpdater<PreDepartureChecklistDto, PreDepartureChecklist> updater = new ObjectUpdater<PreDepartureChecklistDto, PreDepartureChecklist>();
+                        var res = updater.Map(checkList, existingCheckList);
+                        res.CreatedDate = existingCheckList.CreatedDate;
+                        res.CreatedById = existingCheckList.CreatedById;
+                        res.LastModifiedDate = DateTime.Now;
+                        res.UpdatedById = userId;
+                        var updatedVehicle = await _repositorypreDepartureChecklist.UpdateAsync(res);
+                        response.Success = true;
+                        response.Object = _mapper.Map<PreDepartureChecklistDto>(updatedVehicle);
+
+
+                    }
+
+
+                }
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
+
+
+
 
         
-
-
-        #endregion
 
 
     }

@@ -24,6 +24,9 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public int? Status { get; set; }
 
+        public  PreDepartureChecklistDto? PreDepartureChecklist { get; set; }
+        //public PreDepartureChecklistDto? PreDepartureChecklist { get; set; }
+
 
     }
 }

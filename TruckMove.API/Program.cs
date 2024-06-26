@@ -119,7 +119,8 @@ internal class Program
         builder.Services.AddAutoMapper(cfg =>
         {
             var profile = new MapProfile();
-            cfg.AddProfile(profile);
+           cfg.AddProfile(profile);
+            //cfg.CreateJsonDataReaderMap<PreDepartureChecklistDto>();
             profile.CreateGenericMap<UserInputDto, User>();
             profile.CreateGenericMap<User, UserOutputDto>();
             profile.CreateGenericMap<Role, RoleDto>();
@@ -145,6 +146,8 @@ internal class Program
             profile.CreateGenericMap<WayPoint, WayPointDto>();
             profile.CreateGenericMap<PreDepartureChecklist, PreDepartureChecklistDto>();
             profile.CreateGenericMap<PreDepartureChecklistDto, PreDepartureChecklist>();
+            profile.CreateGenericMap<Note, NoteDto>();
+            profile.CreateGenericMap<NoteDto, Note>();
 
 
 
@@ -258,11 +261,12 @@ internal class Program
         builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
         builder.Services.AddScoped<IRepository<User>, Repository<User>>();
         builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
-        builder.Services.AddScoped<IRepository<Vehicle>, Repository<Vehicle>>();
-        builder.Services.AddScoped<IRepository<VehicleNote>, Repository<VehicleNote>>();
+        builder.Services.AddScoped<IRepository<Vehicle>, Repository<Vehicle>>();        
         builder.Services.AddScoped<IRepository<JobContact>, Repository<JobContact>>();
         builder.Services.AddScoped<IRepository<VehicleImage>, Repository<VehicleImage>>();
-        //builder.Services.AddScoped<IRepository<WayPoint>, Repository<WayPoint>>();
+        builder.Services.AddScoped<IRepository<PreDepartureChecklist>, Repository<PreDepartureChecklist>>();
+        builder.Services.AddScoped<IRepository<Note>, Repository<Note>>();
+
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IJobRepository, JobRepository>();
