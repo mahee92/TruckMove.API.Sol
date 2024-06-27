@@ -8,5 +8,6 @@
         public const string CONTACT_IMG_PATH = "Contact//Images";
         public const string COMPANY_IMG_PATH = "Company//Images";
         public const string VEHICLE_IMG_PATH = "Vehicle//Images";
+        public const string TRAILER_IMG_PATH = "Trailer//Images";
     }
 }

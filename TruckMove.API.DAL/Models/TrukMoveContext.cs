@@ -37,6 +37,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
         public virtual DbSet<Note> Notes { get; set; } = null!;
+
+        public virtual DbSet<Image> Images { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -126,6 +128,23 @@ namespace TruckMove.API.DAL.Models
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.ContactUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
+            });
+
+            modelBuilder.Entity<Image>(entity =>
+            {
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Images)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Images_Jobs");
+                entity.HasOne(d => d.Vehicle)
+                    .WithMany(p => p.Images)
+                    .HasForeignKey(d => d.VehicleId)
+                    .HasConstraintName("FK_Images_Vehicles");
             });
 
             modelBuilder.Entity<Job>(entity =>

@@ -9,6 +9,7 @@ namespace TruckMove.API.DAL.Models
     {
         public Job()
         {
+            Images = new HashSet<Image>();
             JobContacts = new HashSet<JobContact>();
             WayPoints = new HashSet<WayPoint>();
             Notes = new HashSet<Note>();
@@ -50,5 +51,6 @@ namespace TruckMove.API.DAL.Models
         public virtual PreDepartureChecklist? PreDepartureChecklist { get; set; }
 
         public virtual ICollection<Note> Notes { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
     }
 }

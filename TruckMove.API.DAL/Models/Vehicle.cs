@@ -14,6 +14,7 @@ namespace TruckMove.API.DAL.Models
             VehicleImages = new HashSet<VehicleImage>();
             VehicleNotes = new HashSet<VehicleNote>();
             VehicleNotes = new HashSet<VehicleNote>();
+            VehicleImages = new HashSet<VehicleImage>();
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -33,5 +34,7 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<VehicleNote> VehicleNotes { get; set; }
 
         public virtual ICollection<Note> Notes { get; set; }
+
+        public virtual ICollection<Image> Images { get; set; }
     }
 }

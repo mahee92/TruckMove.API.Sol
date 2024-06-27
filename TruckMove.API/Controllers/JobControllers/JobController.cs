@@ -153,28 +153,9 @@ namespace TruckMove.API.Controllers.JobControllers
         }
 
 
-        [HttpPost("VehicleImage/Upload")]
-        public async Task<IActionResult> Upload([FromForm] FileUpload fileUpload)
-        {
-            if (fileUpload == null || fileUpload.file == null || fileUpload.file.Length == 0)
-            {
-                return StatusCode((int)ErrorCode.fileNotFound, ErrorMessages.FileNotFound);
-            }
-            try
-            {
-                var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, fileUpload, Meta.VEHICLE_IMG_PATH, Request.Scheme, Request.Host);
-                return Ok(fileUrl);
+        
 
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)ErrorCode.InternalServerError, ex.InnerException);
-
-            }
-
-        }
-
-        [HttpPost("VehicleImage/Post")]
+        [HttpPost("VehiclImage/Post")]
         public async Task<IActionResult> PostAsync([FromBody] VehicleImageDto image)
         {
             Response<VehicleImageDto> response = await _jobService.VehicleImagePostAsync(image, Convert.ToInt32(_authUserService.GetUserId()));
