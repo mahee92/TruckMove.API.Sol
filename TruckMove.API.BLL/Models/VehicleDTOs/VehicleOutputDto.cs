@@ -13,6 +13,6 @@ namespace TruckMove.API.BLL.Models.VehicleDTOs
     {
         public virtual List<NoteDto> Notes { get; set; }
 
-        public virtual List<VehicleImageDto> VehicleImages { get; set; }
+        public virtual List<ImageDto> VehicleImages { get; set; }
     }
 }

@@ -39,6 +39,9 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<Note> Notes { get; set; } = null!;
 
         public virtual DbSet<Image> Images { get; set; } = null!;
+
+        public virtual DbSet<Leg> Legs { get; set; } = null!;
+        public virtual DbSet<LegStatus> LegStatuses { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -75,6 +78,12 @@ namespace TruckMove.API.DAL.Models
                    new JobStatus { Id = (int)JobStatusEnum.BillingDone, Status = JobStatusEnum.BillingDone.ToString(), Description = "Billing Done" },
                    new JobStatus { Id = (int)JobStatusEnum.Completed, Status = JobStatusEnum.Completed.ToString(), Description = "A job that has been completed successfully" }
                );
+
+               modelBuilder.Entity<LegStatus>().HasData(
+                 new LegStatus { Id = (int)LegStatusEnum.Planned ,Status= LegStatusEnum.Planned.ToString()},
+                 new LegStatus { Id = (int)LegStatusEnum.InProgress, Status = LegStatusEnum.InProgress.ToString() },
+                 new LegStatus { Id = (int)LegStatusEnum.Completed , Status = LegStatusEnum.Completed.ToString() }
+                 );
 
             modelBuilder.Entity<Company>(entity =>
             {
@@ -542,7 +551,38 @@ namespace TruckMove.API.DAL.Models
 
             });
 
-            
+            modelBuilder.Entity<Leg>(entity =>
+            {
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Legs)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Legs_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.Legs)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Legs_LegStatus");
+            });
+
+            modelBuilder.Entity<LegStatus>(entity =>
+            {
+                entity.ToTable("LegStatus");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Description).HasMaxLength(200);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(20)
+                    .IsFixedLength();
+            });
+
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

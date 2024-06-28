@@ -121,70 +121,10 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
 
-        [HttpPost("Note/PostPut")]
-        public async Task<IActionResult> PostPutAsync([FromBody] NoteDto note)
-        {
-            Response<NoteDto> response = await _jobService.NotePostPutAsync(note, Convert.ToInt32(_authUserService.GetUserId()));
-            if (response.Success)
-            {
-
-                return Ok(response.Object);
-            }
-            else
-            {
-
-                return StatusCode((int)response.ErrorType, response.ErrorMessage);
-            }
-        }
-
-        [HttpDelete("Note/Delete")]
-        public async Task<IActionResult> DeleteAsync(int id)
-        {
-            Response response = await _jobService.VehicleNoteDeleteAsync(id);
-            if (response.Success)
-            {
-                return NoContent();
-            }
-            else
-            {
-               
-                return StatusCode((int)response.ErrorType, response.ErrorMessage);
-            }
-        }
+       
 
 
-        
-
-        [HttpPost("VehiclImage/Post")]
-        public async Task<IActionResult> PostAsync([FromBody] VehicleImageDto image)
-        {
-            Response<VehicleImageDto> response = await _jobService.VehicleImagePostAsync(image, Convert.ToInt32(_authUserService.GetUserId()));
-            if (response.Success)
-            {
-
-                return Ok(response.Object);
-            }
-            else
-            {
-
-                return StatusCode((int)response.ErrorType, response.ErrorMessage);
-            }
-        }
-
-        [HttpDelete("VehicleImage/Delete")]
-        public async Task<IActionResult> VehicleImageDeleteAsync(int id)
-        {
-            Response response = await _jobService.VehicleImageDeleteAsync(id);
-            if (response.Success)
-            {
-                return NoContent();
-            }
-            else
-            {
-
-                return StatusCode((int)response.ErrorType, response.ErrorMessage);
-            }
-        }
+       
         #endregion
 
         #region WayPoint
@@ -204,7 +144,73 @@ namespace TruckMove.API.Controllers.JobControllers
         #endregion
 
 
-      
+        #region Shared
+
+        [HttpPost("Note/PostPut")]
+        public async Task<IActionResult> PostPutAsync([FromBody] NoteDto note)
+        {
+            Response<NoteDto> response = await _jobService.NotePostPutAsync(note, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+        [HttpDelete("Note/Delete")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            Response response = await _jobService.NoteDeleteAsync(id);
+            if (response.Success)
+            {
+                return NoContent();
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+        [HttpPost("Image/Post")]
+        public async Task<IActionResult> PostAsync([FromBody] ImageDto image)
+        {
+            Response<ImageDto> response = await _jobService.ImagePostAsync(image, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+        [HttpDelete("Image/Delete")]
+        public async Task<IActionResult> VehicleImageDeleteAsync(int id)
+        {
+            Response response = await _jobService.ImageDeleteAsync(id);
+            if (response.Success)
+            {
+                return NoContent();
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
+
+
+
 
 
     }

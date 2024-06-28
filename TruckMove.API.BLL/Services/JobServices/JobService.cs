@@ -20,6 +20,7 @@ using System.Runtime.InteropServices;
 using static TruckMove.API.DAL.MasterData.MasterData;
 
 
+
 namespace TruckMove.API.BLL.Services.JobServices
 {
     public class JobService : IJobService
@@ -31,10 +32,10 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IJobRepository _jobRepository;
         private readonly IRepository<Vehicle> _repositoryVehicle;
         private readonly IRepository<Note> _repositoryNote;
-        private readonly IRepository<VehicleImage> _repositoryVehicleImage;
+       
         private readonly IRepository<PreDepartureChecklist> _repositorypreDepartureChecklist;
-
-        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<VehicleImage> repositoryVehicleImage, IRepository<PreDepartureChecklist> preDepartureChecklist)
+        private readonly IRepository<Image> _repositoryImage;
+        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist)
         {
             _mapper = mapper;
             _repository = repository;
@@ -42,7 +43,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryJobContact = repositoryJobContact;
             _repositoryVehicle = repositoryVehicle;
             _repositoryNote = repositoryNote;
-            _repositoryVehicleImage = repositoryVehicleImage;
+            _repositoryImage = repositoryImage;
             _repositorypreDepartureChecklist = preDepartureChecklist;
         }
         public int DetermineJobStatus(JobDto job)
@@ -117,8 +118,6 @@ namespace TruckMove.API.BLL.Services.JobServices
             return true;
         }
         
-
-        // CREATE METHOD TO GET NEXT JOB ID
         public  async Task<Response> GetNextJobId()
         {
             Response response = new Response();
@@ -145,7 +144,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             try
             {
                 
-                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.Notes", "VehicleNavigation.VehicleImages", "WayPoints");
+                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.Notes", "VehicleNavigation.Images", "WayPoints");
 
                 if (job == null)
                 {
@@ -168,9 +167,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                     }
 
                     
-                    if (job.VehicleNavigation != null && job.VehicleNavigation.VehicleImages != null)
+                    if (job.VehicleNavigation != null && job.VehicleNavigation.Images != null)
                     {
-                        response.Object.Vehicle.VehicleImages = job.VehicleNavigation.VehicleImages.Select(jc => _mapper.Map<VehicleImageDto>(jc)).ToList();
+                        response.Object.Vehicle.VehicleImages = job.VehicleNavigation.Images.Select(jc => _mapper.Map<ImageDto>(jc)).ToList();
                     }
 
 
@@ -294,118 +293,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
         }
 
-        public async Task<Response<NoteDto>> NotePostPutAsync(NoteDto note, int userId)
-        {
-            Response<NoteDto> response = new Response<NoteDto>();
-            try
-            {
-
-                if (note.Id == 0)
-                {
-                    Note newNote = _mapper.Map<Note>(note);
-
-                    newNote.CreatedDate = DateTime.Now;
-                    newNote.CreatedById = userId;
-                    
-                    var res = await _repositoryNote.AddAsync(newNote);
-                    response.Success = true;
-                    response.Object = _mapper.Map<NoteDto>(res);
-                }
-                else
-                {
-                    var existingNote = await _repositoryNote.GetAsync(note.Id);
-
-                    if (existingNote == null)
-                    {
-                        response.Success = false;
-                        response.ErrorType = ErrorCode.NotFound;
-                        response.ErrorMessage = ErrorMessages.NotFound;
-                    }
-                    else
-                    {
-                        ObjectUpdater<NoteDto, Note> updater = new ObjectUpdater<NoteDto, Note>();
-                        var res = updater.Map(note, existingNote);
-                        res.CreatedDate = existingNote.CreatedDate;
-                        res.CreatedById = existingNote.CreatedById;
-                        res.LastModifiedDate = DateTime.Now;
-                        res.UpdatedById = userId;
-                        var updatednote = await _repositoryNote.UpdateAsync(res);
-                        response.Success = true;
-                        response.Object = _mapper.Map<NoteDto>(updatednote);
-                    }
-                }
-
-                return response;
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.ErrorType = ErrorCode.dbError;
-                response.ErrorMessage = ex.Message;
-                return response;
-            }
-        }
-
-        public async Task<Response> VehicleNoteDeleteAsync(int id)
-        {
-            Response response = new Response();
-            try
-            {          
-                    await _repositoryNote.DeleteAsync(id);
-                    response.Success = true;
-            }
-            catch (Exception ex)
-            {
-
-                response.Success = false;
-                response.ErrorType = ErrorCode.dbError;
-                response.ErrorMessage = ex.Message;
-
-            }
-            return response;
-        }
-
-        public async Task<Response<VehicleImageDto>> VehicleImagePostAsync(VehicleImageDto image, int userId)
-        {
-            Response<VehicleImageDto> response = new Response<VehicleImageDto>();
-            try
-            {
-                var newImage = _mapper.Map<VehicleImage>(image);
-                newImage.CreatedDate = DateTime.Now;
-                newImage.CreatedById = userId;
-                var res = await _repositoryVehicleImage.AddAsync(newImage);
-                response.Success = true;
-                response.Object = _mapper.Map<VehicleImageDto>(res);
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.ErrorType = ErrorCode.dbError;
-                response.ErrorMessage = ex.Message;
-            }
-            return response;
-        }
-
-        public async Task<Response> VehicleImageDeleteAsync(int id)
-        {
-            Response response = new Response();
-            try
-            {
-                await _repositoryVehicleImage.DeleteAsync(id);
-                response.Success = true;
-            }
-            catch (Exception ex)
-            {
-
-                response.Success = false;
-                response.ErrorType = ErrorCode.dbError;
-                response.ErrorMessage = ex.Message;
-
-            }
-            return response;
-        }
+        
         #endregion
 
         #region Mobile
@@ -463,6 +351,126 @@ namespace TruckMove.API.BLL.Services.JobServices
             return wayPointList;
         }
         #endregion
+        
+        #region Shared
+        public async Task<Response<NoteDto>> NotePostPutAsync(NoteDto note, int userId)
+        {
+            Response<NoteDto> response = new Response<NoteDto>();
+            try
+            {
+
+                if (note.Id == 0)
+                {
+                    Note newNote = _mapper.Map<Note>(note);
+
+                    newNote.CreatedDate = DateTime.Now;
+                    newNote.CreatedById = userId;
+
+                    var res = await _repositoryNote.AddAsync(newNote);
+                    response.Success = true;
+                    response.Object = _mapper.Map<NoteDto>(res);
+                }
+                else
+                {
+                    var existingNote = await _repositoryNote.GetAsync(note.Id);
+
+                    if (existingNote == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        ObjectUpdater<NoteDto, Note> updater = new ObjectUpdater<NoteDto, Note>();
+                        var res = updater.Map(note, existingNote);
+                        res.CreatedDate = existingNote.CreatedDate;
+                        res.CreatedById = existingNote.CreatedById;
+                        res.LastModifiedDate = DateTime.Now;
+                        res.UpdatedById = userId;
+                        var updatednote = await _repositoryNote.UpdateAsync(res);
+                        response.Success = true;
+                        response.Object = _mapper.Map<NoteDto>(updatednote);
+                    }
+                }
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
+
+        public async Task<Response> NoteDeleteAsync(int id)
+        {
+            Response response = new Response();
+            try
+            {
+                await _repositoryNote.DeleteAsync(id);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+
+            }
+            return response;
+        }
+
+        public async Task<Response<ImageDto>> ImagePostAsync(ImageDto image, int userId)
+        {
+            Response<ImageDto> response = new Response<ImageDto>();
+            try
+            {
+                var newImage = _mapper.Map<Image>(image);
+                newImage.CreatedDate = DateTime.Now;
+                newImage.CreatedById = userId;
+                var res = await _repositoryImage.AddAsync(newImage);
+                response.Success = true;
+                response.Object = _mapper.Map<ImageDto>(res);
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response> ImageDeleteAsync(int id)
+        {
+            Response response = new Response();
+            try
+            {
+                await _repositoryImage.DeleteAsync(id);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+
+            }
+            return response;
+        }
+
+
+
+        #endregion
+
+        #region Mobile
         public async Task<Response<PreDepartureChecklistDto>> PreDepartureChecklistPutAsync(PreDepartureChecklistDto checkList, int userId)
         {
             Response<PreDepartureChecklistDto> response = new Response<PreDepartureChecklistDto>();
@@ -480,7 +488,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     response.Object = _mapper.Map<PreDepartureChecklistDto>(res);
 
-              
+
                     response.Success = true;
 
                 }
@@ -512,6 +520,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                 }
 
+                ChangeJobStatus(checkList.JobId, (int)JobStatusEnum.PreDepartureChecked);
                 return response;
 
             }
@@ -523,11 +532,25 @@ namespace TruckMove.API.BLL.Services.JobServices
                 return response;
             }
         }
+       
+        public async void ChangeJobStatus(int jobId, int status)
+        {
+            var existingJob = await _repository.GetAsync(jobId);
+            if (existingJob != null)
+            {
+                existingJob.Status = status;
+                await _repository.UpdateAsync(existingJob);
+            }
+
+        }
+
+
+
+        #endregion
 
 
 
 
-        
 
 
     }

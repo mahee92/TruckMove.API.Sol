@@ -23,6 +23,8 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<JobContact> JobContacts { get; set; } = null!;
         public virtual DbSet<JobSequence> JobSequences { get; set; } = null!;
         public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
+        public virtual DbSet<Leg> Legs { get; set; } = null!;
+        public virtual DbSet<LegStatus> LegStatuses { get; set; } = null!;
         public virtual DbSet<Note> Notes { get; set; } = null!;
         public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
@@ -202,6 +204,34 @@ namespace TruckMove.API.DAL.dbFirst
                 entity.Property(e => e.Description).HasMaxLength(200);
 
                 entity.Property(e => e.Status).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Leg>(entity =>
+            {
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Legs)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Legs_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.Legs)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Legs_LegStatus");
+            });
+
+            modelBuilder.Entity<LegStatus>(entity =>
+            {
+                entity.ToTable("LegStatus");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Description).HasMaxLength(200);
+
+                entity.Property(e => e.Status)
+                    .HasMaxLength(20)
+                    .IsFixedLength();
             });
 
             modelBuilder.Entity<Note>(entity =>

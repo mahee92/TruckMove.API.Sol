@@ -13,6 +13,7 @@ namespace TruckMove.API.DAL.Models
             JobContacts = new HashSet<JobContact>();
             WayPoints = new HashSet<WayPoint>();
             Notes = new HashSet<Note>();
+            Legs = new HashSet<Leg>();
 
 
         }
@@ -52,5 +53,9 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<Image> Images { get; set; }
+
+        public virtual ICollection<Leg> Legs { get; set; }
+
+
     }
 }
