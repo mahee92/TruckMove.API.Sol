@@ -19,6 +19,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
+        public virtual DbSet<HookupType> HookupTypes { get; set; } = null!;
         public virtual DbSet<Image> Images { get; set; } = null!;
         public virtual DbSet<Job> Jobs { get; set; } = null!;
         public virtual DbSet<JobContact> JobContacts { get; set; } = null!;
@@ -29,6 +30,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<Note> Notes { get; set; } = null!;
         public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
+        public virtual DbSet<Trailer> Trailers { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
         public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
@@ -113,6 +115,15 @@ namespace TruckMove.API.DAL.dbFirst
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.ContactUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
+            });
+
+            modelBuilder.Entity<HookupType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Description).HasMaxLength(50);
+
+                entity.Property(e => e.Type).HasMaxLength(200);
             });
 
             modelBuilder.Entity<Image>(entity =>
@@ -325,6 +336,25 @@ namespace TruckMove.API.DAL.dbFirst
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.Property(e => e.RoleName).HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Trailer>(entity =>
+            {
+                entity.Property(e => e.Rego).HasMaxLength(200);
+
+                entity.Property(e => e.Type).HasMaxLength(200);
+
+                entity.HasOne(d => d.HookupTypeNavigation)
+                    .WithMany(p => p.Trailers)
+                    .HasForeignKey(d => d.HookupType)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Trailers_HookupTypes");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Trailers)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Trailers_Jobs");
             });
 
             modelBuilder.Entity<User>(entity =>

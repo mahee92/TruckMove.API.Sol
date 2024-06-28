@@ -14,6 +14,7 @@ namespace TruckMove.API.DAL.Models
             WayPoints = new HashSet<WayPoint>();
             Notes = new HashSet<Note>();
             Legs = new HashSet<Leg>();
+            Trailers = new HashSet<Trailer>();
 
 
         }
@@ -55,6 +56,8 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Image> Images { get; set; }
 
         public virtual ICollection<Leg> Legs { get; set; }
+
+        public virtual ICollection<Trailer> Trailers { get; set; }
 
 
     }

@@ -44,6 +44,9 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<LegStatus> LegStatuses { get; set; } = null!;
 
         public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
+
+        public virtual DbSet<HookupType> HookupTypes { get; set; } = null!;
+        public virtual DbSet<Trailer> Trailers { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -85,6 +88,12 @@ namespace TruckMove.API.DAL.Models
                  new LegStatus { Id = (int)LegStatusEnum.Planned ,Status= LegStatusEnum.Planned.ToString()},
                  new LegStatus { Id = (int)LegStatusEnum.InProgress, Status = LegStatusEnum.InProgress.ToString() },
                  new LegStatus { Id = (int)LegStatusEnum.Completed , Status = LegStatusEnum.Completed.ToString() }
+                 );
+
+            modelBuilder.Entity<HookupType>().HasData(
+                 new HookupType { Id = (int)HookUpTypeEnum.HU_Single,Type= HookUpTypeEnum.HU_Single.ToString(), Description = "HU Single" },
+                 new HookupType { Id = (int)HookUpTypeEnum.HU_Double, Type = HookUpTypeEnum.HU_Double.ToString(), Description = "HU Double" },
+                 new HookupType { Id = (int)HookUpTypeEnum.FOUR_RA, Type = HookUpTypeEnum.FOUR_RA.ToString(), Description = "4RA (4 Rigid Axle )" }
                  );
 
             modelBuilder.Entity<Company>(entity =>
@@ -598,6 +607,37 @@ namespace TruckMove.API.DAL.Models
                     .HasConstraintName("FK_Acknowledgement_Legs");
             });
 
+            modelBuilder.Entity<Trailer>(entity =>
+            {
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.Property(e => e.Rego).HasMaxLength(200);
+
+                entity.Property(e => e.Type).HasMaxLength(200);
+
+                entity.HasOne(d => d.HookupTypeNavigation)
+                    .WithMany(p => p.Trailers)
+                    .HasForeignKey(d => d.HookupType)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Trailers_HookupTypes");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Trailers)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Trailers_Jobs");
+            });
+
+            modelBuilder.Entity<HookupType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Description).HasMaxLength(50);
+
+                entity.Property(e => e.Type).HasMaxLength(200);
+            });
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 
             OnModelCreatingPartial(modelBuilder);

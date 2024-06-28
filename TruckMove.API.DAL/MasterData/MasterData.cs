@@ -42,5 +42,21 @@ namespace TruckMove.API.DAL.MasterData
 
 
         }
+
+        //public enum HookUpTypeEnum
+        //{
+        //    HU_Single = 1,
+        //    HU_Double = 2,
+        //    4RA = 3
+        //}
+
+        public enum HookUpTypeEnum
+        {
+            HU_Single = 1,
+            HU_Double = 2,
+            FOUR_RA = 3
+
+
+        }
     }
 }

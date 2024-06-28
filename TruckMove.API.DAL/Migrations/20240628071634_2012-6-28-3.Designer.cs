@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240628071634_2012-6-28-3")]
+    partial class _20126283
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,26 +193,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("HookupTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "HU Single",
-                            Type = "HU_Single"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "HU Double",
-                            Type = "HU_Double"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "4RA (4 Rigid Axle )",
-                            Type = "FOUR_RA"
-                        });
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Image", b =>
