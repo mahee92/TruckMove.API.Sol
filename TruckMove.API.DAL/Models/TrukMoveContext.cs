@@ -42,6 +42,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<Leg> Legs { get; set; } = null!;
         public virtual DbSet<LegStatus> LegStatuses { get; set; } = null!;
+
+        public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -582,7 +584,19 @@ namespace TruckMove.API.DAL.Models
                     .HasMaxLength(20)
                     .IsFixedLength();
             });
+            modelBuilder.Entity<Acknowledgement>(entity =>
+            {
+                entity.ToTable("Acknowledgement");
 
+                entity.HasIndex(e => e.LegId, "UQ_Acknowledge_LegId")
+                    .IsUnique();
+
+                entity.HasOne(d => d.Leg)
+                    .WithOne(p => p.Acknowledgement)
+                    .HasForeignKey<Acknowledgement>(d => d.LegId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Acknowledgement_Legs");
+            });
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

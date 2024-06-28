@@ -13,5 +13,6 @@ namespace TruckMove.API.DAL.dbFirst
 
         public virtual Job Job { get; set; } = null!;
         public virtual LegStatus StatusNavigation { get; set; } = null!;
+        public virtual Acknowledgement? Acknowledgement { get; set; }
     }
 }

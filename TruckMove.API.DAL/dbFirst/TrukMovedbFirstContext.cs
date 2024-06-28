@@ -16,6 +16,7 @@ namespace TruckMove.API.DAL.dbFirst
         {
         }
 
+        public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
         public virtual DbSet<Image> Images { get; set; } = null!;
@@ -46,6 +47,20 @@ namespace TruckMove.API.DAL.dbFirst
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Acknowledgement>(entity =>
+            {
+                entity.ToTable("Acknowledgement");
+
+                entity.HasIndex(e => e.LegId, "UQ_Acknowledge_LegId")
+                    .IsUnique();
+
+                entity.HasOne(d => d.Leg)
+                    .WithOne(p => p.Acknowledgement)
+                    .HasForeignKey<Acknowledgement>(d => d.LegId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Acknowledgement_Legs");
+            });
+
             modelBuilder.Entity<Company>(entity =>
             {
                 entity.HasIndex(e => e.CreatedById, "IX_Companies_CreatedById");
