@@ -35,7 +35,9 @@ namespace TruckMove.API.BLL.Services.JobServices
        
         private readonly IRepository<PreDepartureChecklist> _repositorypreDepartureChecklist;
         private readonly IRepository<Image> _repositoryImage;
-        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist)
+
+        private readonly IRepository<Trailer> _repositoryTrailer;
+        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer)
         {
             _mapper = mapper;
             _repository = repository;
@@ -45,6 +47,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryNote = repositoryNote;
             _repositoryImage = repositoryImage;
             _repositorypreDepartureChecklist = preDepartureChecklist;
+            _repositoryTrailer = repositoryTrailer;
         }
         public int DetermineJobStatus(JobDto job)
         {
@@ -144,7 +147,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             try
             {
                 
-                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.Notes", "VehicleNavigation.Images", "WayPoints");
+                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.Notes", "VehicleNavigation.Images", "Trailers", "WayPoints");
 
                 if (job == null)
                 {
@@ -161,6 +164,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     response.Object.Contacts = new List<ContactDto>();
         
                     response.Object.Vehicle = _mapper.Map<VehicleOutputDto>(job.VehicleNavigation);
+                   
                     if(job.VehicleNavigation != null && job.VehicleNavigation.Notes != null)
                     {
                         response.Object.Vehicle.Notes = job.VehicleNavigation.Notes.Select(jc => _mapper.Map<NoteDto>(jc)).ToList();
@@ -171,6 +175,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                     {
                         response.Object.Vehicle.VehicleImages = job.VehicleNavigation.Images.Select(jc => _mapper.Map<ImageDto>(jc)).ToList();
                     }
+
+                    //if (job.Trailers != null && job.Trailers != null)
+                    //{
+                    //    response.Object.Trailers = job.Trailers.Select(jc => _mapper.Map<TrailerDto>(jc.TR)).ToList();
+                    //}
 
 
                     response.Object.Contacts = job.JobContacts.Select(jc => _mapper.Map<ContactDto>(jc.Contact)).ToList();
@@ -544,6 +553,104 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         }
 
+
+
+
+
+        #endregion
+
+        #region Trailer
+        public async Task<Response<TrailerDto>> TrailerPostPutAsync(TrailerDto trailer, int userId)
+        {
+            Response<TrailerDto> response = new Response<TrailerDto>();
+            try
+            {
+
+                if (trailer.Id == 0)
+                {
+                    Trailer newtrailer = _mapper.Map<Trailer>(trailer);
+
+                    newtrailer.CreatedDate = DateTime.Now;
+                    newtrailer.CreatedById = userId;
+
+                    var res = await _repositoryTrailer.AddAsync(newtrailer);
+
+                    response.Object = _mapper.Map<TrailerDto>(res);
+
+                   
+                    response.Success = true;
+
+                }
+                else
+                {
+                    var existingtrailer = await _repositoryTrailer.GetAsync(trailer.Id);
+
+                    if (existingtrailer == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        ObjectUpdater<TrailerDto, Trailer> updater = new ObjectUpdater<TrailerDto, Trailer>();
+                        var res = updater.Map(trailer, existingtrailer);
+                        res.CreatedDate = existingtrailer.CreatedDate;
+                        res.CreatedById = existingtrailer.CreatedById;
+                        res.LastModifiedDate = DateTime.Now;
+                        res.UpdatedById = userId;
+                        var updatedTrailer = await _repositoryTrailer.UpdateAsync(res);
+                        response.Success = true;
+                        response.Object = _mapper.Map<TrailerDto>(updatedTrailer);
+
+
+                    }
+
+
+                }
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
+        public async Task<Response> TrailerDeleteAsync(int id)
+        {
+            Response response = new Response();
+            try
+            {
+                var company = await _repositoryTrailer.GetAsync(id);
+
+                if (company == null)
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.NotFound;
+                    response.ErrorType = ErrorCode.NotFound;
+                }
+                else
+                {
+                  
+                    await _repositoryTrailer.DeleteAsync(id);
+                    response.Success = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+
+            }
+            return response;
+        }
 
 
         #endregion

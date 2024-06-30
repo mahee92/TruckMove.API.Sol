@@ -209,7 +209,38 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         #endregion
 
+        #region Trailer
+        [HttpPost("Trailer/PostPut")]
+        public async Task<IActionResult> PostPutAsync([FromBody] TrailerDto trailer)
+        {
+            Response<TrailerDto> response = await _jobService.TrailerPostPutAsync(trailer, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
 
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpDelete]
+        [HttpPost("Trailer/Delete")]
+        public async Task<IActionResult> TrailerDeleteAsync(int id)
+        {
+            Response response = await _jobService.TrailerDeleteAsync(id);
+            if (response.Success)
+            {
+                return NoContent();
+            }
+            else
+            {
+                
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
 
 
 

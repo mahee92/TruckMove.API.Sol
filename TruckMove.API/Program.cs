@@ -150,6 +150,8 @@ internal class Program
             profile.CreateGenericMap<NoteDto, Note>();
             profile.CreateGenericMap<ImageDto, Image>();
             profile.CreateGenericMap<Image, ImageDto>();
+            profile.CreateGenericMap<TrailerDto, Trailer>();
+            profile.CreateGenericMap<Trailer, TrailerDto>();
 
 
 
@@ -269,6 +271,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<PreDepartureChecklist>, Repository<PreDepartureChecklist>>();
         builder.Services.AddScoped<IRepository<Note>, Repository<Note>>();
         builder.Services.AddScoped<IRepository<Image>, Repository<Image>>();
+        builder.Services.AddScoped<IRepository<Trailer>, Repository<Trailer>>();
 
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();

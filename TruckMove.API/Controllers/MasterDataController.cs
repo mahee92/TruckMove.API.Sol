@@ -69,5 +69,20 @@ namespace TruckMove.API.Controllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+
+        [HttpGet("/GetHookupTypes")]
+        public async Task<IActionResult> HookupTypes()
+        {
+            var response = await _masterdataService.GetAllHookupTypes();
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+               
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
     }
 }

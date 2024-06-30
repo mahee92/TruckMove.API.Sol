@@ -21,5 +21,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public virtual List<WayPointDto> WayPoints { get; set; }
 
+        public virtual List<TrailerDto> Trailers { get; set; }
+
     }
 }
