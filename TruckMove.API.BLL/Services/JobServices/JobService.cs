@@ -147,7 +147,13 @@ namespace TruckMove.API.BLL.Services.JobServices
             try
             {
                 
-                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", "Company", "VehicleNavigation.Notes", "VehicleNavigation.Images", "Trailers", "WayPoints");
+                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", 
+                                                                            "Company", 
+                                                                            "VehicleNavigation.Notes", 
+                                                                            "VehicleNavigation.Images", 
+                                                                            "Trailers.Images",
+                                                                            "Trailers.Notes", 
+                                                                            "WayPoints");
 
                 if (job == null)
                 {
@@ -176,11 +182,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                         response.Object.Vehicle.VehicleImages = job.VehicleNavigation.Images.Select(jc => _mapper.Map<ImageDto>(jc)).ToList();
                     }
 
-                    //if (job.Trailers != null && job.Trailers != null)
-                    //{
-                    //    response.Object.Trailers = job.Trailers.Select(jc => _mapper.Map<TrailerDto>(jc.TR)).ToList();
-                    //}
-
+                   
 
                     response.Object.Contacts = job.JobContacts.Select(jc => _mapper.Map<ContactDto>(jc.Contact)).ToList();
                     response.Success = true;

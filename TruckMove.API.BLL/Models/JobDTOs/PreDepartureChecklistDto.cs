@@ -70,5 +70,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         [DisplayName("Fuel Level")]
         public decimal? FuelLevel { get; set; }
+
+        public virtual List<NoteDto> Notes { get; set; }
     }
 }
