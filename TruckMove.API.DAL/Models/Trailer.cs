@@ -19,5 +19,8 @@ namespace TruckMove.API.DAL.Models
         public virtual Job Job { get; set; } = null!;
 
         public bool IsActive { get; set; }
+
+        public virtual ICollection<Image> Images { get; set; }
+        public virtual ICollection<Note> Notes { get; set; }
     }
 }

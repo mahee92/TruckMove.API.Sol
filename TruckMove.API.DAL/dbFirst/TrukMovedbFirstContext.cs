@@ -134,6 +134,11 @@ namespace TruckMove.API.DAL.dbFirst
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Images_Jobs");
 
+                entity.HasOne(d => d.Trailer)
+                    .WithMany(p => p.Images)
+                    .HasForeignKey(d => d.TrailerId)
+                    .HasConstraintName("FK_Images_Trailers");
+
                 entity.HasOne(d => d.Vehicle)
                     .WithMany(p => p.Images)
                     .HasForeignKey(d => d.VehicleId)
@@ -274,6 +279,11 @@ namespace TruckMove.API.DAL.dbFirst
                     .WithMany(p => p.Notes)
                     .HasForeignKey(d => d.PreDeparturechecklistId)
                     .HasConstraintName("FK_Notes_PreDepartureChecklist");
+
+                entity.HasOne(d => d.Trailer)
+                    .WithMany(p => p.Notes)
+                    .HasForeignKey(d => d.TrailerId)
+                    .HasConstraintName("FK_Notes_Trailers");
 
                 entity.HasOne(d => d.Vehicle)
                     .WithMany(p => p.Notes)

@@ -19,5 +19,7 @@ namespace TruckMove.API.DAL.Models
         public virtual Vehicle? Vehicle { get; set; }
 
         public bool IsActive { get; set; }
+
+        public virtual Trailer? Trailer { get; set; }
     }
 }

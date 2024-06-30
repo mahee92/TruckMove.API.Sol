@@ -5,6 +5,12 @@ namespace TruckMove.API.DAL.dbFirst
 {
     public partial class Trailer
     {
+        public Trailer()
+        {
+            Images = new HashSet<Image>();
+            Notes = new HashSet<Note>();
+        }
+
         public int Id { get; set; }
         public int HookupType { get; set; }
         public int JobId { get; set; }
@@ -15,5 +21,7 @@ namespace TruckMove.API.DAL.dbFirst
 
         public virtual HookupType HookupTypeNavigation { get; set; } = null!;
         public virtual Job Job { get; set; } = null!;
+        public virtual ICollection<Image> Images { get; set; }
+        public virtual ICollection<Note> Notes { get; set; }
     }
 }

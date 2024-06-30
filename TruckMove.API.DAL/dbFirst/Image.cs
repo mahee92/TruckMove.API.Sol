@@ -12,6 +12,7 @@ namespace TruckMove.API.DAL.dbFirst
         public int? TrailerId { get; set; }
 
         public virtual Job Job { get; set; } = null!;
+        public virtual Trailer? Trailer { get; set; }
         public virtual Vehicle? Vehicle { get; set; }
     }
 }
