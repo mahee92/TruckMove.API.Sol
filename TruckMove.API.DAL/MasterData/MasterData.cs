@@ -33,5 +33,24 @@ namespace TruckMove.API.DAL.MasterData
             BillingDone = 13,
             Completed = 14
         }
+
+        public enum LegStatusEnum
+        {
+            Planned = 1,
+            InProgress = 2,
+            Completed = 3
+
+
+        }
+
+
+        public enum HookUpTypeEnum
+        {
+            HU_Single = 1,
+            HU_Double = 2,
+            FOUR_RA = 3
+
+
+        }
     }
 }

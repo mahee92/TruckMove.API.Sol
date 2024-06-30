@@ -11,5 +11,7 @@ namespace TruckMove.API.DAL.Repositories
     {
         Task<List<Role>> GetAllRoles();
         Task<List<User>> GetUsersByRoleAsync(int roleId);
+
+        Task<List<HookupType>> GetAllRolesHookupTypes();
     }
 }

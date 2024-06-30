@@ -12,6 +12,6 @@ namespace TruckMove.API.DAL.Models
         public bool? IsVisibleToDriver { get; set; }
 
         public virtual Vehicle Vehicle { get; set; } = null!;
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; }     
     }
 }

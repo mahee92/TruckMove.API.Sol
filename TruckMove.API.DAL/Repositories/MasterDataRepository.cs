@@ -13,11 +13,13 @@ namespace TruckMove.API.DAL.Repositories
         private readonly DbContext _context;
         private readonly DbSet<Role> _roleModeldbSet;
         private readonly DbSet<User> _userModeldbSet;
+        private readonly DbSet<HookupType> _hookuptype;
         public MasterDataRepository(DbContextOptions<TrukMoveContext> options)
         {
             _context = new TrukMoveContext(options);
             _roleModeldbSet = _context.Set<Role>();
             _userModeldbSet = _context.Set<User>();
+            _hookuptype = _context.Set<HookupType>();
 
         }
         // create method to get all roles
@@ -32,7 +34,10 @@ namespace TruckMove.API.DAL.Repositories
                 .Where(u => u.UserRoleUsers.Any(ur => ur.RoleId == roleId && ur.IsActive) && u.IsActive)
                 .ToListAsync();
         }
-
+        public async Task<List<HookupType>> GetAllRolesHookupTypes()
+        {
+            return await _hookuptype.ToListAsync();
+        }
 
     }
 }

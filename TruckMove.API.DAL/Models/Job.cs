@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TruckMove.API.DAL.dbFirst;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
@@ -8,9 +9,14 @@ namespace TruckMove.API.DAL.Models
     {
         public Job()
         {
+            Images = new HashSet<Image>();
             JobContacts = new HashSet<JobContact>();
             WayPoints = new HashSet<WayPoint>();
-          
+            Notes = new HashSet<Note>();
+            Legs = new HashSet<Leg>();
+            Trailers = new HashSet<Trailer>();
+
+
         }
 
         public int? Controller { get; set; }
@@ -32,6 +38,8 @@ namespace TruckMove.API.DAL.Models
 
         public DateTime? EstimatedDeliveryDate { get; set; }
 
+        public int? PreDepatureCheckListId { get; set; }
+
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
@@ -41,5 +49,16 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<WayPoint> WayPoints { get; set; }
        
         public virtual JobStatus? StatusNavigation { get; set; }
+
+        public virtual PreDepartureChecklist? PreDepartureChecklist { get; set; }
+
+        public virtual ICollection<Note> Notes { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
+
+        public virtual ICollection<Leg> Legs { get; set; }
+
+        public virtual ICollection<Trailer> Trailers { get; set; }
+
+
     }
 }
