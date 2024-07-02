@@ -226,7 +226,7 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
         [HttpDelete]
-        [HttpPost("Trailer/Delete")]
+        [HttpDelete("Trailer/Delete")]
         public async Task<IActionResult> TrailerDeleteAsync(int id)
         {
             Response response = await _jobService.TrailerDeleteAsync(id);
