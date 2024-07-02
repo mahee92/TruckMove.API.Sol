@@ -27,7 +27,7 @@ using TruckMove.API.BLL.Models.VehicleDTOs;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OData.Edm; // Added for OData
-using Newtonsoft.Json.Serialization;
+//using Newtonsoft.Json.Serialization;
 
 internal class Program
 {
@@ -67,11 +67,11 @@ internal class Program
         builder.Services.AddControllers().AddOData(options =>
         {
             options.Select().Filter().OrderBy().Expand().SetMaxTop(100); // Added Top option
-        })
-        .AddNewtonsoftJson(options =>
-        {
-            options.SerializerSettings.ContractResolver = new DefaultContractResolver();
         });
+        //.AddNewtonsoftJson(options =>
+        //{
+        //    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+        //});
 
 
         // Configure CORS
