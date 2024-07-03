@@ -33,6 +33,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<Trailer> Trailers { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
+        public virtual DbSet<Variance> Variances { get; set; } = null!;
         public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
         public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
         public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
@@ -239,6 +240,14 @@ namespace TruckMove.API.DAL.dbFirst
 
             modelBuilder.Entity<Leg>(entity =>
             {
+                entity.Property(e => e.EndLocation).HasMaxLength(500);
+
+                entity.Property(e => e.EndTime).HasColumnType("datetime");
+
+                entity.Property(e => e.StartLocation).HasMaxLength(500);
+
+                entity.Property(e => e.StartTime).HasColumnType("datetime");
+
                 entity.HasOne(d => d.Job)
                     .WithMany(p => p.Legs)
                     .HasForeignKey(d => d.JobId)
@@ -426,6 +435,13 @@ namespace TruckMove.API.DAL.dbFirst
                     .WithMany(p => p.UserRoleUsers)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<Variance>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Vehicle>(entity =>

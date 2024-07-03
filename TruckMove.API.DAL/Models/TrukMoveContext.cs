@@ -40,6 +40,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<Image> Images { get; set; } = null!;
 
+        public virtual DbSet<Variance> Variances { get; set; } = null!;
+
         public virtual DbSet<Leg> Legs { get; set; } = null!;
         public virtual DbSet<LegStatus> LegStatuses { get; set; } = null!;
 
@@ -52,8 +54,8 @@ namespace TruckMove.API.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
-              //  optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-15;Trusted_Connection=True;");
+              // optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-15;Trusted_Connection=True;");
                 
             }
         }
@@ -95,6 +97,16 @@ namespace TruckMove.API.DAL.Models
                  new HookupType { Id = (int)HookUpTypeEnum.HU_Double, Type = HookUpTypeEnum.HU_Double.ToString(), Description = "HU Double" },
                  new HookupType { Id = (int)HookUpTypeEnum.FOUR_RA, Type = HookUpTypeEnum.FOUR_RA.ToString(), Description = "4RA (4 Rigid Axle )" }
                  );
+            modelBuilder.Entity<Variance>().HasData(
+                 new Variance { Id = (int)VariancesEnum._default, Name = VariancesEnum._default.ToString(), Description = "Default" },
+                 new Variance { Id = (int)VariancesEnum.DG, Name = VariancesEnum.DG.ToString(), Description = "DG" },
+                 new Variance { Id = (int)VariancesEnum.Sat_rate, Name = VariancesEnum.Sat_rate.ToString(), Description = "Sat Rate" },
+                 new Variance { Id = (int)VariancesEnum.Sun_rate, Name = VariancesEnum.Sun_rate.ToString(), Description = "Sun Rate" },
+                 new Variance { Id = (int)VariancesEnum.G7, Name = VariancesEnum.G7.ToString(), Description = "G7" },
+                 new Variance { Id = (int)VariancesEnum.Public_Holiday, Name = VariancesEnum.Public_Holiday.ToString(), Description = "Public Holiday" },
+                 new Variance { Id = (int)VariancesEnum.G4, Name = VariancesEnum.G4.ToString(), Description = "G4" },
+                 new Variance { Id = (int)VariancesEnum.Bookining_Bullbar, Name = VariancesEnum.Bookining_Bullbar.ToString(), Description = "Booking (Bullbar)" }
+             );
 
             modelBuilder.Entity<Company>(entity =>
             {
@@ -575,9 +587,13 @@ namespace TruckMove.API.DAL.Models
 
             modelBuilder.Entity<Leg>(entity =>
             {
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+                entity.Property(e => e.EndLocation).HasMaxLength(500);
+
+                entity.Property(e => e.EndTime).HasColumnType("datetime");
+
+                entity.Property(e => e.StartLocation).HasMaxLength(500);
+
+                entity.Property(e => e.StartTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Job)
                     .WithMany(p => p.Legs)
@@ -650,6 +666,14 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Type).HasMaxLength(200);
             });
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
+
+
+            modelBuilder.Entity<Variance>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name).HasMaxLength(50);
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }
