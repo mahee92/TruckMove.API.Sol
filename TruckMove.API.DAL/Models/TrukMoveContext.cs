@@ -101,8 +101,17 @@ namespace TruckMove.API.DAL.Models
                  new HookupType { Id = (int)HookUpTypeEnum.HU_Single,Type= HookUpTypeEnum.HU_Single.ToString(), Description = "HU Single" },
                  new HookupType { Id = (int)HookUpTypeEnum.HU_Double, Type = HookUpTypeEnum.HU_Double.ToString(), Description = "HU Double" },
                  new HookupType { Id = (int)HookUpTypeEnum.FOUR_RA, Type = HookUpTypeEnum.FOUR_RA.ToString(), Description = "4RA (4 Rigid Axle )" }
-                 );
-
+                 ); 
+            modelBuilder.Entity<Variance>().HasData(
+                 new Variance { Id = (int)VariancesEnum._default, Name = VariancesEnum._default.ToString(), Description = "Default" },
+                 new Variance { Id = (int)VariancesEnum.DG, Name = VariancesEnum.DG.ToString(), Description = "DG" },
+                 new Variance { Id = (int)VariancesEnum.Sat_rate, Name = VariancesEnum.Sat_rate.ToString(), Description = "Sat Rate" },
+                 new Variance { Id = (int)VariancesEnum.Sun_rate, Name = VariancesEnum.Sun_rate.ToString(), Description = "Sun Rate" },
+                 new Variance { Id = (int)VariancesEnum.G7, Name = VariancesEnum.G7.ToString(), Description = "G7" },
+                 new Variance { Id = (int)VariancesEnum.Public_Holiday, Name = VariancesEnum.Public_Holiday.ToString(), Description = "Public Holiday" },
+                 new Variance { Id = (int)VariancesEnum.G4, Name = VariancesEnum.G4.ToString(), Description = "G4" },
+                 new Variance { Id = (int)VariancesEnum.Bookining_Bullbar, Name = VariancesEnum.Bookining_Bullbar.ToString(), Description = "Booking (Bullbar)" }
+             );
             modelBuilder.Entity<Company>(entity =>
             {
                 entity.HasIndex(e => e.CreatedById, "IX_Companies_CreatedById");
