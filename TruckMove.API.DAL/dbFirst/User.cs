@@ -17,6 +17,7 @@ namespace TruckMove.API.DAL.dbFirst
             JobCreatedBies = new HashSet<Job>();
             JobDriverNavigations = new HashSet<Job>();
             JobUpdatedBies = new HashSet<Job>();
+            PermitsAndPlates = new HashSet<PermitsAndPlate>();
             UserRoleCreatedBies = new HashSet<UserRole>();
             UserRoleUpdatedBies = new HashSet<UserRole>();
             UserRoleUsers = new HashSet<UserRole>();
@@ -46,6 +47,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual ICollection<Job> JobCreatedBies { get; set; }
         public virtual ICollection<Job> JobDriverNavigations { get; set; }
         public virtual ICollection<Job> JobUpdatedBies { get; set; }
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
         public virtual ICollection<UserRole> UserRoleCreatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleUpdatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleUsers { get; set; }

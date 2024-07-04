@@ -7,7 +7,7 @@ namespace TruckMove.API.DAL.dbFirst
     {
         public Job()
         {
-            Images = new HashSet<Image>();
+            ImagesAndAttachments = new HashSet<ImagesAndAttachment>();
             JobContacts = new HashSet<JobContact>();
             Legs = new HashSet<Leg>();
             Notes = new HashSet<Note>();
@@ -45,7 +45,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual Vehicle? Vehicle { get; set; }
         public virtual PreDepartureChecklist? PreDepartureChecklist { get; set; }
         public virtual Vehicle? VehicleNavigation { get; set; }
-        public virtual ICollection<Image> Images { get; set; }
+        public virtual ICollection<ImagesAndAttachment> ImagesAndAttachments { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
         public virtual ICollection<Leg> Legs { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
