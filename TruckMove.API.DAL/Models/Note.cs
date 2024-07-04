@@ -13,7 +13,7 @@ namespace TruckMove.API.DAL.Models
         public int? TrailerId { get; set; }
         public int? PreDeparturechecklistId { get; set; }
         public bool? VisibletoDriver { get; set; }
-        public string? Note1 { get; set; }
+        public string? NoteText { get; set; }
         public int? PermitAndPlatesId { get; set; }
 
         public bool IsActive { get; set; }

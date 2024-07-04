@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TruckMove.API.DAL.dbFirst;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
@@ -14,6 +13,7 @@ namespace TruckMove.API.DAL.Models
         public int Status { get; set; }
         public int Variance { get; set; }
         public string StartLocation { get; set; } = null!;
+   
         public string? EndLocation { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }

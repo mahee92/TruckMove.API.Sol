@@ -50,5 +50,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Job> JobDriverNavigations { get; set; }
         public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
+
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlatesUpdatedBies { get; set; }
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlatesCreatedBies { get; set; }
     }
 }

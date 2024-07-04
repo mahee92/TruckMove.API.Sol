@@ -14,6 +14,8 @@ namespace TruckMove.API.DAL.Models
         public string Name { get; set; } = null!;
         public double? Rate { get; set; }
 
+        public string? Description { get; set; }
+
         public virtual ICollection<Leg> Legs { get; set; }
     }
 }

@@ -59,8 +59,8 @@ namespace TruckMove.API.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
-              //  optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-15;Trusted_Connection=True;");
+               // optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-15;Trusted_Connection=True;");
                 
             }
         }
@@ -354,6 +354,20 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.Status)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PermitsAndPlates_TaskStatus");
+
+
+                entity.HasIndex(e => e.CreatedById, "IX_PermitsAndPlate_CreatedById");
+
+                entity.HasIndex(e => e.UpdatedById, "IX_PermitsAndPlate_UpdatedById");
+
+
+                entity.HasOne(d => d.CreatedBy)
+                   .WithMany(p => p.PermitsAndPlatesCreatedBies)
+                   .HasForeignKey(d => d.CreatedById);
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.PermitsAndPlatesUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById);
             });
             modelBuilder.Entity<TaskStatus>(entity =>
             {
@@ -634,7 +648,7 @@ namespace TruckMove.API.DAL.Models
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
-                entity.Property(e => e.EndLocation).HasMaxLength(500);
+              //  entity.Property(e => e.EndLocation).HasMaxLength(500);
 
                 entity.Property(e => e.EndTime).HasColumnType("datetime");
 
