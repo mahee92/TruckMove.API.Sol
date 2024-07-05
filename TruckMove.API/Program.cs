@@ -250,6 +250,7 @@ internal class Program
     {
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
         builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySettings"));
+        builder.Services.Configure<GoogleMapSettings>(builder.Configuration.GetSection("GoogleMapSettings"));
 
 
     }
