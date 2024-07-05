@@ -37,7 +37,8 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<Image> _repositoryImage;
 
         private readonly IRepository<Trailer> _repositoryTrailer;
-        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer)
+        private readonly IRepository<Leg> _repositoryLeg;
+        public JobService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer, IRepository<Leg> repositoryLeg)
         {
             _mapper = mapper;
             _repository = repository;
@@ -48,6 +49,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryImage = repositoryImage;
             _repositorypreDepartureChecklist = preDepartureChecklist;
             _repositoryTrailer = repositoryTrailer;
+            _repositoryLeg = repositoryLeg;
         }
         public int DetermineJobStatus(JobDto job)
         {
@@ -556,7 +558,110 @@ namespace TruckMove.API.BLL.Services.JobServices
         }
 
 
+        public async Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId)
+        {
+            Response<LegDto> response = new Response<LegDto>();
+            try
+            {
 
+                if (leg.Id == 0)
+                {
+                    if (leg.Acknowledged)
+                    {
+                        Leg newLeg = _mapper.Map<Leg>(leg);
+
+                        newLeg.DriverId = userId;
+                        newLeg.LegNumber = GetNextLegNumber(leg.JobId);
+                        newLeg.Status = (int)LegStatusEnum.InProgress;
+                        newLeg.Variance = (int)VariancesEnum._default;
+                        newLeg.StartTime = DateTime.Now;
+
+                        //  
+
+                        newLeg.CreatedDate = DateTime.Now;
+                        newLeg.CreatedById = userId;
+
+                        newLeg.Job.Status = (int)JobStatusEnum.InProgress;
+
+                        var res = await _repositoryLeg.AddAsync(newLeg);
+                        response.Object = _mapper.Map<LegDto>(res);
+                        response.Success = true;
+
+                        await _jobRepository.Acknowledge(res.Id);
+                    }
+                    else
+                    {
+
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.AchknowledgeError;
+                        response.ErrorMessage = ErrorMessages.AchknowledgeError;
+                    }
+
+
+                }
+                else
+                {
+                    var existingLeg = await _repositoryLeg.GetAsync(leg.Id);
+
+                    if (existingLeg == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else if (existingLeg.Status != (int)JobStatusEnum.InProgress)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        existingLeg.EndLocation = leg.EndLocation;
+                        existingLeg.EndTime = DateTime.Now;
+                        try
+                        {
+                            string distance = await GoogleMapsHelper.GetDistanceAsync(leg.StartLocation, leg.EndLocation, apiKey);
+                            existingLeg.TotalDistance = Convert.ToDouble(distance);
+                        }
+                        catch (Exception ex)
+                        {
+                            existingLeg.TotalDistance = -1;
+                        }
+
+                        existingLeg.Status = (int)LegStatusEnum.Completed;
+                        existingLeg.Job.Status = (int)JobStatusEnum.Stopped;
+
+
+                        existingLeg.LastModifiedDate = DateTime.Now;
+                        existingLeg.UpdatedById = userId;
+
+
+                        var updatedLeg = await _repositoryLeg.UpdateAsync(existingLeg);
+                        response.Success = true;
+                        response.Object = _mapper.Map<LegDto>(updatedLeg);
+
+
+
+
+
+                    }
+
+
+                }
+
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
 
 
         #endregion

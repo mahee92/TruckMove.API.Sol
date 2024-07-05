@@ -152,6 +152,8 @@ internal class Program
             profile.CreateGenericMap<Image, ImageDto>();
             profile.CreateGenericMap<TrailerDto, Trailer>();
             profile.CreateGenericMap<Trailer, TrailerDto>();
+            profile.CreateGenericMap<Leg, LegDto>();
+            profile.CreateGenericMap<LegDto, LegDto>();
 
 
 
@@ -273,6 +275,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<Note>, Repository<Note>>();
         builder.Services.AddScoped<IRepository<Image>, Repository<Image>>();
         builder.Services.AddScoped<IRepository<Trailer>, Repository<Trailer>>();
+        builder.Services.AddScoped<IRepository<Leg>, Repository<Leg>>();
 
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();

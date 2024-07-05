@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TruckMove.API.BLL.Models.JobDTOs
+{
+    public class LegDto
+    {
+        public int Id { get; set; }
+        public int JobId { get; set; }
+        public string StartLocation { get; set; } = null!;
+        public string? EndLocation { get; set; }
+
+        public bool Acknowledged { get; set; }
+
+
+    }
+}

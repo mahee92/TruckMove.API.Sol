@@ -87,5 +87,24 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
         #endregion
+
+        #region Leg
+        [HttpPost("Leg/Post")]
+        public async Task<IActionResult> PostAsync([FromBody] LegDto leg)
+        {
+            Response<LegDto> response = await _jobService.LegPostPutAsync(leg, _googleMapSettings.ApiKey, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+        #endregion
     }
 }
