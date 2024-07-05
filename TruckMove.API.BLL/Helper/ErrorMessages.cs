@@ -14,5 +14,7 @@
         public static string EmailAlreadyExists => "Email already exists";
 
         public static string? Invalidlogin => "Invalid login";
+
+        public static string? AchknowledgeError => "Achknowledge Error";
     }
 }

@@ -2,5 +2,6 @@
 {
     public class GoogleMapSettings
     {
+        public string ApiKey { get; set; }
     }
 }
