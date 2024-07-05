@@ -9,10 +9,10 @@ namespace TruckMove.API.DAL.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "NoteText",
-                table: "Notes",
-                newName: "Note1");
+            //migrationBuilder.RenameColumn(
+            //    name: "NoteText",
+            //    table: "Notes",
+            //    newName: "Note1");
 
             migrationBuilder.AddColumn<int>(
                 name: "PermitAndPlatesId",

@@ -8,18 +8,18 @@ namespace TruckMove.API.DAL.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "Note1",
-                table: "Notes",
-                newName: "NoteText");
+            //migrationBuilder.RenameColumn(
+            //    name: "Note1",
+            //    table: "Notes",
+            //    newName: "NoteText");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "NoteText",
-                table: "Notes",
-                newName: "Note1");
+            //migrationBuilder.RenameColumn(
+            //    name: "NoteText",
+            //    table: "Notes",
+            //    newName: "Note1");
         }
     }
 }
