@@ -662,7 +662,10 @@ namespace TruckMove.API.BLL.Services.JobServices
                 return response;
             }
         }
-
+        private int GetNextLegNumber(int jobId)
+        {
+            return _jobRepository.GetNextLegNumber(jobId);
+        }
 
         #endregion
 
