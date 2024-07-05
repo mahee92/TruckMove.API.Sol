@@ -117,6 +117,11 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             await _context.SaveChangesAsync();
         }
 
+        public int GetNextLegNumber(int jobId)
+        {
+            return _dbSet.Select(x => x.Legs).Count() + 1;
+        }
+
 
     }
 }

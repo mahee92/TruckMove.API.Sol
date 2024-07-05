@@ -23,5 +23,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         Task<List<WayPoint>> AddWaypointsRangeAsync(List<WayPoint> entities);
 
         Task Acknowledge(int legId);
+
+        int GetNextLegNumber(int jobId);
     }
 }
