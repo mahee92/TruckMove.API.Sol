@@ -32,6 +32,9 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public DateTime? EstimatedDeliveryDate { get; set; }
 
+        public string JobStatus { get; set; }
+
+
 
 
     }
