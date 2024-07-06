@@ -14,14 +14,16 @@ namespace TruckMove.API.Controllers.JobControllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Driver")]
+    // [Authorize(Roles = "Driver")]
     public class MobileController : Controller
     {
         private readonly IAuthUserService _authUserService;
         private readonly IJobService _jobService;
         private readonly MySettings _mySettings;
 
-        public MobileController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings)
+        private readonly GoogleMapSettings _googleMapSettings;
+
+        public MobileController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings,IOptions<GoogleMapSettings> googleMapSettings)
         {
 
             _authUserService = authUserService;
@@ -64,7 +66,7 @@ namespace TruckMove.API.Controllers.JobControllers
             return Ok(fieldInfos);
         }
 
-    
+
         private string GetDisplayName(PropertyInfo prop)
         {
             var displayNameAttr = prop.GetCustomAttribute<DisplayNameAttribute>();
