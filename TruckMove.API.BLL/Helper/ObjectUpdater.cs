@@ -35,10 +35,10 @@ namespace TruckMove.API.BLL.Helper
                         object value = sourceProperty.GetValue(source);
 
                         // Set the value to the corresponding property in the destination object
-                        if (value != null)
-                        {
+                        //if (value != null)
+                       //{
                             destinationProperty.SetValue(destination, value);
-                        }
+                      //  }
 
                     }
                 }
