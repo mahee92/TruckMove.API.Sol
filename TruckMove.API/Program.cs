@@ -153,7 +153,7 @@ internal class Program
             profile.CreateGenericMap<TrailerDto, Trailer>();
             profile.CreateGenericMap<Trailer, TrailerDto>();
             profile.CreateGenericMap<Leg, LegDto>();
-            profile.CreateGenericMap<LegDto, LegDto>();
+            profile.CreateGenericMap<LegDto, Leg>();
 
 
 

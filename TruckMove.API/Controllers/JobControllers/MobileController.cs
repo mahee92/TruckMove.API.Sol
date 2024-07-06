@@ -29,6 +29,7 @@ namespace TruckMove.API.Controllers.JobControllers
             _authUserService = authUserService;
             _jobService = jobService;
             _mySettings = mySettings.Value;
+            _googleMapSettings = googleMapSettings.Value;
 
         }
         [HttpGet("/Odata/Job/Get")]

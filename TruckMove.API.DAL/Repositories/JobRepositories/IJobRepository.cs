@@ -24,6 +24,6 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         Task Acknowledge(int legId);
 
-        int GetNextLegNumber(int jobId);
+       Task<int> GetNextLegNumber(int jobId);
     }
 }
