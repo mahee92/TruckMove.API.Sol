@@ -11,5 +11,6 @@ namespace TruckMove.API.BLL.Services.JobServices
     public interface IJobTaskService
     {
         Task<Response<PermitsAndPlateDto>> PermitsAndPlatePostPut(PermitsAndPlateDto permitsAndPlate, int userId);
+        Task<Response> PermitsAndPlateDeleteAsync(int id);
     }
 }

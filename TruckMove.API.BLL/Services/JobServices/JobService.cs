@@ -39,9 +39,9 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<Trailer> _repositoryTrailer;
 
         private readonly IMasterDataRepository _masterDataRepository;
-        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer, IMasterDataRepository masterDataRepository)
+
         private readonly IRepository<Leg> _repositoryLeg;
-        public JobService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer, IRepository<Leg> repositoryLeg)
+        public JobService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer, IRepository<Leg> repositoryLeg, IMasterDataRepository masterDataRepository)
         {
             _mapper = mapper;
             _repository = repository;
@@ -169,13 +169,20 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
             try
             {
-                
-                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", 
-                                                                            "Company", 
-                                                                            "VehicleNavigation.Notes", 
-                                                                            "VehicleNavigation.Images", 
+                //var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
+
+                //                                                            "VehicleNavigation.Notes",
+                //                                                            "VehicleNavigation.Images",
+                //                                                            "Trailers.Images",
+                //                                                            "Trailers.Notes",
+                //                                                            "WayPoints");
+
+                var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
+                                                                            "Company",
+                                                                            "VehicleNavigation.Notes",
+                                                                            "VehicleNavigation.Images",
                                                                             "Trailers.Images",
-                                                                            "Trailers.Notes", 
+                                                                            "Trailers.Notes",
                                                                             "WayPoints");
 
                 if (job == null)
@@ -189,21 +196,21 @@ namespace TruckMove.API.BLL.Services.JobServices
                     
                     response.Object = _mapper.Map<JobOutPutDTO>(job);
 
-                    response.Object.Company = _mapper.Map<CompanyDto>(job.Company);
+                  //  response.Object.Company = _mapper.Map<CompanyDto>(job.Company);
                     response.Object.Contacts = new List<ContactDto>();
         
-                    response.Object.Vehicle = _mapper.Map<VehicleOutputDto>(job.VehicleNavigation);
+                    //response.Object.Vehicle = _mapper.Map<VehicleOutputDto>(job.VehicleNavigation);
                    
-                    if(job.VehicleNavigation != null && job.VehicleNavigation.Notes != null)
-                    {
-                        response.Object.Vehicle.Notes = job.VehicleNavigation.Notes.Select(jc => _mapper.Map<NoteDto>(jc)).ToList();
-                    }
+                    //if(job.VehicleNavigation != null && job.VehicleNavigation.Notes != null)
+                    //{
+                    //    response.Object.Vehicle.Notes = job.VehicleNavigation.Notes.Select(jc => _mapper.Map<NoteDto>(jc)).ToList();
+                    //}
 
                     
-                    if (job.VehicleNavigation != null && job.VehicleNavigation.Images != null)
-                    {
-                        response.Object.Vehicle.VehicleImages = job.VehicleNavigation.Images.Select(jc => _mapper.Map<ImageDto>(jc)).ToList();
-                    }
+                    //if (job.VehicleNavigation != null && job.VehicleNavigation.Images != null)
+                    //{
+                    //    response.Object.Vehicle.VehicleImages = job.VehicleNavigation.Images.Select(jc => _mapper.Map<ImageDto>(jc)).ToList();
+                    //}
 
                    
 

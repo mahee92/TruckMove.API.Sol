@@ -28,10 +28,7 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
 
         public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
-
-        public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
- 	   public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
-
+      
         public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
         public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
 
@@ -60,7 +57,7 @@ namespace TruckMove.API.DAL.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                // optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
-                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-15;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-18;Trusted_Connection=True;");
                 
             }
         }
@@ -598,35 +595,7 @@ namespace TruckMove.API.DAL.Models
                      .HasForeignKey<Vehicle>(d => d.JobId)
                      .OnDelete(DeleteBehavior.ClientSetNull);
             });
-            modelBuilder.Entity<VehicleImage>(entity =>
-            {
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
-               
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.VehicleImages)
-                    .HasForeignKey(d => d.VehicleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VehicleImages_Vehicles");
-            });
-
-            modelBuilder.Entity<VehicleNote>(entity =>
-            {
-                entity.Property(e => e.IsVisibleToDriver)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.VehicleNotes)
-                    .HasForeignKey(d => d.VehicleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VehicleNotes_Vehicles");
-            });
+         
             modelBuilder.Entity<WayPoint>(entity =>
             {
                
