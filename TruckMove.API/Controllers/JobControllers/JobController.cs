@@ -21,7 +21,7 @@ namespace TruckMove.API.Controllers.JobControllers
     [Route("[controller]")]
 #if DEBUG
 #else
-    [Authorize(Roles = "Administrator,OpsManager")]
+    [Authorize(Roles = "Administrator,OpsManager,AdminTeam,PayrollTeam")]
 #endif
     public class JobController : ControllerBase
     {

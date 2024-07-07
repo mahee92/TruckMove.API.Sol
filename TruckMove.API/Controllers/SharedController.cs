@@ -9,6 +9,10 @@ namespace TruckMove.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+#if DEBUG
+#else
+    [Authorize(Roles = "Administrator,OpsManager,AdminTeam,PayrollTeam")]
+#endif
 
     public class SharedController :  ControllerBase
     {
