@@ -5,9 +5,10 @@ using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Services;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.Controllers.PrimaryControllers;
-using TruckMove.API.DAL.Repositories.Primary;
+using TruckMove.API.DAL.Repositories.PrimaryRepositories;
 
 using TruckMove.API.Settings;
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.Controllers
 {
@@ -35,6 +36,51 @@ namespace TruckMove.API.Controllers
             else
             {
                 _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpGet("/GetDrivers")]
+        public async Task<IActionResult> GetDrivers()
+        {
+
+            var response = await _masterdataService.GetUsersByRoleAsync(RoleEnum.Driver);
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpGet("/GetOPSManagers")]
+        public async Task<IActionResult> GetOPSManagers()
+        {
+
+            var response = await _masterdataService.GetUsersByRoleAsync(RoleEnum.OpsManager);
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+        [HttpGet("/GetHookupTypes")]
+        public async Task<IActionResult> HookupTypes()
+        {
+            var response = await _masterdataService.GetAllHookupTypes();
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+               
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }

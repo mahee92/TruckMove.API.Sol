@@ -11,6 +11,8 @@
 
         public string FileLocation { get; set; }
 
+        public int loggedUser { get; set; }
+
 
 
 

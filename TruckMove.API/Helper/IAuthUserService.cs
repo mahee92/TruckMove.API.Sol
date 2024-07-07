@@ -4,5 +4,6 @@
     {
         string GetUserId();
         string GetUserName();
+        bool IsFromMobile();
     }
 }

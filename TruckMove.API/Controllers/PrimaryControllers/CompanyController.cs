@@ -16,7 +16,10 @@ namespace TruckMove.API.Controllers.Primary
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Administrator,OpsManager")]
+#if DEBUG
+#else
+     [Authorize(Roles = "Administrator,OpsManager")]
+#endif
     public class CompanyController : ControllerBase
     {
 
@@ -41,18 +44,18 @@ namespace TruckMove.API.Controllers.Primary
 
             Response<CompanyDto> response = await _companyService.GetAsync(id);
 
-
             if (response.Success)
             {
                 return Ok(response.Object);
             }
             else
             {
-                _logger.BeginScope(response.ErrorMessage);
-                return StatusCode((int)response.ErrorType, response.ErrorMessage);
                 
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
-        }
+        }      
+          
+
 
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
@@ -64,7 +67,7 @@ namespace TruckMove.API.Controllers.Primary
             }
             else
             {
-                _logger.BeginScope(response.ErrorMessage);
+                
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
@@ -81,7 +84,7 @@ namespace TruckMove.API.Controllers.Primary
             }
             else
             {
-                _logger.BeginScope(response.ErrorMessage);
+              
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
@@ -120,11 +123,6 @@ namespace TruckMove.API.Controllers.Primary
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
-        
-        
-       
-        
-
 
         [HttpGet("{id}/Contacts")]
         public async Task<IActionResult> GetContactsByCompany(int id)

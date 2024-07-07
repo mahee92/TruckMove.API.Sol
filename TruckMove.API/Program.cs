@@ -3,30 +3,78 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog.Events;
+using Serilog;
 using System.Text;
-using System.Text.Json.Serialization;
 using TruckMove.API.BLL;
 using TruckMove.API.BLL.Helper;
+using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Services;
+using TruckMove.API.BLL.Services.JobServices;
 using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.BLL.Services.PrimaryServices;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.DAL.Repositories;
-using TruckMove.API.DAL.Repositories.Primary;
+using TruckMove.API.DAL.Repositories.JobRepositories;
+using TruckMove.API.DAL.Repositories.PrimaryRepositories;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
+using TruckMove.API.BLL.Models.VehicleDtos;
+using TruckMove.API.BLL.Models.VehicleDTOs;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OData.ModelBuilder;
+using Microsoft.OData.Edm; // Added for OData
+//using Newtonsoft.Json.Serialization;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
+
+
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
+        // Add services to the container.
+        var logger = new LoggerConfiguration()
+          .ReadFrom.Configuration(builder.Configuration)
+          .Enrich.FromLogContext()
+          .CreateLogger(); ;
 
+        Log.Logger = logger; // Set the global logger
+
+        builder.Logging.ClearProviders();
+        builder.Logging.AddSerilog(logger);
+        // Add services to the container
+        ConfigureServices(builder);
+
+        var app = builder.Build();
+
+        Log.Information("Application started successfully.");
+
+
+        // Configure the HTTP request pipeline
+        ConfigureMiddleware(app, builder.Configuration);
+
+        app.Run();
+        Log.CloseAndFlush();
+    }
+
+    private static void ConfigureServices(WebApplicationBuilder builder)
+    {
+        builder.Services.AddControllers().AddOData(options =>
+        {
+            options.Select().Filter().OrderBy().Expand().SetMaxTop(100); // Added Top option
+        });
+        //.AddNewtonsoftJson(options =>
+        //{
+        //    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+        //});
+
+
+        // Configure CORS
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll",
@@ -36,30 +84,82 @@ internal class Program
         });
 
 
+        // Configure app settings
+        builder.Configuration
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables();
+
+        // Configure JWT authentication
+        ConfigureAuthentication(builder);
+
+        // Configure Swagger
+        ConfigureSwagger(builder);
+
+        // Configure custom services
+        ConfigureCustomServices(builder);
+
+        // Configure DI
+        ConfigureDI(builder);
+
+        // Configure EF Core DbContext
+        builder.Services.AddDbContext<TrukMoveContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+
+        // Configure Auto Mapper
+        ConfigureAutoMapper(builder);
+
+        // Add other necessary services
+        builder.Services.AddHttpContextAccessor();
+
+    }
+    private static void ConfigureAutoMapper(WebApplicationBuilder builder)
+    {
+        // Configure AutoMapper
         builder.Services.AddAutoMapper(cfg =>
         {
             var profile = new MapProfile();
-            cfg.AddProfile(profile);
-            profile.CreateGenericMap<UserInputDto, UserModel>();
-            profile.CreateGenericMap<UserModel, UserOutputDto>();
-            profile.CreateGenericMap<RoleModel, RoleDto>();
-            profile.CreateGenericMap<CompanyModel, CompanyDto>();
-            profile.CreateGenericMap<CompanyDto, CompanyModel>();
-            profile.CreateGenericMap<CompanyDtoUpdate, CompanyModel>();
-            profile.CreateGenericMap<CompanyModel, CompanyDtoUpdate>();
-            profile.CreateGenericMap<ContactModel, ContactDto>();
-            profile.CreateGenericMap<ContactDto, ContactModel>();
-            profile.CreateGenericMap<ContactModel, CompanyDtoUpdate>();
-            profile.CreateGenericMap<CompanyDtoUpdate, ContactModel>();
+           cfg.AddProfile(profile);
+            //cfg.CreateJsonDataReaderMap<PreDepartureChecklistDto>();
+            profile.CreateGenericMap<UserInputDto, User>();
+            profile.CreateGenericMap<User, UserOutputDto>();
+            profile.CreateGenericMap<Role, RoleDto>();
+            profile.CreateGenericMap<Company, CompanyDto>();
+            profile.CreateGenericMap<CompanyDto, Company>();
+            profile.CreateGenericMap<CompanyDtoUpdate, Company>();
+            profile.CreateGenericMap<Company, CompanyDtoUpdate>();
+            profile.CreateGenericMap<Contact, ContactDto>();
+            profile.CreateGenericMap<ContactDto, Contact>();
+            profile.CreateGenericMap<Contact, CompanyDtoUpdate>();
+            profile.CreateGenericMap<CompanyDtoUpdate, Contact>();
+            profile.CreateGenericMap<JobDto, Job>();
+            profile.CreateGenericMap<Job, JobDto>();
+            profile.CreateGenericMap<Job, JobOutPutDTO>();
+            profile.CreateGenericMap<Job, JobDto>();
+            profile.CreateGenericMap<VehicleDto, Vehicle>();
+            profile.CreateGenericMap<VehicleNote, VehicleNoteDto>();
+            profile.CreateGenericMap<VehicleNoteDto, VehicleNote>();
+            profile.CreateGenericMap<VehicleOutputDto, Vehicle>();
+            profile.CreateGenericMap<Vehicle, VehicleOutputDto>();
+            profile.CreateGenericMap<VehicleImage, VehicleImageDto>();
+            profile.CreateGenericMap<VehicleImageDto, VehicleImage>();
+            profile.CreateGenericMap<WayPoint, WayPointDto>();
+            profile.CreateGenericMap<PreDepartureChecklist, PreDepartureChecklistDto>();
+            profile.CreateGenericMap<PreDepartureChecklistDto, PreDepartureChecklist>();
+            profile.CreateGenericMap<Note, NoteDto>();
+            profile.CreateGenericMap<NoteDto, Note>();
+            profile.CreateGenericMap<ImageDto, Image>();
+            profile.CreateGenericMap<Image, ImageDto>();
+            profile.CreateGenericMap<TrailerDto, Trailer>();
+            profile.CreateGenericMap<Trailer, TrailerDto>();
+            profile.CreateGenericMap<JobStatus, JobStatusDto>();
+
+
 
         }, typeof(Program));
-
-        builder.Configuration
-           .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-           .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-           .AddEnvironmentVariables();
-
-        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+    }
+    private static void ConfigureAuthentication(WebApplicationBuilder builder)
+    {
         var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtSettings:SecretKey"]);
 
         builder.Services.AddAuthentication(options =>
@@ -80,6 +180,13 @@ internal class Program
                 IssuerSigningKey = new SymmetricSecurityKey(key)
             };
         });
+
+        builder.Services.AddScoped<IAuthUserService, AuthUserService>();
+        builder.Services.AddSingleton<JwtTokenGenerator>();
+    }
+
+    private static void ConfigureSwagger(WebApplicationBuilder builder)
+    {
         builder.Services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -110,46 +217,75 @@ internal class Program
                     new string[] {}
                 }
             };
+            c.AddSecurityDefinition("fromMobile", new OpenApiSecurityScheme
+            {
+                Name = "fromMobile",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Description = "Custom boolean header to indicate if the request is made by mobile (optional)"
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "fromMobile"
+                        }
+                    },
+                    new string[] {}
+                }
+            });
+
+
             c.AddSecurityRequirement(securityRequirement);
         });
 
-        builder.Services.AddAuthorization();
+        builder.Services.AddEndpointsApiExplorer();
+    }
 
-
+    private static void ConfigureCustomServices(WebApplicationBuilder builder)
+    {
+        builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
         builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySettings"));
 
 
-        // builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    }
+    private static void ConfigureDI(WebApplicationBuilder builder)
+    {
         builder.Services.AddScoped<ICompanyService, CompanyService>();
         builder.Services.AddScoped<IContactService, ContactService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IJobService, JobService>();
         builder.Services.AddScoped<IMasterDataService, MasterDataService>();
 
-        builder.Services.AddScoped<IRepository<CompanyModel>, Repository<CompanyModel>>();
-        builder.Services.AddScoped<IRepository<ContactModel>, Repository<ContactModel>>();
-        builder.Services.AddScoped<IRepository<UserModel>, Repository<UserModel>>();
+        builder.Services.AddScoped<IRepository<Company>, Repository<Company>>();
+        builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
+        builder.Services.AddScoped<IRepository<User>, Repository<User>>();
+        builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
+        builder.Services.AddScoped<IRepository<Vehicle>, Repository<Vehicle>>();        
+        builder.Services.AddScoped<IRepository<JobContact>, Repository<JobContact>>();
+        builder.Services.AddScoped<IRepository<VehicleImage>, Repository<VehicleImage>>();
+        builder.Services.AddScoped<IRepository<PreDepartureChecklist>, Repository<PreDepartureChecklist>>();
+        builder.Services.AddScoped<IRepository<Note>, Repository<Note>>();
+        builder.Services.AddScoped<IRepository<Image>, Repository<Image>>();
+        builder.Services.AddScoped<IRepository<Trailer>, Repository<Trailer>>();
+
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IJobRepository, JobRepository>();
         builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();
-
-        builder.Services.AddHttpContextAccessor();
-        builder.Services.AddScoped<IAuthUserService, AuthUserService>();
-
-        builder.Services.AddEndpointsApiExplorer();
-
-        builder.Services.AddDbContext<TrukMoveLocalContext>(option =>
-        option.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
-
-        builder.Services.AddSingleton<JwtTokenGenerator>();
-
-        var app = builder.Build();
-
+    }
+    private static void ConfigureMiddleware(WebApplication app, IConfiguration configuration)
+    {
+        // Serve static files
         app.UseStaticFiles();
 
         // Serve static files from the external directory
-        var uploadPath = builder.Configuration.GetValue<string>("MySettings:FileLocation");
-
+        var uploadPath = configuration.GetValue<string>("MySettings:FileLocation");
         if (!string.IsNullOrEmpty(uploadPath) && Directory.Exists(uploadPath))
         {
             app.UseStaticFiles(new StaticFileOptions
@@ -159,30 +295,34 @@ internal class Program
             });
         }
 
+        // Swagger setup
         app.UseSwagger();
-        // app.UseSwaggerUI();
-        app.UseStaticFiles();
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
         {
-            app.UseSwagger();
             app.UseSwaggerUI();
         }
+
         app.UseCors("AllowAll");
 
-
         app.UseHttpsRedirection();
-
         app.UseAuthentication();
         app.UseAuthorization();
 
-
+        // Custom middleware
+        app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
+        // Configure OData
+        // Configure OData (Uncomment the following lines to add OData support)
+        
+        //var modelBuilder = new ODataConventionModelBuilder(app.Services);
+        //modelBuilder.EntitySet<Product>("Products");
+        //app.UseEndpoints(endpoints =>
+        //{
+        //    endpoints.MapODataRoute("odata", "odata", modelBuilder.GetEdmModel());
+        //});
 
         app.MapControllers();
 
-        app.Run();
     }
 }
-

@@ -15,9 +15,9 @@ namespace TruckMove.API.DAL.Repositories
 
         private readonly DbContext _context;
         private readonly DbSet<TEntity> _dbSet;
-        public Repository(DbContextOptions<TrukMoveLocalContext> options)
+        public Repository(DbContextOptions<TrukMoveContext> options)
         {
-            _context = new TrukMoveLocalContext(options);
+            _context = new TrukMoveContext(options);
             _dbSet = _context.Set<TEntity>();
         }
 
@@ -37,11 +37,11 @@ namespace TruckMove.API.DAL.Repositories
             return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
         }
 
-        public async Task UpdateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            //return entity;
+            return entity;
         }
 
         public async Task DeleteAsync(TEntity entity)
@@ -49,36 +49,80 @@ namespace TruckMove.API.DAL.Repositories
             _context.Entry(entity).State = EntityState.Modified;
              await _context.SaveChangesAsync();
         }
+        public async Task DeleteAsync(int id)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+           
+        }
 
-   
         public async Task<List<TEntity>> GetAllAsync()
         {
             return await _dbSet.Where(e => e.IsActive).OrderByDescending(x=>x.CreatedDate).ToListAsync();
         }
+       
+        //public async Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes)
+        //{
+        //    IQueryable<TEntity> query = _dbSet;
 
-        public async Task<TEntity> GetWithIncludesAsync(int id, params Expression<Func<TEntity, object>>[] includes)
+        //    foreach (var include in includes)
+        //    {
+        //        query = query.Include(include);
+        //    }
+
+        //    return await query.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
+        //}
+
+        //public async Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes)
+        //{
+        //    IQueryable<TEntity> query = _dbSet;
+
+        //    foreach (var include in includes)
+        //    {
+        //        query = query.Include(include);
+        //    }
+
+        //    return await query.Where(e => e.IsActive).ToListAsync();
+        //}
+        //public async Task<List<TEntity>> GetAllWithNestedIncludesAsync(params string[] includeProperties)
+        //{
+        //    IQueryable<TEntity> query = _dbSet;
+
+        //    foreach (var includeProperty in includeProperties)
+        //    {
+        //        query = query.Include(includeProperty);
+        //    }
+
+        //    return await query.Where(e => e.IsActive).ToListAsync();
+        //}
+        public async Task<TEntity> GetWithNestedIncludesAsync(int id, params string[] includeProperties)
         {
             IQueryable<TEntity> query = _dbSet;
 
-            foreach (var include in includes)
+            foreach (var includeProperty in includeProperties)
             {
-                query = query.Include(include);
+                query = query.Include(includeProperty);
             }
 
             return await query.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
         }
-
-        public async Task<List<TEntity>> GetAllWithIncludesAsync(params Expression<Func<TEntity, object>>[] includes)
+        public async Task DeleteByIdsAsync(IEnumerable<int> ids)
         {
-            IQueryable<TEntity> query = _dbSet;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return await query.Where(e => e.IsActive).ToListAsync();
+            var entities = await _dbSet.Where(e => ids.Contains(e.Id)).ToListAsync();
+            _dbSet.RemoveRange(entities);
+            await _context.SaveChangesAsync();
         }
+        public async Task<List<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+            return entities.ToList();
+        }
+
 
 
 

@@ -15,13 +15,29 @@ namespace TruckMove.API.Helper
 
         public string GetUserId()
         {
-            //return "11";
+#if DEBUG
+            // This code will only run in debug mode
+           // return "2";
+            return "21";
+#else
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+#endif
+
         }
 
         public string GetUserName()
         {
+           
             return _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
+        }
+        public bool IsFromMobile()
+        {
+            if (_httpContextAccessor.HttpContext?.Request.Headers.TryGetValue("fromMobile", out var fromMobileHeader) == true)
+            {
+                string fromMobile = fromMobileHeader.FirstOrDefault();
+                return bool.TryParse(fromMobile, out bool isFromMobile) && isFromMobile;
+            }
+            return false;
         }
     }
 }
