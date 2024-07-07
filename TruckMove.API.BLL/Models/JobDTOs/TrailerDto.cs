@@ -19,8 +19,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
 
 
-        public virtual List<ImageDto> Images { get; set; }
-        public virtual List<NoteDto> Notes { get; set; }
+        //public virtual List<ImageDto> Images { get; set; }
+        //public virtual List<NoteDto> Notes { get; set; }
 
 
     }
