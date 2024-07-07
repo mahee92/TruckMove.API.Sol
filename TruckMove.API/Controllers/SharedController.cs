@@ -9,7 +9,6 @@ namespace TruckMove.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-
     public class SharedController :  ControllerBase
     {
         private readonly MySettings _mySettings;

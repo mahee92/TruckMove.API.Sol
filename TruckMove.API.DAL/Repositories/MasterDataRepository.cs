@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using TruckMove.API.DAL.Models;
 
 namespace TruckMove.API.DAL.Repositories
@@ -14,12 +15,14 @@ namespace TruckMove.API.DAL.Repositories
         private readonly DbSet<Role> _roleModeldbSet;
         private readonly DbSet<User> _userModeldbSet;
         private readonly DbSet<HookupType> _hookuptype;
+        private readonly DbSet<JobStatus> _jobStatus;
         public MasterDataRepository(DbContextOptions<TrukMoveContext> options)
         {
             _context = new TrukMoveContext(options);
             _roleModeldbSet = _context.Set<Role>();
             _userModeldbSet = _context.Set<User>();
             _hookuptype = _context.Set<HookupType>();
+            _jobStatus = _context.Set<JobStatus>();
 
         }
         // create method to get all roles
@@ -38,6 +41,14 @@ namespace TruckMove.API.DAL.Repositories
         {
             return await _hookuptype.ToListAsync();
         }
-
+        public async Task<List<JobStatus>> GetAllJobStatus()
+        {
+            return await _jobStatus.ToListAsync();
+        }
+        public async Task<JobStatus> GetJobStatus(int id)
+        {
+            return await _jobStatus.Where(x=>x.Id==id).FirstOrDefaultAsync();
+           
+        }
     }
 }

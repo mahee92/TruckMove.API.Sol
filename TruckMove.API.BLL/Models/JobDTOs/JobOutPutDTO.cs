@@ -23,5 +23,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public virtual List<TrailerDto> Trailers { get; set; }
 
+
+
     }
 }

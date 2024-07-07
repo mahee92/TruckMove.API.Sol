@@ -37,6 +37,9 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<Image> _repositoryImage;
 
         private readonly IRepository<Trailer> _repositoryTrailer;
+
+        private readonly IMasterDataRepository _masterDataRepository;
+        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer, IMasterDataRepository masterDataRepository)
         private readonly IRepository<Leg> _repositoryLeg;
         public JobService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer, IRepository<Leg> repositoryLeg)
         {
@@ -49,27 +52,30 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryImage = repositoryImage;
             _repositorypreDepartureChecklist = preDepartureChecklist;
             _repositoryTrailer = repositoryTrailer;
+            _masterDataRepository = masterDataRepository;
             _repositoryLeg = repositoryLeg;
         }
-        public int DetermineJobStatus(JobDto job)
+        public JobStatusEnum DetermineJobStatus(JobDto job)
         {
             //JobOutPutDTO
             if (job.CompanyId > 0 &&
                 !string.IsNullOrWhiteSpace(job.PickupLocation) &&
                 !string.IsNullOrWhiteSpace(job.DropOfLocation) &&
                 job.VehicleId.HasValue &&
-                job.Driver.HasValue)
+                job.Driver.HasValue &&
+                job.PickupDate!=null)
             {
-                if(job.PickupDate!=null && job.PickupDate.Value.Date <= DateTime.Now.Date)
+                if(job.PickupDate.Value.Date <= DateTime.Now.Date)
                 {
-                    return (int)JobStatusEnum.ReadyForPickup;
+                    return JobStatusEnum.ReadyForPickup;
                 }
-                
-                return (int)JobStatusEnum.Booked;
+                return JobStatusEnum.Booked;
             }
 
-            return (int)JobStatusEnum.Planned;
+            return JobStatusEnum.Planned;
         }
+
+        
         public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
         {
             Response<JobDto> response = new Response<JobDto>();
@@ -86,15 +92,21 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                 var existingJob = await _repository.GetAsync(job.Id);
 
+                JobStatusEnum status = DetermineJobStatus(job);
+
                 if (existingJob == null)
                 {
                     var Job = _mapper.Map<Job>(job);
                     Job.CreatedDate = DateTime.Now;
                     Job.CreatedById = userId;
-                    Job.Status = DetermineJobStatus(job);
+
+                    Job.Status = (int)status;
                     var res = await _repository.AddAsync(Job);
                     response.Success = true;
                     response.Object = _mapper.Map<JobDto>(res);
+                    
+                    //var resStatus = await _masterDataRepository.GetJobStatus((int)status);
+                    response.Object.JobStatus = status.ToString();
                 }
                 else
                 {
@@ -104,8 +116,12 @@ namespace TruckMove.API.BLL.Services.JobServices
                     res.CreatedById = existingJob.CreatedById;
                     res.LastModifiedDate = DateTime.Now;
                     res.UpdatedById = userId;
-                    res.Status = DetermineJobStatus(job);
-                    await _repository.UpdateAsync(res);
+                    res.Status = (int)status;
+                    var updatedJob= await _repository.UpdateAsync(res);
+                    response.Object = _mapper.Map<JobDto>(updatedJob);
+
+                    //var resStatus = await _masterDataRepository.GetJobStatus((int)status);
+                    response.Object.JobStatus = status.ToString();
                     response.Success = true;
                 }
 
@@ -192,6 +208,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                    
 
                     response.Object.Contacts = job.JobContacts.Select(jc => _mapper.Map<ContactDto>(jc.Contact)).ToList();
+                    response.Object.JobStatus = ((JobStatusEnum)job.Status).ToString();
+
+
                     response.Success = true;
                 }
             }
@@ -245,6 +264,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         public async Task<Response<VehicleDto>> VehiclePostPutAsync(VehicleDto vehicle, int userId)
         {
             Response<VehicleDto> response = new Response<VehicleDto>();
+            Vehicle resvVehicle = new Vehicle();
             try
             {
                
@@ -255,41 +275,37 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newvehicle.CreatedDate = DateTime.Now;
                     newvehicle.CreatedById = userId;
 
-                    var res = await _repositoryVehicle.AddAsync(newvehicle);
+                    resvVehicle = await _repositoryVehicle.AddAsync(newvehicle);
                     
-                    response.Object = _mapper.Map<VehicleDto>(res);
+                    response.Object = _mapper.Map<VehicleDto>(resvVehicle);
 
-                    // Update job 
-                    var job = await _repository.GetAsync(vehicle.JobId);
-                    if (job != null)
-                    {
-                        job.VehicleId = res.Id;
-                        job.Status = DetermineJobStatus(_mapper.Map<JobDto>(job));
-                       
-                        await _repository.UpdateAsync(job);
-                    }
+                
+                    
                     response.Success = true;
 
                 }
                 else
                 {
-                    var existingVehicle = await _repositoryVehicle.GetAsync(vehicle.Id);
+                    resvVehicle = await _repositoryVehicle.GetAsync(vehicle.Id);
 
-                    if(existingVehicle==null)
+                    if(resvVehicle == null)
                     {
                         response.Success = false;
                         response.ErrorType = ErrorCode.NotFound;
                         response.ErrorMessage = ErrorMessages.NotFound;
+                        return response;
                     }
                     else
                     {
                         ObjectUpdater<VehicleDto, Vehicle> updater = new ObjectUpdater<VehicleDto, Vehicle>();
-                        var res = updater.Map(vehicle, existingVehicle);
-                        res.CreatedDate = existingVehicle.CreatedDate;
-                        res.CreatedById = existingVehicle.CreatedById;
+                        var res = updater.Map(vehicle, resvVehicle);
+                        res.CreatedDate = resvVehicle.CreatedDate;
+                        res.CreatedById = resvVehicle.CreatedById;
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
                         var updatedVehicle = await _repositoryVehicle.UpdateAsync(res);
+
+                        
                         response.Success = true;
                         response.Object = _mapper.Map<VehicleDto>(updatedVehicle);
 
@@ -297,6 +313,20 @@ namespace TruckMove.API.BLL.Services.JobServices
                     }
                    
 
+                }
+                // Update job 
+                var job = await _repository.GetAsync(resvVehicle.JobId);
+
+                if (job != null)
+                {
+                    job.VehicleId = resvVehicle.Id;
+
+                    JobStatusEnum status = DetermineJobStatus(_mapper.Map<JobDto>(job));
+                    job.Status = (int)status;
+
+                    await _repository.UpdateAsync(job);
+
+                    response.Object.JobStatus = status.ToString();
                 }
 
                 return response;

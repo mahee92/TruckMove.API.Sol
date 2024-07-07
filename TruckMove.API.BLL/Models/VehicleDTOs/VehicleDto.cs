@@ -18,7 +18,9 @@ namespace TruckMove.API.BLL.Models.VehicleDtos
         public string? Year { get; set; }
         public string? Colour { get; set; }
 
-      
+        public string? JobStatus { get; set; }
+
+
 
     }
 }
