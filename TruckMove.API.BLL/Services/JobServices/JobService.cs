@@ -89,7 +89,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                 var existingJob = await _repository.GetAsync(job.Id);
 
-                JobStatusEnum status = DetermineJobStatus(job);
+               
 
                 if (existingJob == null)
                 {
@@ -97,6 +97,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                     Job.CreatedDate = DateTime.Now;
                     Job.CreatedById = userId;
 
+
+                    JobStatusEnum status = DetermineJobStatus(job);
                     Job.Status = (int)status;
                     var res = await _repository.AddAsync(Job);
                     response.Success = true;
@@ -108,12 +110,16 @@ namespace TruckMove.API.BLL.Services.JobServices
                 else
                 {
                     ObjectUpdater<JobDto, Job> updater = new ObjectUpdater<JobDto, Job>();
+                    job.VehicleId = existingJob.VehicleId;
                     var res = updater.Map(job, existingJob);
                     res.CreatedDate = existingJob.CreatedDate;
                     res.CreatedById = existingJob.CreatedById;
                     res.LastModifiedDate = DateTime.Now;
                     res.UpdatedById = userId;
+                   
+                    JobStatusEnum status = DetermineJobStatus(job);
                     res.Status = (int)status;
+
                     var updatedJob= await _repository.UpdateAsync(res);
                     response.Object = _mapper.Map<JobDto>(updatedJob);
 
