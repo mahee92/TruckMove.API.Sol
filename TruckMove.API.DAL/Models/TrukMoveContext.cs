@@ -716,6 +716,10 @@ namespace TruckMove.API.DAL.Models
 
             modelBuilder.Entity<Attachment>(entity =>
             {
+                entity.Property(e => e.IsActive)
+                   .IsRequired()
+                   .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Url)
