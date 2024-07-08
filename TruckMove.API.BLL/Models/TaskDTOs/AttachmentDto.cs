@@ -11,7 +11,8 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
         public int Id { get; set; }
         public string? Url { get; set; }
         public int? PermitAndPlateId { get; set; }
+       
 
-        //public virtual PermitsAndPlate? PermitAndPlate { get; set; }
+       
     }
 }

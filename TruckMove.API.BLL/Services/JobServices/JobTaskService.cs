@@ -20,13 +20,15 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IMapper _mapper;
         private readonly IRepository<Job> _repository;
         private readonly IJobRepository _jobRepository;
+        private readonly IRepository<Attachment> _repositoryAttachment;
         private readonly IRepository<PermitsAndPlate> _repositorypermitsAndPlate;
-        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate)
+        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment)
         {
             _mapper = mapper;
             _repository = repository;
             _jobRepository = jobRepository;
             _repositorypermitsAndPlate = repositorypermitsAndPlate;
+            _repositoryAttachment = repositoryAttachment;
 
 
         }
@@ -111,6 +113,47 @@ namespace TruckMove.API.BLL.Services.JobServices
                     response.Success = true;
                 }
 
+            }
+            catch (Exception ex)
+            {
+
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+
+            }
+            return response;
+        }
+
+        public async Task<Response<AttachmentDto>> AttachmentPostAsync(AttachmentDto attachment, int userId)
+        {
+            Response<AttachmentDto> response = new Response<AttachmentDto>();
+            try
+            {
+                var newAttachment = _mapper.Map<Attachment>(attachment);
+                newAttachment.CreatedDate = DateTime.Now;
+                newAttachment.CreatedById = userId;
+                var res = await _repositoryAttachment.AddAsync(newAttachment);
+                response.Success = true;
+                response.Object = _mapper.Map<AttachmentDto>(res);
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response> ImageDeleteAsync(int id)
+        {
+            Response response = new Response();
+            try
+            {
+                await _repositoryAttachment.DeleteAsync(id);
+                response.Success = true;
             }
             catch (Exception ex)
             {

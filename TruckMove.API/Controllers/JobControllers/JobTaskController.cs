@@ -10,6 +10,12 @@ using TruckMove.API.Settings;
 
 namespace TruckMove.API.Controllers.JobControllers
 {
+    [ApiController]
+    [Route("[controller]")]
+#if DEBUG
+#else
+    [Authorize(Roles = "Administrator,OpsManager,AdminTeam,PayrollTeam")]
+#endif
     public class JobTaskController : ControllerBase
     {
 
@@ -58,36 +64,36 @@ namespace TruckMove.API.Controllers.JobControllers
         #endregion
 
         #region shared
-        //[HttpPost("Image/Post")]
-        //public async Task<IActionResult> PostAsync([FromBody] ImageDto image)
-        //{
-        //    Response<ImageDto> response = await _jobService.ImagePostAsync(image, Convert.ToInt32(_authUserService.GetUserId()));
-        //    if (response.Success)
-        //    {
+        [HttpPost("Attachment/Post")]
+        public async Task<IActionResult> PostAsync([FromBody] AttachmentDto attachment)
+        {
+            Response<AttachmentDto> response = await _jobTaskService.AttachmentPostAsync(attachment, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
 
-        //        return Ok(response.Object);
-        //    }
-        //    else
-        //    {
+                return Ok(response.Object);
+            }
+            else
+            {
 
-        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
-        //    }
-        //}
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
 
-        //[HttpDelete("Image/Delete")]
-        //public async Task<IActionResult> VehicleImageDeleteAsync(int id)
-        //{
-        //    Response response = await _jobService.ImageDeleteAsync(id);
-        //    if (response.Success)
-        //    {
-        //        return NoContent();
-        //    }
-        //    else
-        //    {
+        [HttpDelete("Attachment/Delete")]
+        public async Task<IActionResult> VehicleImageDeleteAsync(int id)
+        {
+            Response response = await _jobTaskService.ImageDeleteAsync(id);
+            if (response.Success)
+            {
+                return NoContent();
+            }
+            else
+            {
 
-        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
-        //    }
-        //}
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
         #endregion
 
 

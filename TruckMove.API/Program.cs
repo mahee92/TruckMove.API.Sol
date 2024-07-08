@@ -27,6 +27,7 @@ using TruckMove.API.BLL.Models.VehicleDTOs;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OData.Edm; // Added for OData
+using TruckMove.API.BLL.Models.TaskDTOs;
 //using Newtonsoft.Json.Serialization;
 
 internal class Program
@@ -153,6 +154,10 @@ internal class Program
             profile.CreateGenericMap<JobStatus, JobStatusDto>();
             profile.CreateGenericMap<Leg, LegDto>();
             profile.CreateGenericMap<LegDto, Leg>();
+            profile.CreateGenericMap<PermitsAndPlate, PermitsAndPlateDto>();
+            profile.CreateGenericMap<PermitsAndPlateDto, PermitsAndPlate>();
+            profile.CreateGenericMap<AttachmentDto, Attachment>();
+            profile.CreateGenericMap<Attachment, AttachmentDto>();
 
 
 
@@ -262,6 +267,7 @@ internal class Program
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IJobService, JobService>();
         builder.Services.AddScoped<IMasterDataService, MasterDataService>();
+        builder.Services.AddScoped<IJobTaskService, JobTaskService>();
 
         builder.Services.AddScoped<IRepository<Company>, Repository<Company>>();
         builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
@@ -274,6 +280,8 @@ internal class Program
         builder.Services.AddScoped<IRepository<Image>, Repository<Image>>();
         builder.Services.AddScoped<IRepository<Trailer>, Repository<Trailer>>();
         builder.Services.AddScoped<IRepository<Leg>, Repository<Leg>>();
+        builder.Services.AddScoped<IRepository<PermitsAndPlate>, Repository<PermitsAndPlate>>();
+        builder.Services.AddScoped<IRepository<Attachment>, Repository<Attachment>>();
 
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
