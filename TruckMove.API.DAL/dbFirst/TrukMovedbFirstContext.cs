@@ -69,12 +69,6 @@ namespace TruckMove.API.DAL.dbFirst
 
             modelBuilder.Entity<Attachment>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Url)
-                    .HasMaxLength(10)
-                    .IsFixedLength();
-
                 entity.HasOne(d => d.PermitAndPlate)
                     .WithMany(p => p.Attachments)
                     .HasForeignKey(d => d.PermitAndPlateId)
