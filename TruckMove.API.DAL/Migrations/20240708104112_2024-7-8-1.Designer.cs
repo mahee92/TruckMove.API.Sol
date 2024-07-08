@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240708104112_2024-7-8-1")]
+    partial class _2024781
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,26 +47,6 @@ namespace TruckMove.API.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Acknowledgement", (string)null);
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.Attachment", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PermitAndPlateId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .HasMaxLength(10)
-                        .HasColumnType("nchar(10)")
-                        .IsFixedLength();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PermitAndPlateId");
-
-                    b.ToTable("Attachments");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
@@ -1292,16 +1274,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("Leg");
                 });
 
-            modelBuilder.Entity("TruckMove.API.DAL.Models.Attachment", b =>
-                {
-                    b.HasOne("TruckMove.API.DAL.Models.PermitsAndPlate", "PermitAndPlate")
-                        .WithMany("Attachments")
-                        .HasForeignKey("PermitAndPlateId")
-                        .HasConstraintName("FK_Attachments_PermitsAndPlates");
-
-                    b.Navigation("PermitAndPlate");
-                });
-
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
                 {
                     b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
@@ -1773,8 +1745,6 @@ namespace TruckMove.API.DAL.Migrations
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.PermitsAndPlate", b =>
                 {
-                    b.Navigation("Attachments");
-
                     b.Navigation("Notes");
                 });
 

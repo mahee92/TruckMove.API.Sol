@@ -13,7 +13,6 @@ namespace TruckMove.API.DAL.dbFirst
         public int Id { get; set; }
         public string Name { get; set; } = null!;
         public double? Rate { get; set; }
-        public string? Description { get; set; }
 
         public virtual ICollection<Leg> Legs { get; set; }
     }

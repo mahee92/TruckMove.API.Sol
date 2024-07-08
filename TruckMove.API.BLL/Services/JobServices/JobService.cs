@@ -55,6 +55,8 @@ namespace TruckMove.API.BLL.Services.JobServices
             _masterDataRepository = masterDataRepository;
             _repositoryLeg = repositoryLeg;
         }
+
+        #region Job
         public JobStatusEnum DetermineJobStatus(JobDto job)
         {
             //JobOutPutDTO
@@ -63,9 +65,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                 !string.IsNullOrWhiteSpace(job.DropOfLocation) &&
                 job.VehicleId.HasValue &&
                 job.Driver.HasValue &&
-                job.PickupDate!=null)
+                job.PickupDate != null)
             {
-                if(job.PickupDate.Value.Date <= DateTime.Now.Date)
+                if (job.PickupDate.Value.Date <= DateTime.Now.Date)
                 {
                     return JobStatusEnum.ReadyForPickup;
                 }
@@ -74,9 +76,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
             return JobStatusEnum.Planned;
         }
-
-        
-        public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
+        public async Task<Response<JobDto>> PostPutAsync(JobDto job, int userId)
         {
             Response<JobDto> response = new Response<JobDto>();
             try
@@ -92,7 +92,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                 var existingJob = await _repository.GetAsync(job.Id);
 
-               
+
 
                 if (existingJob == null)
                 {
@@ -106,7 +106,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     var res = await _repository.AddAsync(Job);
                     response.Success = true;
                     response.Object = _mapper.Map<JobDto>(res);
-                    
+
                     //var resStatus = await _masterDataRepository.GetJobStatus((int)status);
                     response.Object.JobStatus = status.ToString();
                 }
@@ -119,11 +119,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                     res.CreatedById = existingJob.CreatedById;
                     res.LastModifiedDate = DateTime.Now;
                     res.UpdatedById = userId;
-                   
+
                     JobStatusEnum status = DetermineJobStatus(job);
                     res.Status = (int)status;
 
-                    var updatedJob= await _repository.UpdateAsync(res);
+                    var updatedJob = await _repository.UpdateAsync(res);
                     response.Object = _mapper.Map<JobDto>(updatedJob);
 
                     //var resStatus = await _masterDataRepository.GetJobStatus((int)status);
@@ -145,12 +145,12 @@ namespace TruckMove.API.BLL.Services.JobServices
         {
             if (job.Id < 1 || job.CompanyId < 1)
             {
-                return false; 
+                return false;
             }
             return true;
         }
-        
-        public  async Task<Response> GetNextJobId()
+
+        public async Task<Response> GetNextJobId()
         {
             Response response = new Response();
             try
@@ -167,7 +167,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
             }
             return response;
-            
+
         }
 
         public async Task<Response<JobOutPutDTO>> GetAsync(int id)
@@ -175,7 +175,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
             try
             {
-             
+
 
                 var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
                                                                             "Company",
@@ -193,12 +193,12 @@ namespace TruckMove.API.BLL.Services.JobServices
                 }
                 else
                 {
-                    
+
                     response.Object = _mapper.Map<JobOutPutDTO>(job);
 
                     response.Object.Contacts = new List<ContactDto>();
                     response.Object.Contacts = job.JobContacts.Select(jc => _mapper.Map<ContactDto>(jc.Contact)).ToList();
-                   
+
                     response.Object.JobStatus = ((JobStatusEnum)job.Status).ToString();
 
 
@@ -214,7 +214,9 @@ namespace TruckMove.API.BLL.Services.JobServices
 
 
         }
-        
+        #endregion
+
+
         #region Contact
         public async Task<Response> ContactAddDelete(int id, List<int> contacts)
         {

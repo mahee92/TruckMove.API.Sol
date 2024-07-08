@@ -7,7 +7,7 @@ namespace TruckMove.API.DAL.dbFirst
     {
         public PermitsAndPlate()
         {
-            ImagesAndAttachments = new HashSet<ImagesAndAttachment>();
+            Attachments = new HashSet<Attachment>();
             Notes = new HashSet<Note>();
         }
 
@@ -19,10 +19,12 @@ namespace TruckMove.API.DAL.dbFirst
         public string? PermitNumber { get; set; }
         public string? PlateNumber { get; set; }
         public double? CostForPermit { get; set; }
+        public int JobId { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }
+        public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
-        public virtual ICollection<ImagesAndAttachment> ImagesAndAttachments { get; set; }
+        public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
     }
 }

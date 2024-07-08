@@ -51,6 +51,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<Variance> Variances { get; set; } = null!;
 
+        public virtual DbSet<Attachment> Attachments { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -332,9 +334,12 @@ namespace TruckMove.API.DAL.Models
                    .HasConstraintName("FK_Notes_PermitsAndPlates");
 
             });
-
             modelBuilder.Entity<PermitsAndPlate>(entity =>
             {
+                entity.Property(e => e.IsActive)
+                   .IsRequired()
+                   .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
                 entity.Property(e => e.PermitNumber).HasMaxLength(50);
 
                 entity.Property(e => e.PlateNumber).HasMaxLength(50);
@@ -346,12 +351,17 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.Assignee)
                     .HasConstraintName("FK_PermitsAndPlates_Users");
 
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.PermitsAndPlates)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PermitsAndPlates_Jobs");
+
                 entity.HasOne(d => d.StatusNavigation)
                     .WithMany(p => p.PermitsAndPlates)
                     .HasForeignKey(d => d.Status)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PermitsAndPlates_TaskStatus");
-
 
                 entity.HasIndex(e => e.CreatedById, "IX_PermitsAndPlate_CreatedById");
 
@@ -366,6 +376,8 @@ namespace TruckMove.API.DAL.Models
                     .WithMany(p => p.PermitsAndPlatesUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
             });
+
+         
             modelBuilder.Entity<TaskStatus>(entity =>
             {
                 entity.ToTable("TaskStatus");
@@ -701,6 +713,21 @@ namespace TruckMove.API.DAL.Models
 
                 entity.Property(e => e.Type).HasMaxLength(200);
             });
+
+            modelBuilder.Entity<Attachment>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Url)
+                    .HasMaxLength(10)
+                    .IsFixedLength();
+
+                entity.HasOne(d => d.PermitAndPlate)
+                    .WithMany(p => p.Attachments)
+                    .HasForeignKey(d => d.PermitAndPlateId)
+                    .HasConstraintName("FK_Attachments_PermitsAndPlates");
+            });
+
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 
             OnModelCreatingPartial(modelBuilder);
