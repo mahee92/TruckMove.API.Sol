@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240708191636_2024-9-7-9")]
+    partial class _2024979
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,48 +47,6 @@ namespace TruckMove.API.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Acknowledgement", (string)null);
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.Attachment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int?>("CreatedById")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("PermitAndPlateId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("PermitAndPlateId");
-
-                    b.HasIndex("UpdatedById");
-
-                    b.ToTable("Attachments");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
@@ -960,6 +920,48 @@ namespace TruckMove.API.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("TruckMove.API.DAL.Models.TaskAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("CreatedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("PermitAndPlateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("PermitAndPlateId");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("TaskAttachments");
+                });
+
             modelBuilder.Entity("TruckMove.API.DAL.Models.TaskStatus", b =>
                 {
                     b.Property<int>("Id")
@@ -1331,28 +1333,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("Leg");
                 });
 
-            modelBuilder.Entity("TruckMove.API.DAL.Models.Attachment", b =>
-                {
-                    b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("TruckMove.API.DAL.Models.PermitsAndPlate", "PermitAndPlate")
-                        .WithMany("Attachments")
-                        .HasForeignKey("PermitAndPlateId")
-                        .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
-
-                    b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
-                        .WithMany()
-                        .HasForeignKey("UpdatedById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("PermitAndPlate");
-
-                    b.Navigation("UpdatedBy");
-                });
-
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
                 {
                     b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
@@ -1660,6 +1640,28 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
+            modelBuilder.Entity("TruckMove.API.DAL.Models.TaskAttachment", b =>
+                {
+                    b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TruckMove.API.DAL.Models.PermitsAndPlate", "PermitAndPlate")
+                        .WithMany("TaskAttachments")
+                        .HasForeignKey("PermitAndPlateId")
+                        .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
+
+                    b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("PermitAndPlate");
+
+                    b.Navigation("UpdatedBy");
+                });
+
             modelBuilder.Entity("TruckMove.API.DAL.Models.Trailer", b =>
                 {
                     b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
@@ -1824,9 +1826,9 @@ namespace TruckMove.API.DAL.Migrations
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.PermitsAndPlate", b =>
                 {
-                    b.Navigation("Attachments");
-
                     b.Navigation("Notes");
+
+                    b.Navigation("TaskAttachments");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.PreDepartureChecklist", b =>

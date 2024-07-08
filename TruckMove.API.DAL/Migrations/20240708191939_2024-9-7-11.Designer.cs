@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240708191939_2024-9-7-11")]
+    partial class _20249711
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1338,7 +1340,7 @@ namespace TruckMove.API.DAL.Migrations
                         .HasForeignKey("CreatedById");
 
                     b.HasOne("TruckMove.API.DAL.Models.PermitsAndPlate", "PermitAndPlate")
-                        .WithMany("Attachments")
+                        .WithMany("TaskAttachments")
                         .HasForeignKey("PermitAndPlateId")
                         .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
 
@@ -1824,9 +1826,9 @@ namespace TruckMove.API.DAL.Migrations
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.PermitsAndPlate", b =>
                 {
-                    b.Navigation("Attachments");
-
                     b.Navigation("Notes");
+
+                    b.Navigation("TaskAttachments");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.PreDepartureChecklist", b =>

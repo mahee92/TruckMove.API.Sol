@@ -51,6 +51,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<Variance> Variances { get; set; } = null!;
 
+      
+
         public virtual DbSet<Attachment> Attachments { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -719,23 +721,17 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Type).HasMaxLength(200);
             });
 
+
             modelBuilder.Entity<Attachment>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.IsActive)
-                   .IsRequired()
-                   .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
-                entity.Property(e => e.Url)
-                    .HasMaxLength(10)
-                    .IsFixedLength();
+                 .IsRequired()
+                 .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
                 entity.HasOne(d => d.PermitAndPlate)
                     .WithMany(p => p.Attachments)
                     .HasForeignKey(d => d.PermitAndPlateId)
-                    .HasConstraintName("FK_Attachments_PermitsAndPlates");
+                    .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
             });
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
