@@ -169,13 +169,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
             try
             {
-                //var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
-
-                //                                                            "VehicleNavigation.Notes",
-                //                                                            "VehicleNavigation.Images",
-                //                                                            "Trailers.Images",
-                //                                                            "Trailers.Notes",
-                //                                                            "WayPoints");
+             
 
                 var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
                                                                             "Company",
@@ -196,25 +190,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                     
                     response.Object = _mapper.Map<JobOutPutDTO>(job);
 
-                  //  response.Object.Company = _mapper.Map<CompanyDto>(job.Company);
                     response.Object.Contacts = new List<ContactDto>();
-        
-                    //response.Object.Vehicle = _mapper.Map<VehicleOutputDto>(job.VehicleNavigation);
-                   
-                    //if(job.VehicleNavigation != null && job.VehicleNavigation.Notes != null)
-                    //{
-                    //    response.Object.Vehicle.Notes = job.VehicleNavigation.Notes.Select(jc => _mapper.Map<NoteDto>(jc)).ToList();
-                    //}
-
-                    
-                    //if (job.VehicleNavigation != null && job.VehicleNavigation.Images != null)
-                    //{
-                    //    response.Object.Vehicle.VehicleImages = job.VehicleNavigation.Images.Select(jc => _mapper.Map<ImageDto>(jc)).ToList();
-                    //}
-
-                   
-
                     response.Object.Contacts = job.JobContacts.Select(jc => _mapper.Map<ContactDto>(jc.Contact)).ToList();
+                   
                     response.Object.JobStatus = ((JobStatusEnum)job.Status).ToString();
 
 

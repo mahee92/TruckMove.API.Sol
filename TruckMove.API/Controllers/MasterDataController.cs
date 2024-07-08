@@ -43,7 +43,8 @@ namespace TruckMove.API.Controllers
         public async Task<IActionResult> GetDrivers()
         {
 
-            var response = await _masterdataService.GetUsersByRoleAsync(RoleEnum.Driver);
+            var roles = new List<RoleEnum> { RoleEnum.Driver };
+            var response = await _masterdataService.GetUsersByRoleAsync(roles);
             if (response.Success)
             {
                 return Ok(response.Objects);
@@ -57,8 +58,25 @@ namespace TruckMove.API.Controllers
         [HttpGet("/GetOPSManagers")]
         public async Task<IActionResult> GetOPSManagers()
         {
+            var roles = new List<RoleEnum> { RoleEnum.OpsManager };
+            var response = await _masterdataService.GetUsersByRoleAsync(roles);
+           
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+                _logger.BeginScope(response.ErrorMessage);
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpGet("/GetAssignees")]
+        public async Task<IActionResult> GetAssignees()
+        {
+            var roles = new List<RoleEnum> { RoleEnum.OpsManager };
+            var response = await _masterdataService.GetUsersByRoleAsync(roles);
 
-            var response = await _masterdataService.GetUsersByRoleAsync(RoleEnum.OpsManager);
             if (response.Success)
             {
                 return Ok(response.Objects);

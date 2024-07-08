@@ -53,13 +53,15 @@ namespace TruckMove.API.BLL.Services
             return response;
         }
 
-        public async Task<Response<UserOutputDto>> GetUsersByRoleAsync(RoleEnum role)
+        public async Task<Response<UserOutputDto>> GetUsersByRoleAsync(List<RoleEnum> roles)
         {
             
             Response<UserOutputDto> response = new Response<UserOutputDto>();
             try
             {
-                var res = await _repository.GetUsersByRoleAsync((int)role);
+
+                List<int> roleIds = roles.Select(role => (int)role).ToList();        
+                var res = await _repository.GetUsersByRolesAsync(roleIds);
                 response.Success = true;
                 if (res.Count > 0)
                 {
