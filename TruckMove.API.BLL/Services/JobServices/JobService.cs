@@ -52,9 +52,12 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryTrailer = repositoryTrailer;
             _masterDataRepository = masterDataRepository;
         }
-        public JobStatusEnum DetermineJobStatus(JobDto job)
+        public JobStatusEnum DetermineJobStatus(JobDto job,Job? existingJob=null)
         {
-            //JobOutPutDTO
+            if(existingJob!=null && existingJob.Status > (int)JobStatusEnum.ReadyForPickup)
+            {
+                return (JobStatusEnum)Enum.Parse(typeof(JobStatusEnum), existingJob.Id.ToString());
+            }
             if (job.CompanyId > 0 &&
                 !string.IsNullOrWhiteSpace(job.PickupLocation) &&
                 !string.IsNullOrWhiteSpace(job.DropOfLocation) &&
@@ -127,7 +130,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     res.LastModifiedDate = DateTime.Now;
                     res.UpdatedById = userId;
                    
-                    JobStatusEnum status = DetermineJobStatus(job);
+                    JobStatusEnum status = DetermineJobStatus(job, existingJob);
                     res.Status = (int)status;
 
                     var updatedJob= await _repository.UpdateAsync(res);
