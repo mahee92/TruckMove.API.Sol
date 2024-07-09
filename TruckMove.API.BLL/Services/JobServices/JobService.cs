@@ -78,16 +78,16 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobDto> response = new Response<JobDto>();
             try
             {
-                if(job.PickupDate!=null)
-                {
+            //    if(job.PickupDate!=null)
+            //    {
 
-                    job.PickupDate= job.PickupDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
-                }
-                if (job.EstimatedDeliveryDate != null)
-                {
+            //        job.PickupDate= job.PickupDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
+            //    }
+            //    if (job.EstimatedDeliveryDate != null)
+            //    {
 
-                    job.EstimatedDeliveryDate = job.EstimatedDeliveryDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
-                }
+            //        job.EstimatedDeliveryDate = job.EstimatedDeliveryDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
+            //    }
                 if (!IsPossibleToAdd(job))
                 {
                     response.Success = false;
