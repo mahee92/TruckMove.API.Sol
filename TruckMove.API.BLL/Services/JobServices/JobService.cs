@@ -337,7 +337,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 {
                     job.VehicleId = resvVehicle.Id;
 
-                    JobStatusEnum status = DetermineJobStatus(_mapper.Map<JobDto>(job));
+                    JobStatusEnum status = DetermineJobStatus(_mapper.Map<JobDto>(job), job);
                     job.Status = (int)status;
 
                     await _repository.UpdateAsync(job);
