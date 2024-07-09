@@ -78,7 +78,16 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobDto> response = new Response<JobDto>();
             try
             {
+                if(job.PickupDate!=null)
+                {
 
+                    job.PickupDate= job.PickupDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
+                }
+                if (job.EstimatedDeliveryDate != null)
+                {
+
+                    job.EstimatedDeliveryDate = job.EstimatedDeliveryDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
+                }
                 if (!IsPossibleToAdd(job))
                 {
                     response.Success = false;
@@ -100,6 +109,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     JobStatusEnum status = DetermineJobStatus(job);
                     Job.Status = (int)status;
+                   
                     var res = await _repository.AddAsync(Job);
                     response.Success = true;
                     response.Object = _mapper.Map<JobDto>(res);
