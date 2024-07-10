@@ -14,19 +14,22 @@ namespace TruckMove.API.Controllers.JobControllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Driver")]
+    // [Authorize(Roles = "Driver")]
     public class MobileController : Controller
     {
         private readonly IAuthUserService _authUserService;
         private readonly IJobService _jobService;
         private readonly MySettings _mySettings;
 
-        public MobileController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings)
+        private readonly GoogleMapSettings _googleMapSettings;
+
+        public MobileController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings,IOptions<GoogleMapSettings> googleMapSettings)
         {
 
             _authUserService = authUserService;
             _jobService = jobService;
             _mySettings = mySettings.Value;
+            _googleMapSettings = googleMapSettings.Value;
 
         }
         [HttpGet("/Odata/Job/Get")]
@@ -64,7 +67,7 @@ namespace TruckMove.API.Controllers.JobControllers
             return Ok(fieldInfos);
         }
 
-    
+
         private string GetDisplayName(PropertyInfo prop)
         {
             var displayNameAttr = prop.GetCustomAttribute<DisplayNameAttribute>();
@@ -86,6 +89,25 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+        #endregion
+
+        #region Leg
+        [HttpPost("Leg/Post")]
+        public async Task<IActionResult> PostAsync([FromBody] LegDto leg)
+        {
+            Response<LegDto> response = await _jobService.LegPostPutAsync(leg, _googleMapSettings.ApiKey, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
         #endregion
     }
 }

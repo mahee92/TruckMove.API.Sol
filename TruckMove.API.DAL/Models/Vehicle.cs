@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using TruckMove.API.DAL.dbFirst;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
@@ -11,10 +10,7 @@ namespace TruckMove.API.DAL.Models
         public Vehicle()
         {
            
-            VehicleImages = new HashSet<VehicleImage>();
-            VehicleNotes = new HashSet<VehicleNote>();
-            VehicleNotes = new HashSet<VehicleNote>();
-            VehicleImages = new HashSet<VehicleImage>();
+           
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -30,9 +26,6 @@ namespace TruckMove.API.DAL.Models
         public virtual Job JobNavigation { get; set; } = null!;
         public virtual Job? Job { get; set; }
         public bool IsActive { get; set; }
-        public virtual ICollection<VehicleImage> VehicleImages { get; set; }
-        public virtual ICollection<VehicleNote> VehicleNotes { get; set; }
-
         public virtual ICollection<Note> Notes { get; set; }
 
         public virtual ICollection<Image> Images { get; set; }

@@ -21,5 +21,9 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         Task DeleteWaypointsByIdsAsync(IEnumerable<int> ids);
         Task<List<WayPoint>> AddWaypointsRangeAsync(List<WayPoint> entities);
+
+        Task Acknowledge(int legId);
+
+       Task<int> GetNextLegNumber(int jobId);
     }
 }

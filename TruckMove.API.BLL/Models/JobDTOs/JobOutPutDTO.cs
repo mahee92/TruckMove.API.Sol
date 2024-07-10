@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.PrimaryDTO;
+using TruckMove.API.BLL.Models.TaskDTOs;
 using TruckMove.API.BLL.Models.VehicleDtos;
 using TruckMove.API.BLL.Models.VehicleDTOs;
 using TruckMove.API.DAL.Models;
@@ -23,7 +24,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public virtual List<TrailerOutPutDto> Trailers { get; set; }
 
-
+        public virtual List<PermitsAndPlateDto> PermitsAndPlates { get; set; }
 
     }
 }

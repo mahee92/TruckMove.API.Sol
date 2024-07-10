@@ -15,6 +15,7 @@ namespace TruckMove.API.DAL.Models
             Notes = new HashSet<Note>();
             Legs = new HashSet<Leg>();
             Trailers = new HashSet<Trailer>();
+            PermitsAndPlates = new HashSet<PermitsAndPlate>();
 
 
         }
@@ -58,6 +59,8 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Leg> Legs { get; set; }
 
         public virtual ICollection<Trailer> Trailers { get; set; }
+
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
 
 
     }

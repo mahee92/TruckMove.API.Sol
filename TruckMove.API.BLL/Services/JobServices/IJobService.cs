@@ -23,7 +23,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
 
         Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints);
-        Response<DriverJobStatus> GetDriverJobStaus(int driverId);
+       
         IQueryable<MobileJobDto> GetAllAsync(int driverId);
         Task<Response<PreDepartureChecklistDto>> PreDepartureChecklistPutAsync(PreDepartureChecklistDto checkList, int v);
 
@@ -34,5 +34,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response> ImageDeleteAsync(int id);
         Task<Response<TrailerDto>> TrailerPostPutAsync(TrailerDto trailer, int userId);
         Task<Response> TrailerDeleteAsync(int id);
+
+        Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId);
     }
 }

@@ -11,6 +11,7 @@ namespace TruckMove.API.DAL.dbFirst
             JobContacts = new HashSet<JobContact>();
             Legs = new HashSet<Leg>();
             Notes = new HashSet<Note>();
+            PermitsAndPlates = new HashSet<PermitsAndPlate>();
             Trailers = new HashSet<Trailer>();
             WayPoints = new HashSet<WayPoint>();
         }
@@ -49,6 +50,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual ICollection<JobContact> JobContacts { get; set; }
         public virtual ICollection<Leg> Legs { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
         public virtual ICollection<Trailer> Trailers { get; set; }
         public virtual ICollection<WayPoint> WayPoints { get; set; }
     }

@@ -106,6 +106,23 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             await _context.SaveChangesAsync();
             return entities.ToList();
         }
+        public async Task Acknowledge(int legId)
+        {
+            Acknowledgement acknowledge = new Acknowledgement
+            {
+                LegId = legId,
+                Acknowledge = true
+            };
+            await _context.Set<Acknowledgement>().AddAsync(acknowledge);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetNextLegNumber(int jobId)
+        {
+           int legCount = await _context.Set<Leg>().Where(x=>x.JobId == jobId).CountAsync();
+            return legCount + 1;
+            
+        }
 
 
     }

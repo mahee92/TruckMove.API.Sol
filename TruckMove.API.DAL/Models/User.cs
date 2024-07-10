@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TruckMove.API.DAL.dbFirst;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
@@ -21,6 +22,7 @@ namespace TruckMove.API.DAL.Models
             UserRoleUpdatedBies = new HashSet<UserRole>();
             UserRoleUsers = new HashSet<UserRole>();
             JobDriverNavigations = new HashSet<Job>();
+            PermitsAndPlates = new HashSet<PermitsAndPlate>();
         }
 
         public int Id { get; set; }
@@ -47,5 +49,9 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<UserRole> UserRoleUsers { get; set; }
 
         public virtual ICollection<Job> JobDriverNavigations { get; set; }
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
+
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlatesUpdatedBies { get; set; }
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlatesCreatedBies { get; set; }
     }
 }

@@ -39,7 +39,9 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<Trailer> _repositoryTrailer;
 
         private readonly IMasterDataRepository _masterDataRepository;
-        public JobService(IMapper mapper,IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer, IMasterDataRepository masterDataRepository)
+
+        private readonly IRepository<Leg> _repositoryLeg;
+        public JobService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<PreDepartureChecklist> preDepartureChecklist, IRepository<Trailer> repositoryTrailer, IRepository<Leg> repositoryLeg, IMasterDataRepository masterDataRepository)
         {
             _mapper = mapper;
             _repository = repository;
@@ -51,6 +53,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositorypreDepartureChecklist = preDepartureChecklist;
             _repositoryTrailer = repositoryTrailer;
             _masterDataRepository = masterDataRepository;
+            _repositoryLeg = repositoryLeg;
         }
         public JobStatusEnum DetermineJobStatus(JobDto job,Job? existingJob=null)
         {
@@ -63,9 +66,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                 !string.IsNullOrWhiteSpace(job.DropOfLocation) &&
                 job.VehicleId.HasValue &&
                 job.Driver.HasValue &&
-                job.PickupDate!=null)
+                job.PickupDate != null)
             {
-                if(job.PickupDate.Value.Date <= DateTime.Now.Date)
+                if (job.PickupDate.Value.Date <= DateTime.Now.Date)
                 {
                     return JobStatusEnum.ReadyForPickup;
                 }
@@ -74,9 +77,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
             return JobStatusEnum.Planned;
         }
-
-        
-        public async Task<Response<JobDto>> PostPutAsync(JobDto job,int userId)
+        public async Task<Response<JobDto>> PostPutAsync(JobDto job, int userId)
         {
             Response<JobDto> response = new Response<JobDto>();
             try
@@ -101,7 +102,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                 var existingJob = await _repository.GetAsync(job.Id);
 
-               
+
 
                 if (existingJob == null)
                 {
@@ -116,7 +117,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     var res = await _repository.AddAsync(Job);
                     response.Success = true;
                     response.Object = _mapper.Map<JobDto>(res);
-                    
+
                     //var resStatus = await _masterDataRepository.GetJobStatus((int)status);
                     response.Object.JobStatus = status.ToString();
                 }
@@ -133,7 +134,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     JobStatusEnum status = DetermineJobStatus(job, existingJob);
                     res.Status = (int)status;
 
-                    var updatedJob= await _repository.UpdateAsync(res);
+                    var updatedJob = await _repository.UpdateAsync(res);
                     response.Object = _mapper.Map<JobDto>(updatedJob);
 
                     //var resStatus = await _masterDataRepository.GetJobStatus((int)status);
@@ -155,12 +156,12 @@ namespace TruckMove.API.BLL.Services.JobServices
         {
             if (job.Id < 1 || job.CompanyId < 1)
             {
-                return false; 
+                return false;
             }
             return true;
         }
-        
-        public  async Task<Response> GetNextJobId()
+
+        public async Task<Response> GetNextJobId()
         {
             Response response = new Response();
             try
@@ -177,7 +178,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
             }
             return response;
-            
+
         }
 
         public async Task<Response<JobOutPutDTO>> GetAsync(int id)
@@ -185,14 +186,17 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
             try
             {
-                
-                var job = await _repository.GetWithNestedIncludesAsync(id,"JobContacts.Contact", 
-                                                                            "Company", 
-                                                                            "VehicleNavigation.Notes", 
-                                                                            "VehicleNavigation.Images", 
+
+
+                var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
+                                                                            "Company",
+                                                                            "VehicleNavigation.Notes",
+                                                                            "VehicleNavigation.Images",
                                                                             "Trailers.Images",
-                                                                            "Trailers.Notes", 
-                                                                            "WayPoints");
+                                                                            "Trailers.Notes",
+                                                                            "WayPoints",
+                                                                            "PermitsAndPlates.Attachments",
+                                                                            "PermitsAndPlates.Notes");
 
                 if (job == null)
                 {
@@ -202,28 +206,12 @@ namespace TruckMove.API.BLL.Services.JobServices
                 }
                 else
                 {
-                    
+
                     response.Object = _mapper.Map<JobOutPutDTO>(job);
 
-                    response.Object.Company = _mapper.Map<CompanyDto>(job.Company);
                     response.Object.Contacts = new List<ContactDto>();
-        
-                    response.Object.Vehicle = _mapper.Map<VehicleOutputDto>(job.VehicleNavigation);
-                   
-                    if(job.VehicleNavigation != null && job.VehicleNavigation.Notes != null)
-                    {
-                        response.Object.Vehicle.Notes = job.VehicleNavigation.Notes.Select(jc => _mapper.Map<NoteDto>(jc)).ToList();
-                    }
-
-                    
-                    if (job.VehicleNavigation != null && job.VehicleNavigation.Images != null)
-                    {
-                        response.Object.Vehicle.VehicleImages = job.VehicleNavigation.Images.Select(jc => _mapper.Map<ImageDto>(jc)).ToList();
-                    }
-
-                   
-
                     response.Object.Contacts = job.JobContacts.Select(jc => _mapper.Map<ContactDto>(jc.Contact)).ToList();
+
                     response.Object.JobStatus = ((JobStatusEnum)job.Status).ToString();
 
 
@@ -239,7 +227,9 @@ namespace TruckMove.API.BLL.Services.JobServices
 
 
         }
-        
+        #endregion
+
+
         #region Contact
         public async Task<Response> ContactAddDelete(int id, List<int> contacts)
         {
@@ -359,24 +349,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         
         #endregion
-
-        #region Mobile
-        public Response<DriverJobStatus> GetDriverJobStaus(int driverId)
-        {
-            Response<DriverJobStatus> response = new Response<DriverJobStatus>();
-            response.Success = true;
-            response.Object.HasCurrentJob = false;
-            return response;
-        }
-
-        public IQueryable<MobileJobDto> GetAllAsync(int driverId)
-        {
-            var jobs= _jobRepository.GetAllAsync(driverId);
-            return jobs.ProjectTo<MobileJobDto>(_mapper.ConfigurationProvider); 
-        }
-        
-        #endregion
-
+       
         #region WayPoint
 
         public async Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints)
@@ -535,6 +508,11 @@ namespace TruckMove.API.BLL.Services.JobServices
         #endregion
 
         #region Mobile
+        public IQueryable<MobileJobDto> GetAllAsync(int driverId)
+        {
+            var jobs = _jobRepository.GetAllAsync(driverId);
+            return jobs.ProjectTo<MobileJobDto>(_mapper.ConfigurationProvider);
+        }
         public async Task<Response<PreDepartureChecklistDto>> PreDepartureChecklistPutAsync(PreDepartureChecklistDto checkList, int userId)
         {
             Response<PreDepartureChecklistDto> response = new Response<PreDepartureChecklistDto>();
@@ -607,10 +585,114 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
 
         }
+        public async Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId)
+        {
+            Response<LegDto> response = new Response<LegDto>();
+            try
+            {
+
+                if (leg.Id == 0)
+                {
+                   // validate for any ongoing leg
+                    if (leg.Acknowledged)
+                    {
+                        Leg newLeg = _mapper.Map<Leg>(leg);
+
+                        newLeg.DriverId = userId;
+                        newLeg.LegNumber = await GetNextLegNumber(leg.JobId);
+                        newLeg.Status = (int)LegStatusEnum.InProgress;
+                        newLeg.Variance = (int)VariancesEnum._default;
+                        newLeg.StartTime = DateTime.Now;
+
+                        //  
+
+                        newLeg.CreatedDate = DateTime.Now;
+                        newLeg.CreatedById = userId;
+
+                      //  newLeg.Job.Status = (int)JobStatusEnum.InProgress;
+
+                        var res = await _repositoryLeg.AddAsync(newLeg);
+                        response.Object = _mapper.Map<LegDto>(res);
+                        response.Success = true;
+
+                        await _jobRepository.Acknowledge(res.Id);
+                        ChangeJobStatus(leg.JobId, (int)JobStatusEnum.InProgress);
+                    }
+                    else
+                    {
+
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.AchknowledgeError;
+                        response.ErrorMessage = ErrorMessages.AchknowledgeError;
+                    }
 
 
+                }
+                else
+                {
+                    var existingLeg = await _repositoryLeg.GetAsync(leg.Id);
+
+                    if (existingLeg == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else if (existingLeg.Status != (int)LegStatusEnum.InProgress)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        existingLeg.EndLocation = leg.EndLocation;
+                        existingLeg.EndTime = DateTime.Now;
+                        try
+                        {
+                            decimal distance = await GoogleMapsHelper.GetDistanceAsync(existingLeg.StartLocation, leg.EndLocation, apiKey);
+                            existingLeg.TotalDistance = Convert.ToDouble(distance);
+                        }
+                        catch (Exception ex)
+                        {
+                            existingLeg.TotalDistance = -1;
+                        }
+
+                        existingLeg.Status = (int)LegStatusEnum.Completed;
+                        existingLeg.LastModifiedDate = DateTime.Now;
+                        existingLeg.UpdatedById = userId;
+                        
+
+                        var updatedLeg = await _repositoryLeg.UpdateAsync(existingLeg);
+                        response.Success = true;
+                       // updatedLeg.Acknowledgement = true;
+                        response.Object = _mapper.Map<LegDto>(updatedLeg);
+                        
+
+                        ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Stopped);
 
 
+                    }
+
+
+                }
+
+
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
+        private async Task<int> GetNextLegNumber(int jobId)
+        {
+            return await _jobRepository.GetNextLegNumber(jobId);
+        }
 
         #endregion
 

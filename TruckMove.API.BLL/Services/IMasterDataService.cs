@@ -13,7 +13,7 @@ namespace TruckMove.API.BLL.Services
     public interface IMasterDataService
     {
         Task<Response<RoleDto>> GetRolesAsync();
-        Task<Response<UserOutputDto>> GetUsersByRoleAsync(RoleEnum role);
+        Task<Response<UserOutputDto>> GetUsersByRoleAsync(List<RoleEnum> roles);
      
 
         Task<Response<HookupType>> GetAllHookupTypes();

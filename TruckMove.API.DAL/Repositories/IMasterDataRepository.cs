@@ -10,7 +10,7 @@ namespace TruckMove.API.DAL.Repositories
     public interface IMasterDataRepository
     {
         Task<List<Role>> GetAllRoles();
-        Task<List<User>> GetUsersByRoleAsync(int roleId);
+        Task<List<User>> GetUsersByRolesAsync(List<int> roleIds);
 
         Task<List<HookupType>> GetAllRolesHookupTypes();
 

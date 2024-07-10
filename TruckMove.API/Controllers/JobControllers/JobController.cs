@@ -26,6 +26,7 @@ namespace TruckMove.API.Controllers.JobControllers
     public class JobController : ControllerBase
     {
 
+
         private readonly IAuthUserService _authUserService;
         private readonly IJobService _jobService;
         private readonly MySettings _mySettings;

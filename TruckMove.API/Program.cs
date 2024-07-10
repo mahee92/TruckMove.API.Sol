@@ -27,6 +27,7 @@ using TruckMove.API.BLL.Models.VehicleDTOs;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OData.Edm; // Added for OData
+using TruckMove.API.BLL.Models.TaskDTOs;
 //using Newtonsoft.Json.Serialization;
 
 internal class Program
@@ -137,12 +138,8 @@ internal class Program
             profile.CreateGenericMap<Job, JobOutPutDTO>();
             profile.CreateGenericMap<Job, JobDto>();
             profile.CreateGenericMap<VehicleDto, Vehicle>();
-            profile.CreateGenericMap<VehicleNote, VehicleNoteDto>();
-            profile.CreateGenericMap<VehicleNoteDto, VehicleNote>();
             profile.CreateGenericMap<VehicleOutputDto, Vehicle>();
             profile.CreateGenericMap<Vehicle, VehicleOutputDto>();
-            profile.CreateGenericMap<VehicleImage, VehicleImageDto>();
-            profile.CreateGenericMap<VehicleImageDto, VehicleImage>();
             profile.CreateGenericMap<WayPoint, WayPointDto>();
             profile.CreateGenericMap<PreDepartureChecklist, PreDepartureChecklistDto>();
             profile.CreateGenericMap<PreDepartureChecklistDto, PreDepartureChecklist>();
@@ -155,6 +152,12 @@ internal class Program
             profile.CreateGenericMap<TrailerOutPutDto, Trailer>();
             profile.CreateGenericMap<Trailer, TrailerOutPutDto>();
             profile.CreateGenericMap<JobStatus, JobStatusDto>();
+            profile.CreateGenericMap<Leg, LegDto>();
+            profile.CreateGenericMap<LegDto, Leg>();
+            profile.CreateGenericMap<PermitsAndPlate, PermitsAndPlateDto>();
+            profile.CreateGenericMap<PermitsAndPlateDto, PermitsAndPlate>();
+            profile.CreateGenericMap<AttachmentDto, Attachment>();
+            profile.CreateGenericMap<Attachment, AttachmentDto>();
 
 
 
@@ -253,6 +256,7 @@ internal class Program
     {
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
         builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySettings"));
+        builder.Services.Configure<GoogleMapSettings>(builder.Configuration.GetSection("GoogleMapSettings"));
 
 
     }
@@ -263,6 +267,7 @@ internal class Program
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IJobService, JobService>();
         builder.Services.AddScoped<IMasterDataService, MasterDataService>();
+        builder.Services.AddScoped<IJobTaskService, JobTaskService>();
 
         builder.Services.AddScoped<IRepository<Company>, Repository<Company>>();
         builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
@@ -270,11 +275,13 @@ internal class Program
         builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
         builder.Services.AddScoped<IRepository<Vehicle>, Repository<Vehicle>>();        
         builder.Services.AddScoped<IRepository<JobContact>, Repository<JobContact>>();
-        builder.Services.AddScoped<IRepository<VehicleImage>, Repository<VehicleImage>>();
         builder.Services.AddScoped<IRepository<PreDepartureChecklist>, Repository<PreDepartureChecklist>>();
         builder.Services.AddScoped<IRepository<Note>, Repository<Note>>();
         builder.Services.AddScoped<IRepository<Image>, Repository<Image>>();
         builder.Services.AddScoped<IRepository<Trailer>, Repository<Trailer>>();
+        builder.Services.AddScoped<IRepository<Leg>, Repository<Leg>>();
+        builder.Services.AddScoped<IRepository<PermitsAndPlate>, Repository<PermitsAndPlate>>();
+        builder.Services.AddScoped<IRepository<Attachment>, Repository<Attachment>>();
 
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();

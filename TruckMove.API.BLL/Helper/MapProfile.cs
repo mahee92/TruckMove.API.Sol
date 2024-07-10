@@ -18,7 +18,8 @@ namespace TruckMove.API.BLL.Helper
         {
             CreateMap<Job, MobileJobDto>()
              .ForMember(dest => dest.VehicleNavigation, opt => opt.MapFrom(src => src.VehicleNavigation))
-             .ForMember(dest => dest.PreDepartureChecklist, opt => opt.MapFrom(src => src.PreDepartureChecklist));// Map Vehicle
+             .ForMember(dest => dest.PreDepartureChecklist, opt => opt.MapFrom(src => src.PreDepartureChecklist))
+             .ForMember(dest => dest.Legs, opt => opt.MapFrom(src => src.Legs));
             CreateMap<Vehicle, VehicleDto>();
         }
 

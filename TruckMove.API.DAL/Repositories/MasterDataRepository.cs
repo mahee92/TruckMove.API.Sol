@@ -30,11 +30,12 @@ namespace TruckMove.API.DAL.Repositories
         {
             return await _roleModeldbSet.ToListAsync();
         }
-        public async Task<List<User>> GetUsersByRoleAsync(int roleId)
+      
+        public async Task<List<User>> GetUsersByRolesAsync(List<int> roleIds)
         {
             return await _userModeldbSet
                 .Include(u => u.UserRoleUsers)
-                .Where(u => u.UserRoleUsers.Any(ur => ur.RoleId == roleId && ur.IsActive) && u.IsActive)
+                .Where(u => u.UserRoleUsers.Any(ur => roleIds.Contains(ur.RoleId) && ur.IsActive) && u.IsActive)
                 .ToListAsync();
         }
         public async Task<List<HookupType>> GetAllRolesHookupTypes()
