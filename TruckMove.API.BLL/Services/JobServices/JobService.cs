@@ -55,6 +55,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _masterDataRepository = masterDataRepository;
             _repositoryLeg = repositoryLeg;
         }
+        #region Job
         public JobStatusEnum DetermineJobStatus(JobDto job,Job? existingJob=null)
         {
             if(existingJob!=null && existingJob.Status > (int)JobStatusEnum.ReadyForPickup)
