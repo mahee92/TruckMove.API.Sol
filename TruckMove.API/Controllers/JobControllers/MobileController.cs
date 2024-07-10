@@ -41,12 +41,7 @@ namespace TruckMove.API.Controllers.JobControllers
             //string result = await JobApiClient.ApiCallAsync();
 
             var query = _jobService.GetAllAsync(Convert.ToInt32(_authUserService.GetUserId()));
-            var count = query.Count();
-            if (count == 0)
-            {
-
-                return Ok();
-            }
+            var count = query.Count();          
             return Ok(query);
         }
 
