@@ -788,6 +788,11 @@ namespace TruckMove.API.DAL.Models
                     .WithMany(p => p.Attachments)
                     .HasForeignKey(d => d.PermitAndPlateId)
                     .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
+
+                entity.HasOne(d => d.Accommodation)
+                    .WithMany(p => p.Attachments)
+                    .HasForeignKey(d => d.AccommodationId)
+                    .HasConstraintName("FK_TaskAttachments_Accommodation");
             });
           
 

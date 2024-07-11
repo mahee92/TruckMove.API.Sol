@@ -9,7 +9,8 @@ namespace TruckMove.API.DAL.Models
         public Accommodation()
         {
             Notes = new HashSet<Note>();
-            
+            Attachments = new HashSet<Attachment>();
+
         }
 
         public int Id { get; set; }
@@ -32,6 +33,8 @@ namespace TruckMove.API.DAL.Models
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
         public virtual ICollection<Note> Notes { get; set; }
-        
+
+        public virtual ICollection<Attachment> Attachments { get; set; }
+
     }
 }

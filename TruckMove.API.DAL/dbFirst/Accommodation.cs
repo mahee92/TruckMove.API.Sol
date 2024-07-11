@@ -7,8 +7,8 @@ namespace TruckMove.API.DAL.dbFirst
     {
         public Accommodation()
         {
+            Attachments = new HashSet<Attachment>();
             Notes = new HashSet<Note>();
-            
         }
 
         public int Id { get; set; }
@@ -29,7 +29,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual User? DriverNavigation { get; set; }
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
+        public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
-        
     }
 }

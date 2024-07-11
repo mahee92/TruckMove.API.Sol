@@ -18,6 +18,7 @@ namespace TruckMove.API.DAL.dbFirst
 
         public virtual DbSet<Accommodation> Accommodations { get; set; } = null!;
         public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
+        public virtual DbSet<Attachment> Attachments { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
         public virtual DbSet<HookupType> HookupTypes { get; set; } = null!;
@@ -32,7 +33,6 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<PermitsAndPlate> PermitsAndPlates { get; set; } = null!;
         public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
-
         public virtual DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
         public virtual DbSet<Trailer> Trailers { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
@@ -101,6 +101,19 @@ namespace TruckMove.API.DAL.dbFirst
                     .HasForeignKey<Acknowledgement>(d => d.LegId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Acknowledgement_Legs");
+            });
+
+            modelBuilder.Entity<Attachment>(entity =>
+            {
+                entity.HasOne(d => d.Accommodation)
+                    .WithMany(p => p.Attachments)
+                    .HasForeignKey(d => d.AccommodationId)
+                    .HasConstraintName("FK_TaskAttachments_Accommodation");
+
+                entity.HasOne(d => d.PermitAndPlate)
+                    .WithMany(p => p.Attachments)
+                    .HasForeignKey(d => d.PermitAndPlateId)
+                    .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
             });
 
             modelBuilder.Entity<Company>(entity =>
@@ -437,8 +450,6 @@ namespace TruckMove.API.DAL.dbFirst
             {
                 entity.Property(e => e.RoleName).HasMaxLength(50);
             });
-
-
 
             modelBuilder.Entity<TaskStatus>(entity =>
             {
