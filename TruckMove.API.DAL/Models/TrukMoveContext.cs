@@ -18,6 +18,7 @@ namespace TruckMove.API.DAL.Models
         {
         }
 
+        public virtual DbSet<Accommodation> Accommodations { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
         public virtual DbSet<Job> Jobs { get; set; } = null!;
@@ -55,13 +56,15 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<Attachment> Attachments { get; set; } = null!;
 
+       
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-               optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
-               // optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-18;Trusted_Connection=True;");
+              // optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-18;Trusted_Connection=True;");
                 
             }
         }
@@ -118,6 +121,53 @@ namespace TruckMove.API.DAL.Models
                  new TaskStatus { Id = (int)TaskStatusEnum.InProgress, Status = TaskStatusEnum.InProgress.ToString()},
                  new TaskStatus { Id = (int)TaskStatusEnum.Completed, Status = TaskStatusEnum.Completed.ToString() }
                  );
+
+            modelBuilder.Entity<Accommodation>(entity =>
+            {
+                entity.ToTable("Accommodation");
+
+                entity.Property(e => e.IsActive)
+                      .IsRequired()
+                      .HasDefaultValueSql("(CONVERT([bit],(1)))");
+                entity.HasOne(d => d.CreatedBy)
+                   .WithMany(p => p.AccommodationCreatedBies)
+                   .HasForeignKey(d => d.CreatedById);
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.AccommodationUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById);
+
+                entity.Property(e => e.BookingDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Email).HasMaxLength(50);
+
+                entity.Property(e => e.PhoneNumber).HasMaxLength(50);
+
+                entity.Property(e => e.ReferenceNumber).HasMaxLength(50);
+
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.AccommodationAssigneeNavigations)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_Accommodation_Users1");
+
+                entity.HasOne(d => d.DriverNavigation)
+                    .WithMany(p => p.AccommodationDriverNavigations)
+                    .HasForeignKey(d => d.Driver)
+                    .HasConstraintName("FK_Accommodation_Users");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Accommodations)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Accommodation_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.Accommodations)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Accommodation_TaskStatus");
+            });
+
             modelBuilder.Entity<Company>(entity =>
             {
                 entity.HasIndex(e => e.CreatedById, "IX_Companies_CreatedById");
@@ -299,6 +349,12 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.IsActive)
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.HasOne(d => d.Accommodation)
+                  .WithMany(p => p.Notes)
+                  .HasForeignKey(d => d.AccommodationId)
+                  .HasConstraintName("FK_Notes_Accommodation");
+
 
                 entity.HasOne(d => d.Job)
 
@@ -733,6 +789,7 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.PermitAndPlateId)
                     .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
             });
+          
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

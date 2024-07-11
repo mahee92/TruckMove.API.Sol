@@ -9,6 +9,8 @@ namespace TruckMove.API.DAL.Models
     {
         public User()
         {
+            AccommodationAssigneeNavigations = new HashSet<Accommodation>();
+            AccommodationDriverNavigations = new HashSet<Accommodation>();
             CompanyCreatedBies = new HashSet<Company>();
             CompanyUpdatedBies = new HashSet<Company>();
             ContactCreatedBies = new HashSet<Contact>();
@@ -23,6 +25,8 @@ namespace TruckMove.API.DAL.Models
             UserRoleUsers = new HashSet<UserRole>();
             JobDriverNavigations = new HashSet<Job>();
             PermitsAndPlates = new HashSet<PermitsAndPlate>();
+            PermitsAndPlatesUpdatedBies = new HashSet<PermitsAndPlate>();
+            PermitsAndPlatesCreatedBies = new HashSet<PermitsAndPlate>();
         }
 
         public int Id { get; set; }
@@ -53,5 +57,10 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<PermitsAndPlate> PermitsAndPlatesUpdatedBies { get; set; }
         public virtual ICollection<PermitsAndPlate> PermitsAndPlatesCreatedBies { get; set; }
+        public virtual ICollection<Accommodation> AccommodationAssigneeNavigations { get; set; }
+        public virtual ICollection<Accommodation> AccommodationDriverNavigations { get; set; }
+
+        public virtual ICollection<Accommodation> AccommodationUpdatedBies { get; set; }
+        public virtual ICollection<Accommodation> AccommodationCreatedBies { get; set; }
     }
 }

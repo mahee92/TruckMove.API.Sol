@@ -16,6 +16,7 @@ namespace TruckMove.API.DAL.dbFirst
         {
         }
 
+        public virtual DbSet<Accommodation> Accommodations { get; set; } = null!;
         public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
@@ -31,7 +32,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<PermitsAndPlate> PermitsAndPlates { get; set; } = null!;
         public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
-        public virtual DbSet<TaskAttachment> TaskAttachments { get; set; } = null!;
+
         public virtual DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
         public virtual DbSet<Trailer> Trailers { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
@@ -41,8 +42,6 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
         public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
         public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
-
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -55,6 +54,41 @@ namespace TruckMove.API.DAL.dbFirst
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Accommodation>(entity =>
+            {
+                entity.ToTable("Accommodation");
+
+                entity.Property(e => e.BookingDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Email).HasMaxLength(50);
+
+                entity.Property(e => e.PhoneNumber).HasMaxLength(50);
+
+                entity.Property(e => e.ReferenceNumber).HasMaxLength(50);
+
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.AccommodationAssigneeNavigations)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_Accommodation_Users1");
+
+                entity.HasOne(d => d.DriverNavigation)
+                    .WithMany(p => p.AccommodationDriverNavigations)
+                    .HasForeignKey(d => d.Driver)
+                    .HasConstraintName("FK_Accommodation_Users");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Accommodations)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Accommodation_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.Accommodations)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Accommodation_TaskStatus");
+            });
+
             modelBuilder.Entity<Acknowledgement>(entity =>
             {
                 entity.ToTable("Acknowledgement");
@@ -289,6 +323,11 @@ namespace TruckMove.API.DAL.dbFirst
             {
                 entity.Property(e => e.Note1).HasColumnName("Note");
 
+                entity.HasOne(d => d.Accommodation)
+                    .WithMany(p => p.Notes)
+                    .HasForeignKey(d => d.AccommodationId)
+                    .HasConstraintName("FK_Notes_Accommodation");
+
                 entity.HasOne(d => d.Job)
                     .WithMany(p => p.Notes)
                     .HasForeignKey(d => d.JobId)
@@ -399,13 +438,7 @@ namespace TruckMove.API.DAL.dbFirst
                 entity.Property(e => e.RoleName).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<TaskAttachment>(entity =>
-            {
-                entity.HasOne(d => d.PermitAndPlate)
-                    .WithMany(p => p.TaskAttachments)
-                    .HasForeignKey(d => d.PermitAndPlateId)
-                    .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
-            });
+
 
             modelBuilder.Entity<TaskStatus>(entity =>
             {

@@ -8,7 +8,7 @@ namespace TruckMove.API.DAL.dbFirst
         public PermitsAndPlate()
         {
             Notes = new HashSet<Note>();
-            TaskAttachments = new HashSet<TaskAttachment>();
+           
         }
 
         public int Id { get; set; }
@@ -25,6 +25,6 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
         public virtual ICollection<Note> Notes { get; set; }
-        public virtual ICollection<TaskAttachment> TaskAttachments { get; set; }
+      
     }
 }

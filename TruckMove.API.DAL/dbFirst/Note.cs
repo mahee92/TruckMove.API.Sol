@@ -13,7 +13,9 @@ namespace TruckMove.API.DAL.dbFirst
         public bool? VisibletoDriver { get; set; }
         public string? Note1 { get; set; }
         public int? PermitAndPlatesId { get; set; }
+        public int? AccommodationId { get; set; }
 
+        public virtual Accommodation? Accommodation { get; set; }
         public virtual Job Job { get; set; } = null!;
         public virtual PermitsAndPlate? PermitAndPlates { get; set; }
         public virtual PreDepartureChecklist? PreDeparturechecklist { get; set; }

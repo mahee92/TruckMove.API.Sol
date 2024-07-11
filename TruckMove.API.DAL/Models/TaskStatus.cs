@@ -8,11 +8,13 @@ namespace TruckMove.API.DAL.Models
         public TaskStatus()
         {
             PermitsAndPlates = new HashSet<PermitsAndPlate>();
+            Accommodations = new HashSet<Accommodation>();
         }
 
         public int Id { get; set; }
         public string Status { get; set; } = null!;
 
         public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
+        public virtual ICollection<Accommodation> Accommodations { get; set; }
     }
 }

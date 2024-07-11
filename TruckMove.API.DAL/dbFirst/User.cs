@@ -7,6 +7,8 @@ namespace TruckMove.API.DAL.dbFirst
     {
         public User()
         {
+            AccommodationAssigneeNavigations = new HashSet<Accommodation>();
+            AccommodationDriverNavigations = new HashSet<Accommodation>();
             CompanyCreatedBies = new HashSet<Company>();
             CompanyUpdatedBies = new HashSet<Company>();
             ContactCreatedBies = new HashSet<Contact>();
@@ -37,6 +39,8 @@ namespace TruckMove.API.DAL.dbFirst
 
         public virtual User? CreatedBy { get; set; }
         public virtual User? UpdatedBy { get; set; }
+        public virtual ICollection<Accommodation> AccommodationAssigneeNavigations { get; set; }
+        public virtual ICollection<Accommodation> AccommodationDriverNavigations { get; set; }
         public virtual ICollection<Company> CompanyCreatedBies { get; set; }
         public virtual ICollection<Company> CompanyUpdatedBies { get; set; }
         public virtual ICollection<Contact> ContactCreatedBies { get; set; }
