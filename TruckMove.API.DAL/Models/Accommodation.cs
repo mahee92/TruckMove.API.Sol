@@ -27,6 +27,7 @@ namespace TruckMove.API.DAL.Models
         public string? ReferenceNumber { get; set; }
         public double? Price { get; set; }
         public bool IsActive { get; set; }
+        public bool? OrganiseNow { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? DriverNavigation { get; set; }

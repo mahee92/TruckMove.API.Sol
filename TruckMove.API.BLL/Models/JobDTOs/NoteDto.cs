@@ -17,6 +17,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public int? PreDeparturechecklistId { get; set; }
         public bool? VisibletoDriver { get; set; }
+
+        public int? AccommodationId { get; set; }
         public string? NoteText { get; set; }
 
        

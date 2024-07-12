@@ -97,6 +97,37 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         #endregion
 
+        #region Accommodation
+        [HttpPost("Accommodation/PostPut")]
+        public async Task<IActionResult> PostPutAsync([FromBody] AccommodationDto accommodation)
+        {
+            Response<AccommodationDto> response = await _jobTaskService.AccommodationPostPut(accommodation, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpDelete("Accommodation/Delete")]
+        public async Task<IActionResult> AccommodationDeleteAsync(int id)
+        {
+            Response response = await _jobTaskService.AccommodationDeleteAsync(id);
+            if (response.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
+
 
     }
 }

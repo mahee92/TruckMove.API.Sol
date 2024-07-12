@@ -24,7 +24,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public virtual List<TrailerOutPutDto> Trailers { get; set; }
 
-        public virtual List<PermitsAndPlateDto> PermitsAndPlates { get; set; }
+        public virtual List<PermitsAndPlateOutputDto> PermitsAndPlates { get; set; }
+        public virtual List<AccommodationOutputDto> Accommodations { get; set; }
 
     }
 }

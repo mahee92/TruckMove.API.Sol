@@ -133,6 +133,10 @@ namespace TruckMove.API.DAL.Models
                    .WithMany(p => p.AccommodationCreatedBies)
                    .HasForeignKey(d => d.CreatedById);
 
+                entity.Property(e => e.OrganiseNow)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.AccommodationUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);

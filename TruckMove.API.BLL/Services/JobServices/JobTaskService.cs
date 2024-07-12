@@ -22,13 +22,15 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IJobRepository _jobRepository;
         private readonly IRepository<Attachment> _repositoryAttachment;
         private readonly IRepository<PermitsAndPlate> _repositorypermitsAndPlate;
-        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment)
+        private readonly IRepository<Accommodation> _repositoryAccommodation;
+        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation)
         {
             _mapper = mapper;
             _repository = repository;
             _jobRepository = jobRepository;
             _repositorypermitsAndPlate = repositorypermitsAndPlate;
             _repositoryAttachment = repositoryAttachment;
+            _repositoryAccommodation = repositoryAccomadation;
 
 
         }
@@ -124,6 +126,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
             return response;
         }
+        #endregion
 
         public async Task<Response<AttachmentDto>> AttachmentPostAsync(AttachmentDto attachment, int userId)
         {
@@ -166,6 +169,88 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
+        #region Accommodation
+        public async Task<Response<AccommodationDto>> AccommodationPostPut(AccommodationDto accommodation, int userId)
+        {
+            Response<AccommodationDto> response = new Response<AccommodationDto>();
+            try
+            {
+                if (accommodation.Id == 0)
+                {
+                    Accommodation newAccommodation = _mapper.Map<Accommodation>(accommodation);
+                    newAccommodation.CreatedDate = DateTime.Now;
+                    newAccommodation.CreatedById = userId;
+                    var res = await _repositoryAccommodation.AddAsync(newAccommodation);
+                    response.Object = _mapper.Map<AccommodationDto>(res);
+                    response.Success = true;
+                }
+                else
+                {
+                    var existingAccommodation = await _repositoryAccommodation.GetAsync(accommodation.Id);
+                    if (existingAccommodation == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        ObjectUpdater<AccommodationDto, Accommodation> updater = new ObjectUpdater<AccommodationDto, Accommodation>();
+                        var res = updater.Map(accommodation, existingAccommodation);
+                        res.CreatedDate = existingAccommodation.CreatedDate;
+                        res.CreatedById = existingAccommodation.CreatedById;
+                        res.LastModifiedDate = DateTime.Now;
+                        res.UpdatedById = userId;
+                        var updatedAccommodation = await _repositoryAccommodation.UpdateAsync(res);
+                        response.Success = true;
+                        response.Object = _mapper.Map<AccommodationDto>(updatedAccommodation);
+                    }
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
+
+        public async Task<Response> AccommodationDeleteAsync(int id)
+        {
+            Response response = new Response();
+            try
+            {
+                var accommodation = await _repositoryAccommodation.GetAsync(id);
+
+                if (accommodation == null)
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.NotFound;
+                    response.ErrorType = ErrorCode.NotFound;
+                }
+                else
+                {
+
+                    await _repositoryAccommodation.DeleteAsync(id);
+                    response.Success = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+
+            }
+            return response;
+        }
+
+
         #endregion
     }
+
 }

@@ -20,9 +20,7 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
         public string? PlateNumber { get; set; }
         public double? CostForPermit { get; set; }
 
-        public virtual ICollection<AttachmentDto> Attachments { get; set; }
-
-        public virtual ICollection<NoteDto> Notes { get; set; }
+       
 
 
     }

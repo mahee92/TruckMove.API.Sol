@@ -62,6 +62,10 @@ namespace TruckMove.API.DAL.dbFirst
 
                 entity.Property(e => e.Email).HasMaxLength(50);
 
+                entity.Property(e => e.OrganiseNow)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.PhoneNumber).HasMaxLength(50);
 
                 entity.Property(e => e.ReferenceNumber).HasMaxLength(50);

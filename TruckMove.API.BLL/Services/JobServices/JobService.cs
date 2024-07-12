@@ -197,7 +197,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                                                                             "Trailers.Notes",
                                                                             "WayPoints",
                                                                             "PermitsAndPlates.Attachments",
-                                                                            "PermitsAndPlates.Notes");
+                                                                            "PermitsAndPlates.Notes",
+                                                                            "Accommodations.Attachments",
+                                                                            "Accommodations.Notes");
 
                 if (job == null)
                 {
@@ -669,8 +671,15 @@ namespace TruckMove.API.BLL.Services.JobServices
                        // updatedLeg.Acknowledgement = true;
                         response.Object = _mapper.Map<LegDto>(updatedLeg);
                         
-
-                        ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Stopped);
+                        if(leg.IsCompleted)
+                        {
+                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Arrived);
+                        }
+                        else
+                        {
+                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Stopped);
+                        }
+                        
 
 
                     }

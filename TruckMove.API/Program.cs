@@ -156,8 +156,17 @@ internal class Program
             profile.CreateGenericMap<LegDto, Leg>();
             profile.CreateGenericMap<PermitsAndPlate, PermitsAndPlateDto>();
             profile.CreateGenericMap<PermitsAndPlateDto, PermitsAndPlate>();
+            profile.CreateGenericMap<PermitsAndPlateOutputDto, PermitsAndPlate>();
+            profile.CreateGenericMap<PermitsAndPlate, PermitsAndPlateOutputDto>();
+            
             profile.CreateGenericMap<AttachmentDto, Attachment>();
             profile.CreateGenericMap<Attachment, AttachmentDto>();
+            
+            profile.CreateGenericMap<Accommodation, AccommodationDto>();
+            profile.CreateGenericMap<AccommodationDto, Accommodation>();
+            profile.CreateGenericMap<Accommodation, AccommodationOutputDto>();
+            profile.CreateGenericMap<AccommodationOutputDto, Accommodation>();
+            
 
 
 
@@ -282,6 +291,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<Leg>, Repository<Leg>>();
         builder.Services.AddScoped<IRepository<PermitsAndPlate>, Repository<PermitsAndPlate>>();
         builder.Services.AddScoped<IRepository<Attachment>, Repository<Attachment>>();
+        builder.Services.AddScoped<IRepository<Accommodation>, Repository<Accommodation>>();
 
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
