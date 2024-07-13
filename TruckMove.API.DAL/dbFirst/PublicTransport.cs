@@ -5,6 +5,11 @@ namespace TruckMove.API.DAL.dbFirst
 {
     public partial class PublicTransport
     {
+        public PublicTransport()
+        {
+            Notes = new HashSet<Note>();
+        }
+
         public int Id { get; set; }
         public int JobId { get; set; }
         public int? Driver { get; set; }
@@ -27,5 +32,6 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
         public virtual PublicTransportType? TransportTypeNavigation { get; set; }
+        public virtual ICollection<Note> Notes { get; set; }
     }
 }

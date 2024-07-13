@@ -6,6 +6,10 @@ namespace TruckMove.API.DAL.Models
 {
     public partial class PublicTransport : AuditableEntity, IActiveEntity
     {
+        public PublicTransport()
+        {
+            Notes = new HashSet<Note>();
+        }
         public int Id { get; set; }
         public int JobId { get; set; }
         public int? Driver { get; set; }
@@ -24,6 +28,8 @@ namespace TruckMove.API.DAL.Models
         public double? TransportCost { get; set; }
 
         public bool IsActive { get; set; }
+
+        public virtual ICollection<Note> Notes { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? DriverNavigation { get; set; }

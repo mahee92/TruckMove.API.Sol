@@ -368,6 +368,11 @@ namespace TruckMove.API.DAL.dbFirst
                     .HasForeignKey(d => d.PreDeparturechecklistId)
                     .HasConstraintName("FK_Notes_PreDepartureChecklist");
 
+                entity.HasOne(d => d.PublicTransport)
+                    .WithMany(p => p.Notes)
+                    .HasForeignKey(d => d.PublicTransportId)
+                    .HasConstraintName("FK_Notes_PublicTransport");
+
                 entity.HasOne(d => d.Trailer)
                     .WithMany(p => p.Notes)
                     .HasForeignKey(d => d.TrailerId)
