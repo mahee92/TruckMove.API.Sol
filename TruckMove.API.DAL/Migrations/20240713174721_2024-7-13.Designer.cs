@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240713174721_2024-7-13")]
+    partial class _2024713
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1123,33 +1125,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PublicTransportTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Type = "Train"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Type = "Plane"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Type = "Uber"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Type = "Taxi"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Type = "Other"
-                        });
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Role", b =>

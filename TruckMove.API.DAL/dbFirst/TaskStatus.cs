@@ -9,6 +9,7 @@ namespace TruckMove.API.DAL.dbFirst
         {
             Accommodations = new HashSet<Accommodation>();
             PermitsAndPlates = new HashSet<PermitsAndPlate>();
+            PublicTransports = new HashSet<PublicTransport>();
         }
 
         public int Id { get; set; }
@@ -16,5 +17,6 @@ namespace TruckMove.API.DAL.dbFirst
 
         public virtual ICollection<Accommodation> Accommodations { get; set; }
         public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
+        public virtual ICollection<PublicTransport> PublicTransports { get; set; }
     }
 }

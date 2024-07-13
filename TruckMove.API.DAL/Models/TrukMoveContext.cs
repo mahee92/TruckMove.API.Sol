@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using static TruckMove.API.DAL.MasterData.MasterData;
@@ -55,8 +56,10 @@ namespace TruckMove.API.DAL.Models
       
 
         public virtual DbSet<Attachment> Attachments { get; set; } = null!;
+        public virtual DbSet<PublicTransport> PublicTransports { get; set; } = null!;
+        public virtual DbSet<PublicTransportType> PublicTransportTypes { get; set; } = null!;
 
-       
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -120,6 +123,14 @@ namespace TruckMove.API.DAL.Models
                  new TaskStatus { Id = (int)TaskStatusEnum.Planned, Status = TaskStatusEnum.Planned.ToString()},
                  new TaskStatus { Id = (int)TaskStatusEnum.InProgress, Status = TaskStatusEnum.InProgress.ToString()},
                  new TaskStatus { Id = (int)TaskStatusEnum.Completed, Status = TaskStatusEnum.Completed.ToString() }
+                 );
+
+            modelBuilder.Entity<PublicTransportType>().HasData(
+                 new PublicTransportType { Id = (int)PublicTransportTypeEnum.Train, Type = PublicTransportTypeEnum.Train.ToString() },
+                  new PublicTransportType { Id = (int)PublicTransportTypeEnum.Plane, Type = PublicTransportTypeEnum.Plane.ToString() },
+                  new PublicTransportType { Id = (int)PublicTransportTypeEnum.Uber, Type = PublicTransportTypeEnum.Uber.ToString()  },
+                  new PublicTransportType { Id = (int)PublicTransportTypeEnum.Taxi, Type = PublicTransportTypeEnum.Taxi.ToString() },
+                  new PublicTransportType { Id = (int)PublicTransportTypeEnum.Other, Type = PublicTransportTypeEnum.Other.ToString() }
                  );
 
             modelBuilder.Entity<Accommodation>(entity =>
@@ -802,7 +813,71 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.AccommodationId)
                     .HasConstraintName("FK_TaskAttachments_Accommodation");
             });
-          
+            modelBuilder.Entity<PublicTransport>(entity =>
+            {
+                entity.Property(e => e.IsActive)
+                .IsRequired()
+                .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.ToTable("PublicTransport");
+
+                entity.Property(e => e.ArrivalDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Daterequired).HasColumnType("datetime");
+
+                entity.Property(e => e.DepartureDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.ReferenceNumber).HasMaxLength(100);
+
+                entity.Property(e => e.Requiredsuburb).HasColumnName("requiredsuburb");
+
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.PublicTransportAssigneeNavigations)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_PublicTransport_Users1");
+
+                entity.HasOne(d => d.DriverNavigation)
+                    .WithMany(p => p.PublicTransportDriverNavigations)
+                    .HasForeignKey(d => d.Driver)
+                    .HasConstraintName("FK_PublicTransport_Users");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PublicTransport_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PublicTransport_TaskStatus");
+
+                entity.HasOne(d => d.TransportTypeNavigation)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.TransportType)
+                    .HasConstraintName("FK_PublicTransport_PublicTransportTypes");
+
+                entity.HasOne(d => d.CreatedBy)
+                   .WithMany(p => p.PublicTransportCreatedBies)
+                   .HasForeignKey(d => d.CreatedById);
+
+                entity.Property(e => e.OrganizeNow)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.PublicTransportUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById);
+            });
+
+            modelBuilder.Entity<PublicTransportType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Type).HasMaxLength(20);
+            });
+
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

@@ -32,6 +32,8 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<Note> Notes { get; set; } = null!;
         public virtual DbSet<PermitsAndPlate> PermitsAndPlates { get; set; } = null!;
         public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
+        public virtual DbSet<PublicTransport> PublicTransports { get; set; } = null!;
+        public virtual DbSet<PublicTransportType> PublicTransportTypes { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
         public virtual DbSet<Trailer> Trailers { get; set; } = null!;
@@ -453,6 +455,55 @@ namespace TruckMove.API.DAL.dbFirst
                     .HasForeignKey<PreDepartureChecklist>(d => d.JobId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PreDepartureChecklist_Jobs");
+            });
+
+            modelBuilder.Entity<PublicTransport>(entity =>
+            {
+                entity.ToTable("PublicTransport");
+
+                entity.Property(e => e.ArrivalDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Daterequired).HasColumnType("datetime");
+
+                entity.Property(e => e.DepartureDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.ReferenceNumber).HasMaxLength(100);
+
+                entity.Property(e => e.Requiredsuburb).HasColumnName("requiredsuburb");
+
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.PublicTransportAssigneeNavigations)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_PublicTransport_Users1");
+
+                entity.HasOne(d => d.DriverNavigation)
+                    .WithMany(p => p.PublicTransportDriverNavigations)
+                    .HasForeignKey(d => d.Driver)
+                    .HasConstraintName("FK_PublicTransport_Users");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PublicTransport_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PublicTransport_TaskStatus");
+
+                entity.HasOne(d => d.TransportTypeNavigation)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.TransportType)
+                    .HasConstraintName("FK_PublicTransport_PublicTransportTypes");
+            });
+
+            modelBuilder.Entity<PublicTransportType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Type).HasMaxLength(20);
             });
 
             modelBuilder.Entity<Role>(entity =>

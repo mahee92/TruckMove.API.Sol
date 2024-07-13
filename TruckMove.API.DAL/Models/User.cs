@@ -27,6 +27,10 @@ namespace TruckMove.API.DAL.Models
             PermitsAndPlates = new HashSet<PermitsAndPlate>();
             PermitsAndPlatesUpdatedBies = new HashSet<PermitsAndPlate>();
             PermitsAndPlatesCreatedBies = new HashSet<PermitsAndPlate>();
+            PublicTransportAssigneeNavigations = new HashSet<PublicTransport>();
+            PublicTransportDriverNavigations = new HashSet<PublicTransport>();
+            PublicTransportUpdatedBies = new HashSet<PublicTransport>();
+            PublicTransportCreatedBies = new HashSet<PublicTransport>();
         }
 
         public int Id { get; set; }
@@ -62,5 +66,11 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Accommodation> AccommodationUpdatedBies { get; set; }
         public virtual ICollection<Accommodation> AccommodationCreatedBies { get; set; }
+
+        public virtual ICollection<PublicTransport> PublicTransportAssigneeNavigations { get; set; }
+        public virtual ICollection<PublicTransport> PublicTransportDriverNavigations { get; set; }
+
+        public virtual ICollection<PublicTransport> PublicTransportUpdatedBies { get; set; }
+        public virtual ICollection<PublicTransport> PublicTransportCreatedBies { get; set; }
     }
 }
