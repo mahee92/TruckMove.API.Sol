@@ -14,7 +14,7 @@ namespace TruckMove.API.Controllers.JobControllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Driver")]
+   // [Authorize(Roles = "Driver")]
     public class MobileController : Controller
     {
         private readonly IAuthUserService _authUserService;
@@ -73,6 +73,8 @@ namespace TruckMove.API.Controllers.JobControllers
         public async Task<IActionResult> PostPutAsync([FromBody] PreDepartureChecklistDto checkList)
         {
             Response<PreDepartureChecklistDto> response = await _jobService.PreDepartureChecklistPutAsync(checkList, Convert.ToInt32(_authUserService.GetUserId()));
+           
+            
             if (response.Success)
             {
 

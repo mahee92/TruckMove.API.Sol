@@ -141,8 +141,7 @@ internal class Program
             profile.CreateGenericMap<VehicleOutputDto, Vehicle>();
             profile.CreateGenericMap<Vehicle, VehicleOutputDto>();
             profile.CreateGenericMap<WayPoint, WayPointDto>();
-            profile.CreateGenericMap<PreDepartureChecklist, PreDepartureChecklistDto>();
-            profile.CreateGenericMap<PreDepartureChecklistDto, PreDepartureChecklist>();
+           
             profile.CreateGenericMap<Note, NoteDto>();
             profile.CreateGenericMap<NoteDto, Note>();
             profile.CreateGenericMap<ImageDto, Image>();

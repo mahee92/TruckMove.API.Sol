@@ -100,6 +100,11 @@ namespace TruckMove.API.DAL.dbFirst
                 entity.HasIndex(e => e.LegId, "UQ_Acknowledge_LegId")
                     .IsUnique();
 
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Acknowledgements)
+                    .HasForeignKey(d => d.JobId)
+                    .HasConstraintName("FK_Acknowledgement_Jobs");
+
                 entity.HasOne(d => d.Leg)
                     .WithOne(p => p.Acknowledgement)
                     .HasForeignKey<Acknowledgement>(d => d.LegId)

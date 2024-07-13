@@ -17,6 +17,7 @@ namespace TruckMove.API.DAL.Models
             Trailers = new HashSet<Trailer>();
             PermitsAndPlates = new HashSet<PermitsAndPlate>();
             Accommodations = new HashSet<Accommodation>();
+            Acknowledgements = new HashSet<Acknowledgement>();
 
 
         }
@@ -64,6 +65,8 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
 
         public virtual ICollection<Accommodation> Accommodations { get; set; }
+
+        public virtual ICollection<Acknowledgement> Acknowledgements { get; set; }
 
 
     }

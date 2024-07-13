@@ -528,7 +528,9 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     newChecklist.CreatedDate = DateTime.Now;
                     newChecklist.CreatedById = userId;
-
+                    
+                    newChecklist.Notes = new List<Note>();
+                    HandleNotes(checkList, newChecklist);
                     var res = await _repositorypreDepartureChecklist.AddAsync(newChecklist);
 
                     response.Object = _mapper.Map<PreDepartureChecklistDto>(res);
@@ -539,7 +541,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                 }
                 else
                 {
-                    var existingCheckList = await _repositorypreDepartureChecklist.GetAsync(checkList.Id);
+                   // var existingCheckList = await _repositorypreDepartureChecklist.GetAsync(checkList.Id);
+                    var existingCheckList = await _repositorypreDepartureChecklist.GetWithNestedIncludesAsync(checkList.Id, "Notes");
 
                     if (existingCheckList == null)
                     {
@@ -551,15 +554,20 @@ namespace TruckMove.API.BLL.Services.JobServices
                     {
                         ObjectUpdater<PreDepartureChecklistDto, PreDepartureChecklist> updater = new ObjectUpdater<PreDepartureChecklistDto, PreDepartureChecklist>();
                         var res = updater.Map(checkList, existingCheckList);
+
+                      //  ObjectUpdater<NoteDto, Note> noteUpdater = new ObjectUpdater<NoteDto, Note>();
+                        //var noteRes = updater.Map(checkList, existingCheckList);
+
                         res.CreatedDate = existingCheckList.CreatedDate;
                         res.CreatedById = existingCheckList.CreatedById;
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
+                        HandleNotes(checkList, existingCheckList);
                         var updatedVehicle = await _repositorypreDepartureChecklist.UpdateAsync(res);
                         response.Success = true;
                         response.Object = _mapper.Map<PreDepartureChecklistDto>(updatedVehicle);
 
-
+                        
                     }
 
 
@@ -575,6 +583,35 @@ namespace TruckMove.API.BLL.Services.JobServices
                 response.ErrorType = ErrorCode.dbError;
                 response.ErrorMessage = ex.Message;
                 return response;
+            }
+        }
+
+        public void HandleNotes(PreDepartureChecklistDto checkListdto,PreDepartureChecklist checkList)
+        {
+            
+            foreach (var noteDto in checkListdto.Notes)
+            {
+                var note = _mapper.Map<Note>(noteDto);
+                if (note.Id == 0)
+                {
+                    checkList.Notes.Add(note); // New note
+                }
+                else
+                {
+                    var existingNote = checkList.Notes.FirstOrDefault(n => n.Id == note.Id);
+                    if (existingNote != null)
+                    {
+                        _mapper.Map(noteDto, existingNote); // Update existing note
+                    }
+                }
+            }
+
+            // Remove deleted notes
+            var updatedNoteIds = checkListdto.Notes.Select(n => n.Id).ToList();
+            var notesToRemove = checkList.Notes.Where(n => !updatedNoteIds.Contains(n.Id)).ToList();
+            foreach (var note in notesToRemove)
+            {
+                checkList.Notes.Remove(note);
             }
         }
        
@@ -593,12 +630,14 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<LegDto> response = new Response<LegDto>();
             try
             {
-
-                if (leg.Id == 0)
+                if (leg.Acknowledged)
                 {
-                   // validate for any ongoing leg
-                    if (leg.Acknowledged)
+
+
+                    if (leg.Id == 0)
                     {
+                        // validate for any ongoing leg
+
                         Leg newLeg = _mapper.Map<Leg>(leg);
 
                         newLeg.DriverId = userId;
@@ -612,82 +651,86 @@ namespace TruckMove.API.BLL.Services.JobServices
                         newLeg.CreatedDate = DateTime.Now;
                         newLeg.CreatedById = userId;
 
-                      //  newLeg.Job.Status = (int)JobStatusEnum.InProgress;
+                        //  newLeg.Job.Status = (int)JobStatusEnum.InProgress;
 
                         var res = await _repositoryLeg.AddAsync(newLeg);
                         response.Object = _mapper.Map<LegDto>(res);
                         response.Success = true;
 
-                        await _jobRepository.Acknowledge(res.Id);
+
                         ChangeJobStatus(leg.JobId, (int)JobStatusEnum.InProgress);
+
+
+
                     }
                     else
                     {
+                        var existingLeg = await _repositoryLeg.GetAsync(leg.Id);
 
-                        response.Success = false;
-                        response.ErrorType = ErrorCode.AchknowledgeError;
-                        response.ErrorMessage = ErrorMessages.AchknowledgeError;
-                    }
-
-
-                }
-                else
-                {
-                    var existingLeg = await _repositoryLeg.GetAsync(leg.Id);
-
-                    if (existingLeg == null)
-                    {
-                        response.Success = false;
-                        response.ErrorType = ErrorCode.NotFound;
-                        response.ErrorMessage = ErrorMessages.NotFound;
-                    }
-                    else if (existingLeg.Status != (int)LegStatusEnum.InProgress)
-                    {
-                        response.Success = false;
-                        response.ErrorType = ErrorCode.NotFound;
-                        response.ErrorMessage = ErrorMessages.NotFound;
-                    }
-                    else
-                    {
-                        existingLeg.EndLocation = leg.EndLocation;
-                        existingLeg.EndTime = DateTime.Now;
-                        try
+                        if (existingLeg == null)
                         {
-                            decimal distance = await GoogleMapsHelper.GetDistanceAsync(existingLeg.StartLocation, leg.EndLocation, apiKey);
-                            existingLeg.TotalDistance = Convert.ToDouble(distance);
+                            response.Success = false;
+                            response.ErrorType = ErrorCode.NotFound;
+                            response.ErrorMessage = ErrorMessages.NotFound;
                         }
-                        catch (Exception ex)
+                        else if (existingLeg.Status != (int)LegStatusEnum.InProgress)
                         {
-                            existingLeg.TotalDistance = -1;
-                        }
-
-                        existingLeg.Status = (int)LegStatusEnum.Completed;
-                        existingLeg.LastModifiedDate = DateTime.Now;
-                        existingLeg.UpdatedById = userId;
-                        
-
-                        var updatedLeg = await _repositoryLeg.UpdateAsync(existingLeg);
-                        response.Success = true;
-                       // updatedLeg.Acknowledgement = true;
-                        response.Object = _mapper.Map<LegDto>(updatedLeg);
-                        
-                        if(leg.IsCompleted)
-                        {
-                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Arrived);
+                            response.Success = false;
+                            response.ErrorType = ErrorCode.NotFound;
+                            response.ErrorMessage = ErrorMessages.NotFound;
                         }
                         else
                         {
-                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Stopped);
+                            existingLeg.EndLocation = leg.EndLocation;
+                            existingLeg.EndTime = DateTime.Now;
+                            try
+                            {
+                                decimal distance = await GoogleMapsHelper.GetDistanceAsync(existingLeg.StartLocation, leg.EndLocation, apiKey);
+                                existingLeg.TotalDistance = Convert.ToDouble(distance);
+                            }
+                            catch (Exception ex)
+                            {
+                                existingLeg.TotalDistance = -1;
+                            }
+
+                            existingLeg.Status = (int)LegStatusEnum.Completed;
+                            existingLeg.LastModifiedDate = DateTime.Now;
+                            existingLeg.UpdatedById = userId;
+
+
+                            var updatedLeg = await _repositoryLeg.UpdateAsync(existingLeg);
+                            response.Success = true;
+                            // updatedLeg.Acknowledgement = true;
+                            response.Object = _mapper.Map<LegDto>(updatedLeg);
+
+                            if (leg.IsCompleted)
+                            {
+                                ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Arrived);
+                            }
+                            else
+                            {
+                                ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Stopped);
+                            }
+
+
+
                         }
-                        
 
 
                     }
 
-
+                    if (response.Success)
+                    {
+                        await _jobRepository.Acknowledge(response.Object.Id, response.Object.JobId);
+                    }
                 }
-
-
+                else
+                {
+                    response.Success = false;
+                    response.ErrorType = ErrorCode.AchknowledgeError;
+                    response.ErrorMessage = ErrorMessages.AchknowledgeError;
+                }
+               
                 return response;
 
             }
