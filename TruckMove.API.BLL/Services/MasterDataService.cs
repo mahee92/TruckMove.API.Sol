@@ -99,6 +99,28 @@ namespace TruckMove.API.BLL.Services
             }
             return response;
         }
+
+        public async Task<Response<PublicTransportType>> GetAllPublicTransportTypes()
+        {
+            Response<PublicTransportType> response = new Response<PublicTransportType>();
+            try
+            {
+                var types = await _repository.GetPublicTransportTypes();
+                response.Success = true;
+                if (types.Count > 0)
+                {
+                    response.Objects = new List<PublicTransportType>();
+                    response.Objects = types;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
         //public async Task<Response<JobStatus>> GetAllHookupTypes()
         //{
         //    Response<JobStatus> response = new Response<JobStatus>();

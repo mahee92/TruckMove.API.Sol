@@ -17,5 +17,6 @@ namespace TruckMove.API.BLL.Services
      
 
         Task<Response<HookupType>> GetAllHookupTypes();
+        Task GetAllPublicTransportTypes();
     }
 }
