@@ -529,8 +529,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newChecklist.CreatedDate = DateTime.Now;
                     newChecklist.CreatedById = userId;
                     
-                    newChecklist.Notes = new List<Note>();
-                    HandleNotes(checkList, newChecklist);
+                   // newChecklist.Notes = new List<Note>();
+                   // HandleNotes(checkList, newChecklist);
                     var res = await _repositorypreDepartureChecklist.AddAsync(newChecklist);
 
                     response.Object = _mapper.Map<PreDepartureChecklistDto>(res);
@@ -562,7 +562,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.CreatedById = existingCheckList.CreatedById;
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
-                        HandleNotes(checkList, existingCheckList);
+                       // HandleNotes(checkList, existingCheckList);
                         var updatedVehicle = await _repositorypreDepartureChecklist.UpdateAsync(res);
                         response.Success = true;
                         response.Object = _mapper.Map<PreDepartureChecklistDto>(updatedVehicle);
@@ -586,34 +586,34 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
         }
 
-        public void HandleNotes(PreDepartureChecklistDto checkListdto,PreDepartureChecklist checkList)
-        {
+        //public void HandleNotes(PreDepartureChecklistDto checkListdto,PreDepartureChecklist checkList)
+        //{
             
-            foreach (var noteDto in checkListdto.Notes)
-            {
-                var note = _mapper.Map<Note>(noteDto);
-                if (note.Id == 0)
-                {
-                    checkList.Notes.Add(note); // New note
-                }
-                else
-                {
-                    var existingNote = checkList.Notes.FirstOrDefault(n => n.Id == note.Id);
-                    if (existingNote != null)
-                    {
-                        _mapper.Map(noteDto, existingNote); // Update existing note
-                    }
-                }
-            }
+        //    foreach (var noteDto in checkListdto.Notes)
+        //    {
+        //        var note = _mapper.Map<Note>(noteDto);
+        //        if (note.Id == 0)
+        //        {
+        //            checkList.Notes.Add(note); // New note
+        //        }
+        //        else
+        //        {
+        //            var existingNote = checkList.Notes.FirstOrDefault(n => n.Id == note.Id);
+        //            if (existingNote != null)
+        //            {
+        //                _mapper.Map(noteDto, existingNote); // Update existing note
+        //            }
+        //        }
+        //    }
 
-            // Remove deleted notes
-            var updatedNoteIds = checkListdto.Notes.Select(n => n.Id).ToList();
-            var notesToRemove = checkList.Notes.Where(n => !updatedNoteIds.Contains(n.Id)).ToList();
-            foreach (var note in notesToRemove)
-            {
-                checkList.Notes.Remove(note);
-            }
-        }
+        //    // Remove deleted notes
+        //    var updatedNoteIds = checkListdto.Notes.Select(n => n.Id).ToList();
+        //    var notesToRemove = checkList.Notes.Where(n => !updatedNoteIds.Contains(n.Id)).ToList();
+        //    foreach (var note in notesToRemove)
+        //    {
+        //        checkList.Notes.Remove(note);
+        //    }
+        //}
        
         public async void ChangeJobStatus(int jobId, int status)
         {

@@ -383,13 +383,7 @@ namespace TruckMove.API.DAL.Models
 
 
 
-                entity.HasOne(d => d.PreDeparturechecklist)
-
-                    .WithMany(p => p.Notes)
-
-                    .HasForeignKey(d => d.PreDeparturechecklistId)
-
-                    .HasConstraintName("FK_Notes_PreDepartureChecklist");
+               
 
 
 

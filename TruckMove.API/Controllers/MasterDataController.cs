@@ -103,19 +103,19 @@ namespace TruckMove.API.Controllers
             }
         }
 
-        [HttpGet("/GetPublicTransportTypeS")]
-        public async Task<IActionResult> PublicTransportTypes()
-        {
-            var response = await _masterdataService.GetAllPublicTransportTypes();
-            if (response.Success)
-            {
-                return Ok(response.Objects);
-            }
-            else
-            {
+        //[HttpGet("/GetPublicTransportTypeS")]
+        //public async Task<IActionResult> PublicTransportTypes()
+        //{
+        //    var response = await _masterdataService.GetAllPublicTransportTypes();
+        //    if (response.Success)
+        //    {
+        //        return Ok(response.Objects);
+        //    }
+        //    else
+        //    {
               
-                return StatusCode((int)response.ErrorType, response.ErrorMessage);
-            }
-        }
+        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
+        //    }
+        //}
     }
 }

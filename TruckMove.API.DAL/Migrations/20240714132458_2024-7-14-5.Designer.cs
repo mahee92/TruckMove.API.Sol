@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240714132458_2024-7-14-5")]
+    partial class _20247145
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -792,6 +794,9 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int?>("PermitAndPlatesId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PreDeparturechecklistId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("PublicTransportId")
                         .HasColumnType("int");
 
@@ -816,6 +821,8 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasIndex("JobId");
 
                     b.HasIndex("PermitAndPlatesId");
+
+                    b.HasIndex("PreDeparturechecklistId");
 
                     b.HasIndex("PublicTransportId");
 
@@ -1866,6 +1873,11 @@ namespace TruckMove.API.DAL.Migrations
                         .HasForeignKey("PermitAndPlatesId")
                         .HasConstraintName("FK_Notes_PermitsAndPlates");
 
+                    b.HasOne("TruckMove.API.DAL.Models.PreDepartureChecklist", "PreDeparturechecklist")
+                        .WithMany("Notes")
+                        .HasForeignKey("PreDeparturechecklistId")
+                        .HasConstraintName("FK_Notes_PreDepartureChecklist");
+
                     b.HasOne("TruckMove.API.DAL.Models.PublicTransport", "PublicTransport")
                         .WithMany("Notes")
                         .HasForeignKey("PublicTransportId")
@@ -1892,6 +1904,8 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("Job");
 
                     b.Navigation("PermitAndPlates");
+
+                    b.Navigation("PreDeparturechecklist");
 
                     b.Navigation("PublicTransport");
 
@@ -2194,6 +2208,11 @@ namespace TruckMove.API.DAL.Migrations
                 {
                     b.Navigation("Attachments");
 
+                    b.Navigation("Notes");
+                });
+
+            modelBuilder.Entity("TruckMove.API.DAL.Models.PreDepartureChecklist", b =>
+                {
                     b.Navigation("Notes");
                 });
 

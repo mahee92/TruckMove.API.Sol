@@ -24,9 +24,9 @@ namespace TruckMove.API.BLL.Helper
              .ForMember(dest => dest.Trailers, opt => opt.MapFrom(src => src.Trailers)             
              );
             CreateMap<PreDepartureChecklist, PreDepartureChecklistDto>();          
-            CreateMap<PreDepartureChecklistDto, PreDepartureChecklist>()
-             .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes)            
-             );
+            //CreateMap<PreDepartureChecklistDto, PreDepartureChecklist>()
+            // .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes)            
+            // );
             CreateMap<Vehicle, VehicleDto>();
         }
 

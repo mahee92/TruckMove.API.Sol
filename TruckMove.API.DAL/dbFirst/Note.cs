@@ -19,7 +19,6 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual Accommodation? Accommodation { get; set; }
         public virtual Job Job { get; set; } = null!;
         public virtual PermitsAndPlate? PermitAndPlates { get; set; }
-        public virtual PreDepartureChecklist? PreDeparturechecklist { get; set; }
         public virtual PublicTransport? PublicTransport { get; set; }
         public virtual Trailer? Trailer { get; set; }
         public virtual Vehicle? Vehicle { get; set; }

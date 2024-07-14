@@ -121,6 +121,11 @@ namespace TruckMove.API.BLL.Services
             }
             return response;
         }
+
+        Task IMasterDataService.GetAllPublicTransportTypes()
+        {
+            throw new NotImplementedException();
+        }
         //public async Task<Response<JobStatus>> GetAllHookupTypes()
         //{
         //    Response<JobStatus> response = new Response<JobStatus>();
