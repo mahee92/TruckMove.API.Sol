@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240714134450_2024-7-14-7")]
+    partial class _20247147
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -210,23 +212,12 @@ namespace TruckMove.API.DAL.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int?>("CreatedById")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("FrontDamage")
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
                     b.Property<decimal?>("FuelLevel")
                         .HasColumnType("decimal(5,2)");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
                     b.Property<bool?>("IsPre")
                         .IsRequired()
@@ -244,9 +235,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<string>("KeysFobTotalKeys")
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("LeftHandDamage")
                         .HasMaxLength(10)
@@ -282,9 +270,6 @@ namespace TruckMove.API.DAL.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("int");
-
                     b.Property<string>("VehicleCleanFreeOfRubbish")
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
@@ -302,10 +287,6 @@ namespace TruckMove.API.DAL.Migrations
                         .HasColumnType("nvarchar(10)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("UpdatedById");
 
                     b.HasIndex(new[] { "JobId" }, "UQ_PreDepartureChecklist_JobId")
                         .IsUnique();
@@ -1657,25 +1638,13 @@ namespace TruckMove.API.DAL.Migrations
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Checklist", b =>
                 {
-                    b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
                     b.HasOne("TruckMove.API.DAL.Models.Job", "Job")
                         .WithOne("Checklist")
                         .HasForeignKey("TruckMove.API.DAL.Models.Checklist", "JobId")
                         .IsRequired()
                         .HasConstraintName("FK_PreDepartureChecklist_Jobs");
 
-                    b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
-                        .WithMany()
-                        .HasForeignKey("UpdatedById");
-
-                    b.Navigation("CreatedBy");
-
                     b.Navigation("Job");
-
-                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
