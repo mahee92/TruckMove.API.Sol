@@ -34,7 +34,7 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
         public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
 
-        public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
+
         public virtual DbSet<Note> Notes { get; set; } = null!;
 
         public virtual DbSet<Image> Images { get; set; } = null!;
@@ -59,7 +59,7 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<PublicTransport> PublicTransports { get; set; } = null!;
         public virtual DbSet<PublicTransportType> PublicTransportTypes { get; set; } = null!;
 
-
+        public virtual DbSet<Checklist> Checklists { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -478,112 +478,7 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<PreDepartureChecklist>(entity =>
-
-            {
-
-                entity.ToTable("PreDepartureChecklist");
-
-                entity.Property(e => e.IsActive)
-                     .IsRequired()
-                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-                entity.HasIndex(e => e.JobId, "UQ_PreDepartureChecklist_JobId")
-
-                    .IsUnique();
-
-
-
-                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.FrontDamage).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
-
-
-
-                entity.Property(e => e.JackAndTools).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.Oil).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.OwnersManual).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.RearDamage).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.SpareRim).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.TyresCondition).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.Water).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
-
-
-
-                entity.HasOne(d => d.Job)
-
-                    .WithOne(p => p.PreDepartureChecklist)
-
-                    .HasForeignKey<PreDepartureChecklist>(d => d.JobId)
-
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-
-                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
-
-            });
-
-
-
+           
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.Property(e => e.RoleName).HasMaxLength(50);
@@ -883,6 +778,61 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Type).HasMaxLength(20);
             });
 
+            modelBuilder.Entity<Checklist>(entity =>
+            {
+                entity.ToTable("Checklist");
+
+                entity.Property(e => e.IsActive)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.HasIndex(e => e.JobId, "UQ_PreDepartureChecklist_JobId")
+                    .IsUnique();
+
+                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
+
+                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
+
+                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
+
+                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
+
+                entity.Property(e => e.FrontDamage).HasMaxLength(10);
+
+                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.JackAndTools).HasMaxLength(10);
+
+                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
+
+                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
+
+                entity.Property(e => e.Oil).HasMaxLength(10);
+
+                entity.Property(e => e.OwnersManual).HasMaxLength(10);
+
+                entity.Property(e => e.RearDamage).HasMaxLength(10);
+
+                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
+
+                entity.Property(e => e.SpareRim).HasMaxLength(10);
+
+                entity.Property(e => e.TyresCondition).HasMaxLength(10);
+
+                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
+
+                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
+
+                entity.Property(e => e.Water).HasMaxLength(10);
+
+                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
+
+                entity.HasOne(d => d.Job)
+                    .WithOne(p => p.Checklist)
+                    .HasForeignKey<Checklist>(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
+            });
 
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

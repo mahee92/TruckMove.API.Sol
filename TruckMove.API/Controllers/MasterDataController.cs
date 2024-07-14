@@ -103,7 +103,7 @@ namespace TruckMove.API.Controllers
             }
         }
 
-        [HttpGet("/GetPublicTransportTypeS")]
+        [HttpGet("/GetPublicTransportTypes")]
         public async Task<IActionResult> PublicTransportTypes()
         {
             var response = await _masterdataService.GetAllPublicTransportTypes();

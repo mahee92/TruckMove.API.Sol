@@ -54,7 +54,7 @@ namespace TruckMove.API.DAL.Models
        
         public virtual JobStatus? StatusNavigation { get; set; }
 
-        public virtual PreDepartureChecklist? PreDepartureChecklist { get; set; }
+        public virtual Checklist? Checklist { get; set; }
 
         public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<Image> Images { get; set; }
