@@ -165,7 +165,12 @@ internal class Program
             profile.CreateGenericMap<AccommodationDto, Accommodation>();
             profile.CreateGenericMap<Accommodation, AccommodationOutputDto>();
             profile.CreateGenericMap<AccommodationOutputDto, Accommodation>();
-            
+
+            profile.CreateGenericMap<PublicTransport, PublicTransportDto>();
+            profile.CreateGenericMap<PublicTransportDto, PublicTransport>();
+            profile.CreateGenericMap<PublicTransport, PublicTransportOutputDto>();
+            profile.CreateGenericMap<PublicTransportOutputDto, PublicTransport>();
+
 
 
 
@@ -291,6 +296,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<PermitsAndPlate>, Repository<PermitsAndPlate>>();
         builder.Services.AddScoped<IRepository<Attachment>, Repository<Attachment>>();
         builder.Services.AddScoped<IRepository<Accommodation>, Repository<Accommodation>>();
+        builder.Services.AddScoped<IRepository<PublicTransport>, Repository<PublicTransport>>();
 
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();

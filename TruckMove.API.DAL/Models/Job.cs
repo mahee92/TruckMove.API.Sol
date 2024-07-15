@@ -19,6 +19,7 @@ namespace TruckMove.API.DAL.Models
             Accommodations = new HashSet<Accommodation>();
             Acknowledgements = new HashSet<Acknowledgement>();
             PublicTransports = new HashSet<PublicTransport>();
+            Purchases = new HashSet<Purchase>();
 
 
         }
@@ -70,6 +71,8 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Acknowledgement> Acknowledgements { get; set; }
 
         public virtual ICollection<PublicTransport> PublicTransports { get; set; }
+
+        public virtual ICollection<Purchase> Purchases { get; set; }
 
 
     }

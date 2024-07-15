@@ -22,6 +22,8 @@ namespace TruckMove.API.DAL.dbFirst
             PermitsAndPlates = new HashSet<PermitsAndPlate>();
             PublicTransportAssigneeNavigations = new HashSet<PublicTransport>();
             PublicTransportDriverNavigations = new HashSet<PublicTransport>();
+            PurchaseAssigneeNavigations = new HashSet<Purchase>();
+            PurchaseDriverNavigations = new HashSet<Purchase>();
             UserRoleCreatedBies = new HashSet<UserRole>();
             UserRoleUpdatedBies = new HashSet<UserRole>();
             UserRoleUsers = new HashSet<UserRole>();
@@ -56,6 +58,8 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
         public virtual ICollection<PublicTransport> PublicTransportAssigneeNavigations { get; set; }
         public virtual ICollection<PublicTransport> PublicTransportDriverNavigations { get; set; }
+        public virtual ICollection<Purchase> PurchaseAssigneeNavigations { get; set; }
+        public virtual ICollection<Purchase> PurchaseDriverNavigations { get; set; }
         public virtual ICollection<UserRole> UserRoleCreatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleUpdatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleUsers { get; set; }

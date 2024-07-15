@@ -284,9 +284,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.CreatedById = existingTransport.CreatedById;
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
-                        var updatedAccommodation = await _repositoryAccommodation.UpdateAsync(res);
+                        var updatedTransport = await _repositoryPublicTransport.UpdateAsync(res);
                         response.Success = true;
-                        response.Object = _mapper.Map<AccommodationDto>(updatedAccommodation);
+                        response.Object = _mapper.Map<PublicTransportDto>(updatedTransport);
                     }
                 }
                 return response;

@@ -34,6 +34,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<PermitsAndPlate> PermitsAndPlates { get; set; } = null!;
         public virtual DbSet<PublicTransport> PublicTransports { get; set; } = null!;
         public virtual DbSet<PublicTransportType> PublicTransportTypes { get; set; } = null!;
+        public virtual DbSet<Purchase> Purchases { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
         public virtual DbSet<Trailer> Trailers { get; set; } = null!;
@@ -513,6 +514,39 @@ namespace TruckMove.API.DAL.dbFirst
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Type).HasMaxLength(20);
+            });
+
+            modelBuilder.Entity<Purchase>(entity =>
+            {
+                entity.ToTable("Purchase");
+
+                entity.Property(e => e.OrganiseNow)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.Vendor).HasMaxLength(200);
+
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.PurchaseAssigneeNavigations)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_Purchase_Users1");
+
+                entity.HasOne(d => d.DriverNavigation)
+                    .WithMany(p => p.PurchaseDriverNavigations)
+                    .HasForeignKey(d => d.Driver)
+                    .HasConstraintName("FK_Purchase_Users");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Purchases)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Purchase_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.Purchases)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Purchase_TaskStatus");
             });
 
             modelBuilder.Entity<Role>(entity =>
