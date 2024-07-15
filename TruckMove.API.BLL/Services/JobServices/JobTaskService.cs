@@ -13,6 +13,7 @@ using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.VehicleDtos;
 
 
+
 namespace TruckMove.API.BLL.Services.JobServices
 {
     public class JobTaskService : IJobTaskService
@@ -23,7 +24,8 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<Attachment> _repositoryAttachment;
         private readonly IRepository<PermitsAndPlate> _repositorypermitsAndPlate;
         private readonly IRepository<Accommodation> _repositoryAccommodation;
-        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation)
+        private readonly IRepository<PublicTransport> _repositoryPublicTransport;
+        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation, IRepository<PublicTransport> repositoryPublicTransport)
         {
             _mapper = mapper;
             _repository = repository;
@@ -31,7 +33,8 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositorypermitsAndPlate = repositorypermitsAndPlate;
             _repositoryAttachment = repositoryAttachment;
             _repositoryAccommodation = repositoryAccomadation;
-
+            _repositoryPublicTransport = repositoryPublicTransport;
+     
 
         }
         #region permits and plate
@@ -249,8 +252,89 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
+        public async Task<Response<PublicTransportDto>> PublicTransportPostPut(PublicTransportDto transport, int userId)
+        {
+            Response<PublicTransportDto> response = new Response<PublicTransportDto>();
+            try
+            {
+                if (transport.Id == 0)
+                {
+                    PublicTransport newTransport = _mapper.Map<PublicTransport>(transport);
 
+                    newTransport.CreatedDate = DateTime.Now;
+                    newTransport.CreatedById = userId;
+                    var res = await _repositoryPublicTransport.AddAsync(newTransport);
+                    response.Object = _mapper.Map<PublicTransportDto>(res);
+                    response.Success = true;
+                }
+                else
+                {
+                    var existingTransport = await _repositoryPublicTransport.GetAsync(transport.Id);
+                    if (existingTransport == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        ObjectUpdater<PublicTransportDto, PublicTransport> updater = new ObjectUpdater<PublicTransportDto, PublicTransport>();
+                        var res = updater.Map(transport, existingTransport);
+                        res.CreatedDate = existingTransport.CreatedDate;
+                        res.CreatedById = existingTransport.CreatedById;
+                        res.LastModifiedDate = DateTime.Now;
+                        res.UpdatedById = userId;
+                        var updatedAccommodation = await _repositoryAccommodation.UpdateAsync(res);
+                        response.Success = true;
+                        response.Object = _mapper.Map<AccommodationDto>(updatedAccommodation);
+                    }
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
         #endregion
+        #region PublicTransport
+
+        public async Task<Response> PublicTransportDeleteAsync(int id)
+        {
+            Response response = new Response();
+            try
+            {
+                var transport = await _repositoryPublicTransport.GetAsync(id);
+
+                if (transport == null)
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.NotFound;
+                    response.ErrorType = ErrorCode.NotFound;
+                }
+                else
+                {
+
+                    await _repositoryPublicTransport.DeleteAsync(id);
+                    response.Success = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+
+            }
+            return response;
+        }
+        #endregion
+
     }
 
 }

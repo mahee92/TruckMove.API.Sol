@@ -6,6 +6,11 @@ namespace TruckMove.API.DAL.Models
 {
     public partial class Checklist : AuditableEntity, IActiveEntity
     {
+        public Checklist()
+        {
+            Notes = new HashSet<Note>();
+        }
+
         public int Id { get; set; }
         public int JobId { get; set; }
         public string? Water { get; set; }
@@ -34,5 +39,7 @@ namespace TruckMove.API.DAL.Models
         public bool IsActive { get; set; }
 
         public virtual Job Job { get; set; } = null!;
+
+        public virtual ICollection<Note> Notes { get; set; }
     }
 }

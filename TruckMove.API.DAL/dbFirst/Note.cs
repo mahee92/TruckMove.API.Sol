@@ -9,7 +9,7 @@ namespace TruckMove.API.DAL.dbFirst
         public int JobId { get; set; }
         public int? VehicleId { get; set; }
         public int? TrailerId { get; set; }
-        public int? PreDeparturechecklistId { get; set; }
+        public int? ChecklistId { get; set; }
         public bool? VisibletoDriver { get; set; }
         public string? Note1 { get; set; }
         public int? PermitAndPlatesId { get; set; }
@@ -17,6 +17,7 @@ namespace TruckMove.API.DAL.dbFirst
         public int? PublicTransportId { get; set; }
 
         public virtual Accommodation? Accommodation { get; set; }
+        public virtual Checklist? Checklist { get; set; }
         public virtual Job Job { get; set; } = null!;
         public virtual PermitsAndPlate? PermitAndPlates { get; set; }
         public virtual PublicTransport? PublicTransport { get; set; }

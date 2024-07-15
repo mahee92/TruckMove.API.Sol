@@ -5,6 +5,11 @@ namespace TruckMove.API.DAL.dbFirst
 {
     public partial class Checklist
     {
+        public Checklist()
+        {
+            Notes = new HashSet<Note>();
+        }
+
         public int Id { get; set; }
         public int JobId { get; set; }
         public string? Water { get; set; }
@@ -31,5 +36,6 @@ namespace TruckMove.API.DAL.dbFirst
         public bool? IsPre { get; set; }
 
         public virtual Job Job { get; set; } = null!;
+        public virtual ICollection<Note> Notes { get; set; }
     }
 }

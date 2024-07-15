@@ -50,7 +50,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpGet("/DepartureCheck/PreDepartureChecklistFields")]
         public ActionResult<IEnumerable<FieldInfomation>> GetPreDepartureChecklistFields()
         {
-            var fieldInfos = typeof(PreDepartureChecklistDto).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            var fieldInfos = typeof(ChecklistDto).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Select(prop => new FieldInfomation
                 {
                     DisplayName = GetDisplayName(prop),
@@ -69,10 +69,10 @@ namespace TruckMove.API.Controllers.JobControllers
             return displayNameAttr != null ? displayNameAttr.DisplayName : prop.Name;
         }
 
-        [HttpPost("DepartureCheck/PostPut")]
-        public async Task<IActionResult> PostPutAsync([FromBody] PreDepartureChecklistDto checkList)
+        [HttpPost("CheckList/PostPut")]
+        public async Task<IActionResult> PostPutAsync([FromBody] ChecklistDto checkList)
         {
-            Response<PreDepartureChecklistDto> response = await _jobService.PreDepartureChecklistPutAsync(checkList, Convert.ToInt32(_authUserService.GetUserId()));
+            Response<ChecklistDto> response = await _jobService.ChecklistPutAsync(checkList, Convert.ToInt32(_authUserService.GetUserId()));
            
             
             if (response.Success)

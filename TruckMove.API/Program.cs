@@ -283,7 +283,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
         builder.Services.AddScoped<IRepository<Vehicle>, Repository<Vehicle>>();        
         builder.Services.AddScoped<IRepository<JobContact>, Repository<JobContact>>();
-        builder.Services.AddScoped<IRepository<PreDepartureChecklist>, Repository<PreDepartureChecklist>>();
+        builder.Services.AddScoped<IRepository<Checklist>, Repository<Checklist>>();
         builder.Services.AddScoped<IRepository<Note>, Repository<Note>>();
         builder.Services.AddScoped<IRepository<Image>, Repository<Image>>();
         builder.Services.AddScoped<IRepository<Trailer>, Repository<Trailer>>();
