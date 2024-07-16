@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Reflection;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.JobDTOs;
+using TruckMove.API.BLL.Models.TaskDTOs;
 using TruckMove.API.BLL.Services.JobServices;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
@@ -20,16 +21,18 @@ namespace TruckMove.API.Controllers.JobControllers
         private readonly IAuthUserService _authUserService;
         private readonly IJobService _jobService;
         private readonly MySettings _mySettings;
+        private readonly IJobTaskService _jobTaskService;
 
         private readonly GoogleMapSettings _googleMapSettings;
 
-        public MobileController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings,IOptions<GoogleMapSettings> googleMapSettings)
+        public MobileController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings,IOptions<GoogleMapSettings> googleMapSettings, IJobTaskService jobtaskService)
         {
 
             _authUserService = authUserService;
             _jobService = jobService;
             _mySettings = mySettings.Value;
             _googleMapSettings = googleMapSettings.Value;
+            _jobTaskService = jobtaskService;
 
         }
         [HttpGet("/Odata/Job/Get")]
@@ -106,5 +109,21 @@ namespace TruckMove.API.Controllers.JobControllers
         }
 
         #endregion
+
+        [HttpPost("Purchase/PostPut")]
+        public async Task<IActionResult> PurchasePostPutAsync([FromBody] PurchaseDto purchase)
+        {
+            Response<PurchaseDto> response = await _jobTaskService.PurchasePostPut(purchase, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
     }
 }
