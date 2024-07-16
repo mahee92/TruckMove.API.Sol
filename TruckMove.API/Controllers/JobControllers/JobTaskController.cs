@@ -160,5 +160,36 @@ namespace TruckMove.API.Controllers.JobControllers
 
         #endregion
 
+        #region Purchase
+        [HttpPost("Purchase/PostPut")]
+        public async Task<IActionResult> PurchasePostPutAsync([FromBody] PurchaseDto purchase)
+        {
+            Response<PurchaseDto> response = await _jobTaskService.PurchasePostPut(purchase, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpDelete("Purchase/Delete")]
+        public async Task<IActionResult> PurchaseDeleteAsync(int id)
+        {
+            Response response = await _jobTaskService.PurchaseDeleteAsync(id);
+            if (response.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
+
     }
 }

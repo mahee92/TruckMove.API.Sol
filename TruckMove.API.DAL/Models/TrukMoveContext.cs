@@ -842,6 +842,10 @@ namespace TruckMove.API.DAL.Models
                    .IsRequired()
                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
+                entity.Property(e => e.FromMobile)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.OrganiseNow)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");

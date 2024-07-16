@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace TruckMove.API.DAL.dbFirst
+namespace TruckMove.API.BLL.Models.TaskDTOs
 {
-    public partial class Purchase
+    public class PurchaseDto
     {
         public int Id { get; set; }
         public int JobId { get; set; }
         public int Status { get; set; }
         public int? Driver { get; set; }
+        public bool FromMobile { get; set; }
         public bool? OrganiseNow { get; set; }
         public int? Assignee { get; set; }
         public string? ReciptUrl { get; set; }
@@ -17,11 +21,5 @@ namespace TruckMove.API.DAL.dbFirst
         public double? Liters { get; set; }
         public double? Cost { get; set; }
         public string? ItemDescription { get; set; }
-        public bool? FromMobile { get; set; }
-
-        public virtual User? AssigneeNavigation { get; set; }
-        public virtual User? DriverNavigation { get; set; }
-        public virtual Job Job { get; set; } = null!;
-        public virtual TaskStatus StatusNavigation { get; set; } = null!;
     }
 }
