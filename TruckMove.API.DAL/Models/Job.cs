@@ -43,7 +43,7 @@ namespace TruckMove.API.DAL.Models
 
         public DateTime? EstimatedDeliveryDate { get; set; }
 
-        public int? PreDepatureCheckListId { get; set; }
+      
 
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }
