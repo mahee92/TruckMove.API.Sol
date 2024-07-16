@@ -187,7 +187,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
             try
             {
-
+               
 
                 var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
                                                                             "Company",
@@ -199,7 +199,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                                                                             "PermitsAndPlates.Attachments",
                                                                             "PermitsAndPlates.Notes",
                                                                             "Accommodations.Attachments",
-                                                                            "Accommodations.Notes");
+                                                                            "Accommodations.Notes",
+                                                                            "Purchase");
 
                 if (job == null)
                 {
