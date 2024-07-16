@@ -10,8 +10,14 @@ namespace TruckMove.API.DAL.Migrations
         {
             //
 
+            //migrationBuilder.DropIndex(
+            //    name: "IX_Notes_ChecklistId",
+            //    table: "Notes");
+
+            //
+
             migrationBuilder.DropIndex(
-                name: "IX_Notes_ChecklistId",
+                name: "IX_Notes_PreDeparturechecklistId",
                 table: "Notes");
             migrationBuilder.DropForeignKey(
                 name: "FK_Notes_PreDepartureChecklist",

@@ -20,6 +20,7 @@ namespace TruckMove.API.DAL.Models
             Acknowledgements = new HashSet<Acknowledgement>();
             PublicTransports = new HashSet<PublicTransport>();
             Purchases = new HashSet<Purchase>();
+            Checklists = new HashSet<Checklist>();
 
 
         }
@@ -55,7 +56,7 @@ namespace TruckMove.API.DAL.Models
        
         public virtual JobStatus? StatusNavigation { get; set; }
 
-        public virtual Checklist? Checklist { get; set; }
+        public virtual ICollection<Checklist> Checklists { get; set; }
 
         public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<Image> Images { get; set; }
