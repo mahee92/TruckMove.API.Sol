@@ -200,7 +200,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                                                                             "PermitsAndPlates.Notes",
                                                                             "Accommodations.Attachments",
                                                                             "Accommodations.Notes",
-                                                                            "Purchase");
+                                                                            "Purchases");
 
                 if (job == null)
                 {
