@@ -16,6 +16,7 @@ namespace TruckMove.API.DAL.Repositories
         private readonly DbSet<User> _userModeldbSet;
         private readonly DbSet<HookupType> _hookuptype;
         private readonly DbSet<JobStatus> _jobStatus;
+        private readonly DbSet<PublicTransportType> _publicTransport;
         public MasterDataRepository(DbContextOptions<TrukMoveContext> options)
         {
             _context = new TrukMoveContext(options);
@@ -23,6 +24,7 @@ namespace TruckMove.API.DAL.Repositories
             _userModeldbSet = _context.Set<User>();
             _hookuptype = _context.Set<HookupType>();
             _jobStatus = _context.Set<JobStatus>();
+            _publicTransport = _context.Set<PublicTransportType>();
 
         }
         // create method to get all roles
@@ -50,6 +52,11 @@ namespace TruckMove.API.DAL.Repositories
         {
             return await _jobStatus.Where(x=>x.Id==id).FirstOrDefaultAsync();
            
+        }
+
+        public async Task<List<PublicTransportType>> GetPublicTransportTypes()
+        {
+            return await _publicTransport.ToListAsync();
         }
     }
 }

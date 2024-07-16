@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using TruckMove.API.DAL.Repositories;
 
-namespace TruckMove.API.DAL.Models
+namespace TruckMove.API.DAL.dbFirst
 {
-    public partial class PreDepartureChecklist : AuditableEntity, IActiveEntity
+    public partial class Checklist
     {
-        public PreDepartureChecklist()
+        public Checklist()
         {
             Notes = new HashSet<Note>();
         }
+
         public int Id { get; set; }
         public int JobId { get; set; }
         public string? Water { get; set; }
@@ -33,10 +33,9 @@ namespace TruckMove.API.DAL.Models
         public int? NotesId { get; set; }
         public int? PhotosId { get; set; }
         public decimal? FuelLevel { get; set; }
+        public bool? IsPre { get; set; }
 
         public virtual Job Job { get; set; } = null!;
-
-        public bool IsActive { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
     }
 }

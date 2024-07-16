@@ -73,5 +73,14 @@ namespace TruckMove.API.DAL.MasterData
             InProgress = 2,
             Completed = 3
         }
+
+        public enum PublicTransportTypeEnum
+        {
+            Train = 1,
+            Plane = 2,
+            Taxi = 3,
+            Uber=4,
+            Other=5
+        }
     }
 }

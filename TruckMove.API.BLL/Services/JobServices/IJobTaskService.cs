@@ -15,7 +15,12 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response> PermitsAndPlateDeleteAsync(int id);
         Task<Response<AttachmentDto>> AttachmentPostAsync(AttachmentDto attachment, int userId);
         Task<Response> ImageDeleteAsync(int id);
-        Task<Response<AccommodationDto>> AccommodationPostPut(AccommodationDto accommodation, int v);
+        Task<Response<AccommodationDto>> AccommodationPostPut(AccommodationDto accommodation, int userId);
         Task<Response> AccommodationDeleteAsync(int id);
+        Task<Response<PublicTransportDto>> PublicTransportPostPut(PublicTransportDto transport, int userId);
+
+        Task<Response> PublicTransportDeleteAsync(int id);
+        Task<Response<PurchaseDto>> PurchasePostPut(PurchaseDto purchase, int v);
+        Task<Response> PurchaseDeleteAsync(int id);
     }
 }

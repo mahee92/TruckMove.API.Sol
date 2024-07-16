@@ -21,7 +21,7 @@ namespace TruckMove.API.Controllers
         }
 
         [HttpPost("ImageAndAttachments/Upload")]
-        public async Task<IActionResult> Upload([FromForm] FileUpload fileUpload, bool? IsVehicle, bool? IsTrailer, bool IsCompany, bool IsContact,bool PermitAndPlateAttachment)
+        public async Task<IActionResult> Upload([FromForm] FileUpload fileUpload, bool? IsVehicle, bool? IsTrailer, bool IsCompany, bool IsContact,bool PermitAndPlateAttachment,bool Accomodation)
         {
             if (fileUpload == null || fileUpload.file == null || fileUpload.file.Length == 0)
             {
@@ -49,6 +49,10 @@ namespace TruckMove.API.Controllers
                 else if (PermitAndPlateAttachment == true)
                 {
                     filepath = Meta.TRAILER_ATTACHMENT_PATH;
+                }
+                else if (Accomodation == true)
+                {
+                    filepath = Meta.ACCOMODATION_ATTACHMENT_PATH;
                 }
 
                 var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, fileUpload, filepath, Request.Scheme, Request.Host);

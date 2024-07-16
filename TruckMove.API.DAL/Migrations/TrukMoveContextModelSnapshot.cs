@@ -123,10 +123,15 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<bool>("Acknowledge")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("JobId")
+                        .HasColumnType("int");
+
                     b.Property<int>("LegId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("JobId");
 
                     b.HasIndex(new[] { "LegId" }, "UQ_Acknowledge_LegId")
                         .IsUnique();
@@ -179,6 +184,132 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("Attachments");
+                });
+
+            modelBuilder.Entity("TruckMove.API.DAL.Models.Checklist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AirAndElectrics")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("AllLightsAndIndicators")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("CheckInsideTruckTrailer")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("CheckTruckHeight")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int?>("CreatedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FrontDamage")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<decimal?>("FuelLevel")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                    b.Property<bool?>("IsPre")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((1))");
+
+                    b.Property<string>("JackAndTools")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("KeysFobTotalKeys")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LeftHandDamage")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int?>("NotesId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Oil")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("OwnersManual")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int?>("PhotosId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RearDamage")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("RightHandDamage")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("SpareRim")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("TyresCondition")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VehicleCleanFreeOfRubbish")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("VisuallyDipAndCheckTaps")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Water")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("WindscreenDamageWipers")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("Checklist", (string)null);
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
@@ -447,9 +578,6 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.Property<string>("PickupLocation")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PreDepatureCheckListId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
@@ -764,6 +892,9 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int?>("AccommodationId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ChecklistId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("CreatedById")
                         .HasColumnType("int");
 
@@ -787,7 +918,7 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int?>("PermitAndPlatesId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PreDeparturechecklistId")
+                    b.Property<int?>("PublicTransportId")
                         .HasColumnType("int");
 
                     b.Property<int?>("TrailerId")
@@ -806,13 +937,15 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.HasIndex("AccommodationId");
 
+                    b.HasIndex("ChecklistId");
+
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("JobId");
 
                     b.HasIndex("PermitAndPlatesId");
 
-                    b.HasIndex("PreDeparturechecklistId");
+                    b.HasIndex("PublicTransportId");
 
                     b.HasIndex("TrailerId");
 
@@ -891,7 +1024,7 @@ namespace TruckMove.API.DAL.Migrations
                     b.ToTable("PermitsAndPlates");
                 });
 
-            modelBuilder.Entity("TruckMove.API.DAL.Models.PreDepartureChecklist", b =>
+            modelBuilder.Entity("TruckMove.API.DAL.Models.PublicTransport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -899,21 +1032,17 @@ namespace TruckMove.API.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("AirAndElectrics")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<string>("ArrivalAddress")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("AllLightsAndIndicators")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<DateTime?>("ArrivalDateTime")
+                        .HasColumnType("datetime");
 
-                    b.Property<string>("CheckInsideTruckTrailer")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<int?>("Assignee")
+                        .HasColumnType("int");
 
-                    b.Property<string>("CheckTruckHeight")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<string>("BookingInstructions")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CreatedById")
                         .HasColumnType("int");
@@ -921,95 +1050,198 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FrontDamage")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<DateTime?>("Daterequired")
+                        .HasColumnType("datetime");
 
-                    b.Property<decimal?>("FuelLevel")
-                        .HasColumnType("decimal(5,2)");
+                    b.Property<string>("DepartureAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DepartureDateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("Driver")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
-                    b.Property<string>("JackAndTools")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<int>("JobId")
                         .HasColumnType("int");
-
-                    b.Property<string>("KeysFobTotalKeys")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LeftHandDamage")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<bool>("OrganizeNow")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((1))");
 
-                    b.Property<int?>("NotesId")
+                    b.Property<string>("ReferenceNumber")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Requiredsuburb")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("requiredsuburb");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("Oil")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<double?>("TransportCost")
+                        .HasColumnType("float");
 
-                    b.Property<string>("OwnersManual")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<int?>("PhotosId")
+                    b.Property<int?>("TransportType")
                         .HasColumnType("int");
-
-                    b.Property<string>("RearDamage")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("RightHandDamage")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("SpareRim")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("TyresCondition")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("int");
 
-                    b.Property<string>("VehicleCleanFreeOfRubbish")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("VisuallyDipAndCheckTaps")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Water")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("WindscreenDamageWipers")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("Assignee");
 
                     b.HasIndex("CreatedById");
 
+                    b.HasIndex("Driver");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("TransportType");
+
                     b.HasIndex("UpdatedById");
 
-                    b.HasIndex(new[] { "JobId" }, "UQ_PreDepartureChecklist_JobId")
-                        .IsUnique();
+                    b.ToTable("PublicTransport", (string)null);
+                });
 
-                    b.ToTable("PreDepartureChecklist", (string)null);
+            modelBuilder.Entity("TruckMove.API.DAL.Models.PublicTransportType", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PublicTransportTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Type = "Train"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Type = "Plane"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Type = "Uber"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Type = "Taxi"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Type = "Other"
+                        });
+                });
+
+            modelBuilder.Entity("TruckMove.API.DAL.Models.Purchase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("Assignee")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Cost")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("CreatedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Driver")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("FromMobile")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((1))");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                    b.Property<bool?>("IsFuel")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ItemDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double?>("Liters")
+                        .HasColumnType("float");
+
+                    b.Property<bool?>("OrganiseNow")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValueSql("((1))");
+
+                    b.Property<string>("ReciptUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Vendor")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Assignee");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("Driver");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("Purchase", (string)null);
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Role", b =>
@@ -1464,11 +1696,18 @@ namespace TruckMove.API.DAL.Migrations
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Acknowledgement", b =>
                 {
+                    b.HasOne("TruckMove.API.DAL.Models.Job", "Job")
+                        .WithMany("Acknowledgements")
+                        .HasForeignKey("JobId")
+                        .HasConstraintName("FK_Acknowledgement_Jobs");
+
                     b.HasOne("TruckMove.API.DAL.Models.Leg", "Leg")
                         .WithOne("Acknowledgement")
                         .HasForeignKey("TruckMove.API.DAL.Models.Acknowledgement", "LegId")
                         .IsRequired()
                         .HasConstraintName("FK_Acknowledgement_Legs");
+
+                    b.Navigation("Job");
 
                     b.Navigation("Leg");
                 });
@@ -1498,6 +1737,29 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("CreatedBy");
 
                     b.Navigation("PermitAndPlate");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("TruckMove.API.DAL.Models.Checklist", b =>
+                {
+                    b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TruckMove.API.DAL.Models.Job", "Job")
+                        .WithMany("Checklists")
+                        .HasForeignKey("JobId")
+                        .IsRequired()
+                        .HasConstraintName("FK_PreDepartureChecklist_Jobs");
+
+                    b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Job");
 
                     b.Navigation("UpdatedBy");
                 });
@@ -1704,6 +1966,11 @@ namespace TruckMove.API.DAL.Migrations
                         .HasForeignKey("AccommodationId")
                         .HasConstraintName("FK_Notes_Accommodation");
 
+                    b.HasOne("TruckMove.API.DAL.Models.Checklist", "Checklist")
+                        .WithMany("Notes")
+                        .HasForeignKey("ChecklistId")
+                        .HasConstraintName("FK_Notes_Checklist");
+
                     b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
@@ -1719,10 +1986,10 @@ namespace TruckMove.API.DAL.Migrations
                         .HasForeignKey("PermitAndPlatesId")
                         .HasConstraintName("FK_Notes_PermitsAndPlates");
 
-                    b.HasOne("TruckMove.API.DAL.Models.PreDepartureChecklist", "PreDeparturechecklist")
+                    b.HasOne("TruckMove.API.DAL.Models.PublicTransport", "PublicTransport")
                         .WithMany("Notes")
-                        .HasForeignKey("PreDeparturechecklistId")
-                        .HasConstraintName("FK_Notes_PreDepartureChecklist");
+                        .HasForeignKey("PublicTransportId")
+                        .HasConstraintName("FK_Notes_PublicTransport");
 
                     b.HasOne("TruckMove.API.DAL.Models.Trailer", "Trailer")
                         .WithMany("Notes")
@@ -1740,13 +2007,15 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.Navigation("Accommodation");
 
+                    b.Navigation("Checklist");
+
                     b.Navigation("CreatedBy");
 
                     b.Navigation("Job");
 
                     b.Navigation("PermitAndPlates");
 
-                    b.Navigation("PreDeparturechecklist");
+                    b.Navigation("PublicTransport");
 
                     b.Navigation("Trailer");
 
@@ -1793,25 +2062,99 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("TruckMove.API.DAL.Models.PreDepartureChecklist", b =>
+            modelBuilder.Entity("TruckMove.API.DAL.Models.PublicTransport", b =>
                 {
+                    b.HasOne("TruckMove.API.DAL.Models.User", "AssigneeNavigation")
+                        .WithMany("PublicTransportAssigneeNavigations")
+                        .HasForeignKey("Assignee")
+                        .HasConstraintName("FK_PublicTransport_Users1");
+
                     b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
-                        .WithMany()
+                        .WithMany("PublicTransportCreatedBies")
                         .HasForeignKey("CreatedById");
 
+                    b.HasOne("TruckMove.API.DAL.Models.User", "DriverNavigation")
+                        .WithMany("PublicTransportDriverNavigations")
+                        .HasForeignKey("Driver")
+                        .HasConstraintName("FK_PublicTransport_Users");
+
                     b.HasOne("TruckMove.API.DAL.Models.Job", "Job")
-                        .WithOne("PreDepartureChecklist")
-                        .HasForeignKey("TruckMove.API.DAL.Models.PreDepartureChecklist", "JobId")
+                        .WithMany("PublicTransports")
+                        .HasForeignKey("JobId")
                         .IsRequired()
-                        .HasConstraintName("FK_PreDepartureChecklist_Jobs");
+                        .HasConstraintName("FK_PublicTransport_Jobs");
+
+                    b.HasOne("TruckMove.API.DAL.Models.TaskStatus", "StatusNavigation")
+                        .WithMany("PublicTransports")
+                        .HasForeignKey("Status")
+                        .IsRequired()
+                        .HasConstraintName("FK_PublicTransport_TaskStatus");
+
+                    b.HasOne("TruckMove.API.DAL.Models.PublicTransportType", "TransportTypeNavigation")
+                        .WithMany("PublicTransports")
+                        .HasForeignKey("TransportType")
+                        .HasConstraintName("FK_PublicTransport_PublicTransportTypes");
 
                     b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
-                        .WithMany()
+                        .WithMany("PublicTransportUpdatedBies")
                         .HasForeignKey("UpdatedById");
+
+                    b.Navigation("AssigneeNavigation");
 
                     b.Navigation("CreatedBy");
 
+                    b.Navigation("DriverNavigation");
+
                     b.Navigation("Job");
+
+                    b.Navigation("StatusNavigation");
+
+                    b.Navigation("TransportTypeNavigation");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("TruckMove.API.DAL.Models.Purchase", b =>
+                {
+                    b.HasOne("TruckMove.API.DAL.Models.User", "AssigneeNavigation")
+                        .WithMany("PurchaseAssigneeNavigations")
+                        .HasForeignKey("Assignee")
+                        .HasConstraintName("FK_Purchase_Users1");
+
+                    b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
+                        .WithMany("PurchaseCreatedBies")
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("TruckMove.API.DAL.Models.User", "DriverNavigation")
+                        .WithMany("PurchaseDriverNavigations")
+                        .HasForeignKey("Driver")
+                        .HasConstraintName("FK_Purchase_Users");
+
+                    b.HasOne("TruckMove.API.DAL.Models.Job", "Job")
+                        .WithMany("Purchases")
+                        .HasForeignKey("JobId")
+                        .IsRequired()
+                        .HasConstraintName("FK_Purchase_Jobs");
+
+                    b.HasOne("TruckMove.API.DAL.Models.TaskStatus", "StatusNavigation")
+                        .WithMany("Purchases")
+                        .HasForeignKey("Status")
+                        .IsRequired()
+                        .HasConstraintName("FK_Purchase_TaskStatus");
+
+                    b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
+                        .WithMany("PurchaseUpdatedBies")
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("AssigneeNavigation");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("DriverNavigation");
+
+                    b.Navigation("Job");
+
+                    b.Navigation("StatusNavigation");
 
                     b.Navigation("UpdatedBy");
                 });
@@ -1932,6 +2275,11 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("Notes");
                 });
 
+            modelBuilder.Entity("TruckMove.API.DAL.Models.Checklist", b =>
+                {
+                    b.Navigation("Notes");
+                });
+
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
                 {
                     b.Navigation("Contacts");
@@ -1953,6 +2301,10 @@ namespace TruckMove.API.DAL.Migrations
                 {
                     b.Navigation("Accommodations");
 
+                    b.Navigation("Acknowledgements");
+
+                    b.Navigation("Checklists");
+
                     b.Navigation("Images");
 
                     b.Navigation("JobContacts");
@@ -1963,7 +2315,9 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.Navigation("PermitsAndPlates");
 
-                    b.Navigation("PreDepartureChecklist");
+                    b.Navigation("PublicTransports");
+
+                    b.Navigation("Purchases");
 
                     b.Navigation("Trailers");
 
@@ -1994,9 +2348,14 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("Notes");
                 });
 
-            modelBuilder.Entity("TruckMove.API.DAL.Models.PreDepartureChecklist", b =>
+            modelBuilder.Entity("TruckMove.API.DAL.Models.PublicTransport", b =>
                 {
                     b.Navigation("Notes");
+                });
+
+            modelBuilder.Entity("TruckMove.API.DAL.Models.PublicTransportType", b =>
+                {
+                    b.Navigation("PublicTransports");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Role", b =>
@@ -2009,6 +2368,10 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("Accommodations");
 
                     b.Navigation("PermitsAndPlates");
+
+                    b.Navigation("PublicTransports");
+
+                    b.Navigation("Purchases");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Trailer", b =>
@@ -2053,6 +2416,22 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("PermitsAndPlatesCreatedBies");
 
                     b.Navigation("PermitsAndPlatesUpdatedBies");
+
+                    b.Navigation("PublicTransportAssigneeNavigations");
+
+                    b.Navigation("PublicTransportCreatedBies");
+
+                    b.Navigation("PublicTransportDriverNavigations");
+
+                    b.Navigation("PublicTransportUpdatedBies");
+
+                    b.Navigation("PurchaseAssigneeNavigations");
+
+                    b.Navigation("PurchaseCreatedBies");
+
+                    b.Navigation("PurchaseDriverNavigations");
+
+                    b.Navigation("PurchaseUpdatedBies");
 
                     b.Navigation("UserRoleCreatedBies");
 

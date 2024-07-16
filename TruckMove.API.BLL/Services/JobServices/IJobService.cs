@@ -25,7 +25,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints);
        
         IQueryable<MobileJobDto> GetAllAsync(int driverId);
-        Task<Response<PreDepartureChecklistDto>> PreDepartureChecklistPutAsync(PreDepartureChecklistDto checkList, int v);
+        Task<Response<ChecklistDto>> ChecklistPutAsync(ChecklistDto checkList, int v);
 
         Task<Response<NoteDto>> NotePostPutAsync(NoteDto note, int userId);
         Task<Response> NoteDeleteAsync(int id);

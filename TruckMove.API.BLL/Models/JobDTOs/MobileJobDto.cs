@@ -36,7 +36,9 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
 
         public VehicleOutputDto? VehicleNavigation { get; set; }
-        public PreDepartureChecklistDto? PreDepartureChecklist { get; set; }
+      
+
+        public virtual ICollection<ChecklistDto> Checklists { get; set; }
 
         public virtual List<WayPointDto> WayPoints { get; set; }
 

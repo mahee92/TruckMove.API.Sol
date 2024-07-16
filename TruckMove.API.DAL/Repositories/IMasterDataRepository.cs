@@ -16,6 +16,7 @@ namespace TruckMove.API.DAL.Repositories
 
         Task<List<JobStatus>> GetAllJobStatus();
         Task<JobStatus> GetJobStatus(int id);
+        Task<List<PublicTransportType>> GetPublicTransportTypes();
 
     }
 }

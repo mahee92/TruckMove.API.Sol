@@ -19,6 +19,7 @@
 //        public virtual DbSet<Accommodation> Accommodations { get; set; } = null!;
 //        public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
 //        public virtual DbSet<Attachment> Attachments { get; set; } = null!;
+//        public virtual DbSet<Checklist> Checklists { get; set; } = null!;
 //        public virtual DbSet<Company> Companies { get; set; } = null!;
 //        public virtual DbSet<Contact> Contacts { get; set; } = null!;
 //        public virtual DbSet<HookupType> HookupTypes { get; set; } = null!;
@@ -31,7 +32,9 @@
 //        public virtual DbSet<LegStatus> LegStatuses { get; set; } = null!;
 //        public virtual DbSet<Note> Notes { get; set; } = null!;
 //        public virtual DbSet<PermitsAndPlate> PermitsAndPlates { get; set; } = null!;
-//        public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
+//        public virtual DbSet<PublicTransport> PublicTransports { get; set; } = null!;
+//        public virtual DbSet<PublicTransportType> PublicTransportTypes { get; set; } = null!;
+//        public virtual DbSet<Purchase> Purchases { get; set; } = null!;
 //        public virtual DbSet<Role> Roles { get; set; } = null!;
 //        public virtual DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
 //        public virtual DbSet<Trailer> Trailers { get; set; } = null!;
@@ -100,6 +103,11 @@
 //                entity.HasIndex(e => e.LegId, "UQ_Acknowledge_LegId")
 //                    .IsUnique();
 
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Acknowledgements)
+//                    .HasForeignKey(d => d.JobId)
+//                    .HasConstraintName("FK_Acknowledgement_Jobs");
+
 //                entity.HasOne(d => d.Leg)
 //                    .WithOne(p => p.Acknowledgement)
 //                    .HasForeignKey<Acknowledgement>(d => d.LegId)
@@ -118,6 +126,59 @@
 //                    .WithMany(p => p.Attachments)
 //                    .HasForeignKey(d => d.PermitAndPlateId)
 //                    .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
+//            });
+
+//            modelBuilder.Entity<Checklist>(entity =>
+//            {
+//                entity.ToTable("Checklist");
+
+//                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
+
+//                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
+
+//                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
+
+//                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
+
+//                entity.Property(e => e.FrontDamage).HasMaxLength(10);
+
+//                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
+
+//                entity.Property(e => e.IsPre)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("((1))");
+
+//                entity.Property(e => e.JackAndTools).HasMaxLength(10);
+
+//                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
+
+//                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
+
+//                entity.Property(e => e.Oil).HasMaxLength(10);
+
+//                entity.Property(e => e.OwnersManual).HasMaxLength(10);
+
+//                entity.Property(e => e.RearDamage).HasMaxLength(10);
+
+//                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
+
+//                entity.Property(e => e.SpareRim).HasMaxLength(10);
+
+//                entity.Property(e => e.TyresCondition).HasMaxLength(10);
+
+//                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
+
+//                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
+
+//                entity.Property(e => e.Water).HasMaxLength(10);
+
+//                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
+
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Checklists)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
 //            });
 
 //            modelBuilder.Entity<Company>(entity =>
@@ -345,6 +406,11 @@
 //                    .HasForeignKey(d => d.AccommodationId)
 //                    .HasConstraintName("FK_Notes_Accommodation");
 
+//                entity.HasOne(d => d.Checklist)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.ChecklistId)
+//                    .HasConstraintName("FK_Notes_Checklist");
+
 //                entity.HasOne(d => d.Job)
 //                    .WithMany(p => p.Notes)
 //                    .HasForeignKey(d => d.JobId)
@@ -356,10 +422,10 @@
 //                    .HasForeignKey(d => d.PermitAndPlatesId)
 //                    .HasConstraintName("FK_Notes_PermitsAndPlates");
 
-//                entity.HasOne(d => d.PreDeparturechecklist)
+//                entity.HasOne(d => d.PublicTransport)
 //                    .WithMany(p => p.Notes)
-//                    .HasForeignKey(d => d.PreDeparturechecklistId)
-//                    .HasConstraintName("FK_Notes_PreDepartureChecklist");
+//                    .HasForeignKey(d => d.PublicTransportId)
+//                    .HasConstraintName("FK_Notes_PublicTransport");
 
 //                entity.HasOne(d => d.Trailer)
 //                    .WithMany(p => p.Notes)
@@ -398,56 +464,90 @@
 //                    .HasConstraintName("FK_PermitsAndPlates_TaskStatus");
 //            });
 
-//            modelBuilder.Entity<PreDepartureChecklist>(entity =>
+//            modelBuilder.Entity<PublicTransport>(entity =>
 //            {
-//                entity.ToTable("PreDepartureChecklist");
+//                entity.ToTable("PublicTransport");
 
-//                entity.HasIndex(e => e.JobId, "UQ_PreDepartureChecklist_JobId")
-//                    .IsUnique();
+//                entity.Property(e => e.ArrivalDateTime).HasColumnType("datetime");
 
-//                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
+//                entity.Property(e => e.Daterequired).HasColumnType("datetime");
 
-//                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
+//                entity.Property(e => e.DepartureDateTime).HasColumnType("datetime");
 
-//                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
+//                entity.Property(e => e.ReferenceNumber).HasMaxLength(100);
 
-//                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
+//                entity.Property(e => e.Requiredsuburb).HasColumnName("requiredsuburb");
 
-//                entity.Property(e => e.FrontDamage).HasMaxLength(10);
+//                entity.HasOne(d => d.AssigneeNavigation)
+//                    .WithMany(p => p.PublicTransportAssigneeNavigations)
+//                    .HasForeignKey(d => d.Assignee)
+//                    .HasConstraintName("FK_PublicTransport_Users1");
 
-//                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
-
-//                entity.Property(e => e.JackAndTools).HasMaxLength(10);
-
-//                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
-
-//                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
-
-//                entity.Property(e => e.Oil).HasMaxLength(10);
-
-//                entity.Property(e => e.OwnersManual).HasMaxLength(10);
-
-//                entity.Property(e => e.RearDamage).HasMaxLength(10);
-
-//                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
-
-//                entity.Property(e => e.SpareRim).HasMaxLength(10);
-
-//                entity.Property(e => e.TyresCondition).HasMaxLength(10);
-
-//                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
-
-//                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
-
-//                entity.Property(e => e.Water).HasMaxLength(10);
-
-//                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
+//                entity.HasOne(d => d.DriverNavigation)
+//                    .WithMany(p => p.PublicTransportDriverNavigations)
+//                    .HasForeignKey(d => d.Driver)
+//                    .HasConstraintName("FK_PublicTransport_Users");
 
 //                entity.HasOne(d => d.Job)
-//                    .WithOne(p => p.PreDepartureChecklist)
-//                    .HasForeignKey<PreDepartureChecklist>(d => d.JobId)
+//                    .WithMany(p => p.PublicTransports)
+//                    .HasForeignKey(d => d.JobId)
 //                    .OnDelete(DeleteBehavior.ClientSetNull)
-//                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
+//                    .HasConstraintName("FK_PublicTransport_Jobs");
+
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.PublicTransports)
+//                    .HasForeignKey(d => d.Status)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_PublicTransport_TaskStatus");
+
+//                entity.HasOne(d => d.TransportTypeNavigation)
+//                    .WithMany(p => p.PublicTransports)
+//                    .HasForeignKey(d => d.TransportType)
+//                    .HasConstraintName("FK_PublicTransport_PublicTransportTypes");
+//            });
+
+//            modelBuilder.Entity<PublicTransportType>(entity =>
+//            {
+//                entity.Property(e => e.Id).ValueGeneratedNever();
+
+//                entity.Property(e => e.Type).HasMaxLength(20);
+//            });
+
+//            modelBuilder.Entity<Purchase>(entity =>
+//            {
+//                entity.ToTable("Purchase");
+
+//                entity.Property(e => e.FromMobile)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("((1))");
+
+//                entity.Property(e => e.OrganiseNow)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("((1))");
+
+//                entity.Property(e => e.Vendor).HasMaxLength(200);
+
+//                entity.HasOne(d => d.AssigneeNavigation)
+//                    .WithMany(p => p.PurchaseAssigneeNavigations)
+//                    .HasForeignKey(d => d.Assignee)
+//                    .HasConstraintName("FK_Purchase_Users1");
+
+//                entity.HasOne(d => d.DriverNavigation)
+//                    .WithMany(p => p.PurchaseDriverNavigations)
+//                    .HasForeignKey(d => d.Driver)
+//                    .HasConstraintName("FK_Purchase_Users");
+
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Purchases)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Purchase_Jobs");
+
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.Purchases)
+//                    .HasForeignKey(d => d.Status)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Purchase_TaskStatus");
 //            });
 
 //            modelBuilder.Entity<Role>(entity =>

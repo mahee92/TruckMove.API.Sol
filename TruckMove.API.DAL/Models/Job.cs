@@ -17,6 +17,10 @@ namespace TruckMove.API.DAL.Models
             Trailers = new HashSet<Trailer>();
             PermitsAndPlates = new HashSet<PermitsAndPlate>();
             Accommodations = new HashSet<Accommodation>();
+            Acknowledgements = new HashSet<Acknowledgement>();
+            PublicTransports = new HashSet<PublicTransport>();
+            Purchases = new HashSet<Purchase>();
+            Checklists = new HashSet<Checklist>();
 
 
         }
@@ -40,7 +44,7 @@ namespace TruckMove.API.DAL.Models
 
         public DateTime? EstimatedDeliveryDate { get; set; }
 
-        public int? PreDepatureCheckListId { get; set; }
+      
 
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }
@@ -52,7 +56,7 @@ namespace TruckMove.API.DAL.Models
        
         public virtual JobStatus? StatusNavigation { get; set; }
 
-        public virtual PreDepartureChecklist? PreDepartureChecklist { get; set; }
+        public virtual ICollection<Checklist> Checklists { get; set; }
 
         public virtual ICollection<Note> Notes { get; set; }
         public virtual ICollection<Image> Images { get; set; }
@@ -64,6 +68,12 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
 
         public virtual ICollection<Accommodation> Accommodations { get; set; }
+
+        public virtual ICollection<Acknowledgement> Acknowledgements { get; set; }
+
+        public virtual ICollection<PublicTransport> PublicTransports { get; set; }
+
+        public virtual ICollection<Purchase> Purchases { get; set; }
 
 
     }

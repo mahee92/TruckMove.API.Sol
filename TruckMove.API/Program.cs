@@ -141,8 +141,7 @@ internal class Program
             profile.CreateGenericMap<VehicleOutputDto, Vehicle>();
             profile.CreateGenericMap<Vehicle, VehicleOutputDto>();
             profile.CreateGenericMap<WayPoint, WayPointDto>();
-            profile.CreateGenericMap<PreDepartureChecklist, PreDepartureChecklistDto>();
-            profile.CreateGenericMap<PreDepartureChecklistDto, PreDepartureChecklist>();
+           
             profile.CreateGenericMap<Note, NoteDto>();
             profile.CreateGenericMap<NoteDto, Note>();
             profile.CreateGenericMap<ImageDto, Image>();
@@ -166,7 +165,15 @@ internal class Program
             profile.CreateGenericMap<AccommodationDto, Accommodation>();
             profile.CreateGenericMap<Accommodation, AccommodationOutputDto>();
             profile.CreateGenericMap<AccommodationOutputDto, Accommodation>();
-            
+
+            profile.CreateGenericMap<PublicTransport, PublicTransportDto>();
+            profile.CreateGenericMap<PublicTransportDto, PublicTransport>();
+            profile.CreateGenericMap<PublicTransport, PublicTransportOutputDto>();
+            profile.CreateGenericMap<PublicTransportOutputDto, PublicTransport>();
+
+            profile.CreateGenericMap<PurchaseDto, Purchase>();
+            profile.CreateGenericMap<Purchase, PurchaseDto>();
+
 
 
 
@@ -284,7 +291,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
         builder.Services.AddScoped<IRepository<Vehicle>, Repository<Vehicle>>();        
         builder.Services.AddScoped<IRepository<JobContact>, Repository<JobContact>>();
-        builder.Services.AddScoped<IRepository<PreDepartureChecklist>, Repository<PreDepartureChecklist>>();
+        builder.Services.AddScoped<IRepository<Checklist>, Repository<Checklist>>();
         builder.Services.AddScoped<IRepository<Note>, Repository<Note>>();
         builder.Services.AddScoped<IRepository<Image>, Repository<Image>>();
         builder.Services.AddScoped<IRepository<Trailer>, Repository<Trailer>>();
@@ -292,6 +299,8 @@ internal class Program
         builder.Services.AddScoped<IRepository<PermitsAndPlate>, Repository<PermitsAndPlate>>();
         builder.Services.AddScoped<IRepository<Attachment>, Repository<Attachment>>();
         builder.Services.AddScoped<IRepository<Accommodation>, Repository<Accommodation>>();
+        builder.Services.AddScoped<IRepository<PublicTransport>, Repository<PublicTransport>>();
+        builder.Services.AddScoped<IRepository<Purchase>, Repository<Purchase>>();
 
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();

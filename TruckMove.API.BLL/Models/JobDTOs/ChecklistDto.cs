@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TruckMove.API.BLL.Models.JobDTOs
 {
-    public class PreDepartureChecklistDto
+    public class ChecklistDto
     {
         public int Id { get; set; }
         public int JobId { get; set; }
@@ -70,6 +70,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         [DisplayName("Fuel Level")]
         public decimal? FuelLevel { get; set; }
+
+        public bool IsPre { get; set; }
 
         public virtual List<NoteDto> Notes { get; set; }
     }
