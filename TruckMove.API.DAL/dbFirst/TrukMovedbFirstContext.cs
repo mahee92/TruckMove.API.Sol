@@ -561,9 +561,7 @@ namespace TruckMove.API.DAL.dbFirst
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Status)
-                    .HasMaxLength(20)
-                    .IsFixedLength();
+                entity.Property(e => e.Status).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Trailer>(entity =>

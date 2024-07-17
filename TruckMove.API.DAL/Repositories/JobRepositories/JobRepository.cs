@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.DAL.Repositories.JobRepositories
 {
@@ -124,7 +126,10 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             return legCount + 1;
             
         }
-
+        public async Task<bool> CheckAnyOngoingLegs(int jobId)
+        {
+            return await _context.Set<Leg>().AnyAsync(x => x.JobId == jobId && x.Status != (int)TaskStatusEnum.Completed);
+        }
 
     }
 }

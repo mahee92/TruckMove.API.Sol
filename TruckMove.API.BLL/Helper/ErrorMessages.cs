@@ -16,5 +16,7 @@
         public static string? Invalidlogin => "Invalid login";
 
         public static string? AchknowledgeError => "Achknowledge Error";
+
+        public static string? OngoingLegError => "Ongoing Leg exists";
     }
 }

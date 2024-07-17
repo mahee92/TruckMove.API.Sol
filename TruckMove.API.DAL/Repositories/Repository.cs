@@ -123,8 +123,6 @@ namespace TruckMove.API.DAL.Repositories
             return entities.ToList();
         }
 
-
-
-
+        
     }
 }

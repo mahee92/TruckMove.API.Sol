@@ -22,8 +22,9 @@ namespace TruckMove.API.DAL.Repositories
         Task<List<TEntity>> GetAllAsync();
         Task<TEntity> GetAsync(int id);
         Task<TEntity> GetWithNestedIncludesAsync(int id, params string[] includeProperties);
-        
        
+
+
 
 
 

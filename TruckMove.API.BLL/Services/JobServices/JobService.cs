@@ -28,11 +28,11 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IMapper _mapper;
         private readonly IRepository<Job> _repository;
         private readonly IRepository<JobContact> _repositoryJobContact;
-    
+
         private readonly IJobRepository _jobRepository;
         private readonly IRepository<Vehicle> _repositoryVehicle;
         private readonly IRepository<Note> _repositoryNote;
-       
+
         private readonly IRepository<Checklist> _repositorypreChecklist;
         private readonly IRepository<Image> _repositoryImage;
 
@@ -56,9 +56,9 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryLeg = repositoryLeg;
         }
         #region Job
-        public JobStatusEnum DetermineJobStatus(JobDto job,Job? existingJob=null)
+        public JobStatusEnum DetermineJobStatus(JobDto job, Job? existingJob = null)
         {
-            if(existingJob!=null && existingJob.Status > (int)JobStatusEnum.ReadyForPickup)
+            if (existingJob != null && existingJob.Status > (int)JobStatusEnum.ReadyForPickup)
             {
                 return (JobStatusEnum)Enum.Parse(typeof(JobStatusEnum), existingJob.Id.ToString());
             }
@@ -83,16 +83,16 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobDto> response = new Response<JobDto>();
             try
             {
-            //    if(job.PickupDate!=null)
-            //    {
+                //    if(job.PickupDate!=null)
+                //    {
 
-            //        job.PickupDate= job.PickupDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
-            //    }
-            //    if (job.EstimatedDeliveryDate != null)
-            //    {
+                //        job.PickupDate= job.PickupDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
+                //    }
+                //    if (job.EstimatedDeliveryDate != null)
+                //    {
 
-            //        job.EstimatedDeliveryDate = job.EstimatedDeliveryDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
-            //    }
+                //        job.EstimatedDeliveryDate = job.EstimatedDeliveryDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
+                //    }
                 if (!IsPossibleToAdd(job))
                 {
                     response.Success = false;
@@ -114,7 +114,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     JobStatusEnum status = DetermineJobStatus(job);
                     Job.Status = (int)status;
-                   
+
                     var res = await _repository.AddAsync(Job);
                     response.Success = true;
                     response.Object = _mapper.Map<JobDto>(res);
@@ -131,7 +131,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     res.CreatedById = existingJob.CreatedById;
                     res.LastModifiedDate = DateTime.Now;
                     res.UpdatedById = userId;
-                   
+
                     JobStatusEnum status = DetermineJobStatus(job, existingJob);
                     res.Status = (int)status;
 
@@ -187,7 +187,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
             try
             {
-               
+
 
                 var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
                                                                             "Company",
@@ -245,7 +245,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 {
                     await _repositoryJobContact.DeleteByIdsAsync(jobs.Select(x => x.Id).ToList());
                 }
-                List<JobContact> newcontacts = CreateContactList(id, contacts);                
+                List<JobContact> newcontacts = CreateContactList(id, contacts);
                 await _repositoryJobContact.AddRangeAsync(newcontacts);
                 response.Success = true;
             }
@@ -262,7 +262,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         public List<JobContact> CreateContactList(int jobId, List<int> contacts)
         {
             List<JobContact> jobContacts = new List<JobContact>();
-            foreach (var contact in contacts.Where(x=>x>0))
+            foreach (var contact in contacts.Where(x => x > 0))
             {
                 jobContacts.Add(new JobContact { JobId = jobId, ContactId = contact });
             }
@@ -277,7 +277,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             Vehicle resvVehicle = new Vehicle();
             try
             {
-               
+
                 if (vehicle.Id == 0)
                 {
                     Vehicle newvehicle = _mapper.Map<Vehicle>(vehicle);
@@ -286,11 +286,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newvehicle.CreatedById = userId;
 
                     resvVehicle = await _repositoryVehicle.AddAsync(newvehicle);
-                    
+
                     response.Object = _mapper.Map<VehicleDto>(resvVehicle);
 
-                
-                    
+
+
                     response.Success = true;
 
                 }
@@ -298,7 +298,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 {
                     resvVehicle = await _repositoryVehicle.GetAsync(vehicle.Id);
 
-                    if(resvVehicle == null)
+                    if (resvVehicle == null)
                     {
                         response.Success = false;
                         response.ErrorType = ErrorCode.NotFound;
@@ -315,13 +315,13 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.UpdatedById = userId;
                         var updatedVehicle = await _repositoryVehicle.UpdateAsync(res);
 
-                        
+
                         response.Success = true;
                         response.Object = _mapper.Map<VehicleDto>(updatedVehicle);
 
-                       
+
                     }
-                   
+
 
                 }
                 // Update job 
@@ -342,7 +342,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 return response;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 response.Success = false;
                 response.ErrorType = ErrorCode.dbError;
@@ -351,9 +351,9 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
         }
 
-        
+
         #endregion
-       
+
         #region WayPoint
 
         public async Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints)
@@ -361,7 +361,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<WayPointDto> response = new Response<WayPointDto>();
             try
             {
-                  
+
                 List<WayPoint> existingWayPoints = await _jobRepository.GetWayPointsByJobId(wayPoints[0].JobId);
                 if (existingWayPoints.Count > 0)
                 {
@@ -381,18 +381,18 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-       
+
         public List<WayPoint> CreateWayPointList(List<WayPointDto> wayPoints)
         {
             List<WayPoint> wayPointList = new List<WayPoint>();
             foreach (var wayPoint in wayPoints)
             {
-                wayPointList.Add(new WayPoint { JobId = wayPoint.JobId, Location = wayPoint.Location, Coordinates = wayPoint.Coordinates});
+                wayPointList.Add(new WayPoint { JobId = wayPoint.JobId, Location = wayPoint.Location, Coordinates = wayPoint.Coordinates });
             }
             return wayPointList;
         }
         #endregion
-        
+
         #region Shared
         public async Task<Response<NoteDto>> NotePostPutAsync(NoteDto note, int userId)
         {
@@ -529,7 +529,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     newChecklist.CreatedDate = DateTime.Now;
                     newChecklist.CreatedById = userId;
-                    
+
                     newChecklist.Notes = new List<Note>();
                     HandleNotes(checkList, newChecklist);
                     var res = await _repositorypreChecklist.AddAsync(newChecklist);
@@ -542,7 +542,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 }
                 else
                 {
-                   // var existingCheckList = await _repositorypreDepartureChecklist.GetAsync(checkList.Id);
+                    // var existingCheckList = await _repositorypreDepartureChecklist.GetAsync(checkList.Id);
                     var existingCheckList = await _repositorypreChecklist.GetWithNestedIncludesAsync(checkList.Id, "Notes");
 
                     if (existingCheckList == null)
@@ -556,7 +556,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                         ObjectUpdater<ChecklistDto, Checklist> updater = new ObjectUpdater<ChecklistDto, Checklist>();
                         var res = updater.Map(checkList, existingCheckList);
 
-                      //  ObjectUpdater<NoteDto, Note> noteUpdater = new ObjectUpdater<NoteDto, Note>();
+                        //  ObjectUpdater<NoteDto, Note> noteUpdater = new ObjectUpdater<NoteDto, Note>();
                         //var noteRes = updater.Map(checkList, existingCheckList);
 
                         res.CreatedDate = existingCheckList.CreatedDate;
@@ -568,12 +568,12 @@ namespace TruckMove.API.BLL.Services.JobServices
                         response.Success = true;
                         response.Object = _mapper.Map<ChecklistDto>(updatedVehicle);
 
-                        
+
                     }
 
 
                 }
-                if(checkList.IsPre)
+                if (checkList.IsPre)
                 {
                     ChangeJobStatus(checkList.JobId, (int)JobStatusEnum.PreDepartureChecked);
                 }
@@ -581,7 +581,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 {
                     ChangeJobStatus(checkList.JobId, (int)JobStatusEnum.ArrivalChecked);
                 }
-               
+
                 return response;
 
             }
@@ -638,108 +638,118 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<LegDto> response = new Response<LegDto>();
             try
             {
-                if (leg.Acknowledged)
+
+
+                if (leg.Id == 0)
                 {
-
-
-                    if (leg.Id == 0)
+                    if (!await _jobRepository.CheckAnyOngoingLegs(leg.JobId))
                     {
-                        // validate for any ongoing leg
-
-                        Leg newLeg = _mapper.Map<Leg>(leg);
-
-                        newLeg.DriverId = userId;
-                        newLeg.LegNumber = await GetNextLegNumber(leg.JobId);
-                        newLeg.Status = (int)LegStatusEnum.InProgress;
-                        newLeg.Variance = (int)VariancesEnum._default;
-                        newLeg.StartTime = DateTime.Now;
-
-                        //  
-
-                        newLeg.CreatedDate = DateTime.Now;
-                        newLeg.CreatedById = userId;
-
-                        //  newLeg.Job.Status = (int)JobStatusEnum.InProgress;
-
-                        var res = await _repositoryLeg.AddAsync(newLeg);
-                        response.Object = _mapper.Map<LegDto>(res);
-                        response.Success = true;
-
-                        if (response.Success)
+                        if (leg.Acknowledged)
                         {
-                            await _jobRepository.Acknowledge(response.Object.Id, response.Object.JobId);
-                        }
+                            Leg newLeg = _mapper.Map<Leg>(leg);
 
-                        ChangeJobStatus(leg.JobId, (int)JobStatusEnum.InProgress);
+                            newLeg.DriverId = userId;
+                            newLeg.LegNumber = await GetNextLegNumber(leg.JobId);
+                            newLeg.Status = (int)LegStatusEnum.InProgress;
+                            newLeg.Variance = (int)VariancesEnum._default;
+                            newLeg.StartTime = DateTime.Now;
 
+                            //  
 
+                            newLeg.CreatedDate = DateTime.Now;
+                            newLeg.CreatedById = userId;
 
-                    }
-                    else
-                    {
-                        var existingLeg = await _repositoryLeg.GetAsync(leg.Id);
+                            //  newLeg.Job.Status = (int)JobStatusEnum.InProgress;
 
-                        if (existingLeg == null)
-                        {
-                            response.Success = false;
-                            response.ErrorType = ErrorCode.NotFound;
-                            response.ErrorMessage = ErrorMessages.NotFound;
-                        }
-                        else if (existingLeg.Status != (int)LegStatusEnum.InProgress)
-                        {
-                            response.Success = false;
-                            response.ErrorType = ErrorCode.NotFound;
-                            response.ErrorMessage = ErrorMessages.NotFound;
+                            var res = await _repositoryLeg.AddAsync(newLeg);
+                            response.Object = _mapper.Map<LegDto>(res);
+
+                            response.Success = true;
+
+                            if (response.Success)
+                            {
+                                await _jobRepository.Acknowledge(response.Object.Id, response.Object.JobId);
+                            }
+
+                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.InProgress);
+                            response.Object.JobStatus = (int)JobStatusEnum.InProgress;
                         }
                         else
                         {
-                            existingLeg.EndLocation = leg.EndLocation;
-                            existingLeg.EndTime = DateTime.Now;
-                            try
-                            {
-                                decimal distance = await GoogleMapsHelper.GetDistanceAsync(existingLeg.StartLocation, leg.EndLocation, apiKey);
-                                existingLeg.TotalDistance = Convert.ToDouble(distance);
-                            }
-                            catch (Exception ex)
-                            {
-                                existingLeg.TotalDistance = -1;
-                            }
-
-                            existingLeg.Status = (int)LegStatusEnum.Completed;
-                            existingLeg.LastModifiedDate = DateTime.Now;
-                            existingLeg.UpdatedById = userId;
-
-
-                            var updatedLeg = await _repositoryLeg.UpdateAsync(existingLeg);
-                            response.Success = true;
-                            // updatedLeg.Acknowledgement = true;
-                            response.Object = _mapper.Map<LegDto>(updatedLeg);
-
-                            if (leg.IsCompleted)
-                            {
-                                ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Arrived);
-                            }
-                            else
-                            {
-                                ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Stopped);
-                            }
-
-
+                            response.Success = false;
+                            response.ErrorType = ErrorCode.AchknowledgeError;
+                            response.ErrorMessage = ErrorMessages.AchknowledgeError;
 
                         }
-
-
+                    }
+                    else
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.validationError;
+                        response.ErrorMessage = ErrorMessages.OngoingLegError;
                     }
 
-                    
+
                 }
                 else
                 {
-                    response.Success = false;
-                    response.ErrorType = ErrorCode.AchknowledgeError;
-                    response.ErrorMessage = ErrorMessages.AchknowledgeError;
+                    var existingLeg = await _repositoryLeg.GetAsync(leg.Id);
+
+                    if (existingLeg == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else if (existingLeg.Status != (int)LegStatusEnum.InProgress)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        existingLeg.EndLocation = leg.EndLocation;
+                        existingLeg.EndTime = DateTime.Now;
+                        try
+                        {
+                            decimal distance = await GoogleMapsHelper.GetDistanceAsync(existingLeg.StartLocation, leg.EndLocation, apiKey);
+                            existingLeg.TotalDistance = Convert.ToDouble(distance);
+                        }
+                        catch (Exception ex)
+                        {
+                            existingLeg.TotalDistance = -1;
+                        }
+
+                        existingLeg.Status = (int)LegStatusEnum.Completed;
+                        existingLeg.LastModifiedDate = DateTime.Now;
+                        existingLeg.UpdatedById = userId;
+
+
+                        var updatedLeg = await _repositoryLeg.UpdateAsync(existingLeg);
+                        response.Success = true;
+                        // updatedLeg.Acknowledgement = true;
+                        response.Object = _mapper.Map<LegDto>(updatedLeg);
+
+                        response.Object.Acknowledged = true;
+                        if (leg.IsCompleted)
+                        {
+                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Arrived);
+                            response.Object.JobStatus = (int)JobStatusEnum.Arrived;
+                            response.Object.IsCompleted= true;
+                        }
+                        else
+                        {
+                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Stopped);
+                            response.Object.JobStatus = (int)JobStatusEnum.Stopped;
+                            response.Object.IsCompleted = false;
+                        }
+
+                    }
+
+
                 }
-               
+
                 return response;
 
             }
@@ -776,7 +786,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     response.Object = _mapper.Map<TrailerDto>(res);
 
-                   
+
                     response.Success = true;
 
                 }
@@ -834,7 +844,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 }
                 else
                 {
-                  
+
                     await _repositoryTrailer.DeleteAsync(id);
                     response.Success = true;
                 }

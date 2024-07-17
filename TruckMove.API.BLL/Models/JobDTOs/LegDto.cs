@@ -20,6 +20,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public bool IsCompleted { get; set; }
 
+        public int? JobStatus { get; set; }
+
 
     }
 }
