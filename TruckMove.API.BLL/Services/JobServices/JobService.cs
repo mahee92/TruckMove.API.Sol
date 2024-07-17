@@ -665,6 +665,10 @@ namespace TruckMove.API.BLL.Services.JobServices
                         response.Object = _mapper.Map<LegDto>(res);
                         response.Success = true;
 
+                        if (response.Success)
+                        {
+                            await _jobRepository.Acknowledge(response.Object.Id, response.Object.JobId);
+                        }
 
                         ChangeJobStatus(leg.JobId, (int)JobStatusEnum.InProgress);
 
@@ -727,10 +731,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     }
 
-                    if (response.Success)
-                    {
-                        await _jobRepository.Acknowledge(response.Object.Id, response.Object.JobId);
-                    }
+                    
                 }
                 else
                 {

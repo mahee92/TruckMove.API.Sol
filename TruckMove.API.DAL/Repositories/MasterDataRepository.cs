@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TruckMove.API.DAL.Models;
+using TaskStatus = TruckMove.API.DAL.Models.TaskStatus;
 
 namespace TruckMove.API.DAL.Repositories
 {
@@ -17,6 +18,7 @@ namespace TruckMove.API.DAL.Repositories
         private readonly DbSet<HookupType> _hookuptype;
         private readonly DbSet<JobStatus> _jobStatus;
         private readonly DbSet<PublicTransportType> _publicTransport;
+        private readonly DbSet<TaskStatus> _publicTaskStatus;
         public MasterDataRepository(DbContextOptions<TrukMoveContext> options)
         {
             _context = new TrukMoveContext(options);
@@ -25,6 +27,7 @@ namespace TruckMove.API.DAL.Repositories
             _hookuptype = _context.Set<HookupType>();
             _jobStatus = _context.Set<JobStatus>();
             _publicTransport = _context.Set<PublicTransportType>();
+            _publicTaskStatus = _context.Set<TaskStatus>();
 
         }
         // create method to get all roles
@@ -32,7 +35,7 @@ namespace TruckMove.API.DAL.Repositories
         {
             return await _roleModeldbSet.ToListAsync();
         }
-      
+
         public async Task<List<User>> GetUsersByRolesAsync(List<int> roleIds)
         {
             return await _userModeldbSet
@@ -50,13 +53,17 @@ namespace TruckMove.API.DAL.Repositories
         }
         public async Task<JobStatus> GetJobStatus(int id)
         {
-            return await _jobStatus.Where(x=>x.Id==id).FirstOrDefaultAsync();
-           
+            return await _jobStatus.Where(x => x.Id == id).FirstOrDefaultAsync();
+
         }
 
         public async Task<List<PublicTransportType>> GetPublicTransportTypes()
         {
             return await _publicTransport.ToListAsync();
+        }
+        public async Task<List<TaskStatus>> GetAllTasStatuses()
+        {
+            return await _publicTaskStatus.ToListAsync();
         }
     }
 }

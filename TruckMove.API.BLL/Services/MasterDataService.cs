@@ -9,6 +9,7 @@ using TruckMove.API.DAL.Repositories;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using static TruckMove.API.DAL.MasterData.MasterData;
+using TaskStatus = TruckMove.API.DAL.Models.TaskStatus;
 
 namespace TruckMove.API.BLL.Services
 {
@@ -121,32 +122,29 @@ namespace TruckMove.API.BLL.Services
             }
             return response;
         }
-
-        Task IMasterDataService.GetAllPublicTransportTypes()
+        public async Task<Response<TaskStatus>> GetAllTaskStatus()
         {
-            throw new NotImplementedException();
+            Response<TaskStatus> response = new Response<TaskStatus>();
+            try
+            {
+                var types = await _repository.GetAllTasStatuses(); 
+                response.Success = true;
+                if (types.Count > 0)
+                {
+                    response.Objects = new List<TaskStatus>();
+                    response.Objects = types;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
         }
-        //public async Task<Response<JobStatus>> GetAllHookupTypes()
-        //{
-        //    Response<JobStatus> response = new Response<JobStatus>();
-        //    try
-        //    {
-        //        var types = await _repository.GetAllRolesHookupTypes();
-        //        response.Success = true;
-        //        if (types.Count > 0)
-        //        {
-        //            response.Objects = new List<HookupType>();
-        //            response.Objects = types;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.Success = false;
-        //        response.ErrorType = ErrorCode.dbError;
-        //        response.ErrorMessage = ex.Message;
-        //    }
-        //    return response;
-        //}
+
+
 
 
     }

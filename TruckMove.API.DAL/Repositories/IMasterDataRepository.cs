@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
+using TaskStatus = TruckMove.API.DAL.Models.TaskStatus;
 
 namespace TruckMove.API.DAL.Repositories
 {
@@ -17,6 +18,8 @@ namespace TruckMove.API.DAL.Repositories
         Task<List<JobStatus>> GetAllJobStatus();
         Task<JobStatus> GetJobStatus(int id);
         Task<List<PublicTransportType>> GetPublicTransportTypes();
+
+        Task<List<TaskStatus>> GetAllTasStatuses();
 
     }
 }

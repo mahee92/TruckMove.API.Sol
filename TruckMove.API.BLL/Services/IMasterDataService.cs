@@ -7,6 +7,7 @@ using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.DAL.Models;
 using static TruckMove.API.DAL.MasterData.MasterData;
+using TaskStatus = TruckMove.API.DAL.Models.TaskStatus;
 
 namespace TruckMove.API.BLL.Services
 {
@@ -17,6 +18,8 @@ namespace TruckMove.API.BLL.Services
      
 
         Task<Response<HookupType>> GetAllHookupTypes();
-        Task GetAllPublicTransportTypes();
+        Task<Response<PublicTransportType>> GetAllPublicTransportTypes();
+
+        Task<Response<TaskStatus>> GetAllTaskStatus();
     }
 }
