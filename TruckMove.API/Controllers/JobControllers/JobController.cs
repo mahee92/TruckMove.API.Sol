@@ -30,13 +30,15 @@ namespace TruckMove.API.Controllers.JobControllers
         private readonly IAuthUserService _authUserService;
         private readonly IJobService _jobService;
         private readonly MySettings _mySettings;
+        private readonly GoogleMapSettings _googleMapSettings;
 
-        public JobController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings)
+        public JobController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings, IOptions<GoogleMapSettings> googleMapSettings)
         {
            
             _authUserService = authUserService;
             _jobService = jobService;
             _mySettings = mySettings.Value;
+            _googleMapSettings = googleMapSettings.Value;
 
         }
 
@@ -214,7 +216,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpPost("Trailer/PostPut")]
         public async Task<IActionResult> PostPutAsync([FromBody] TrailerDto trailer)
         {
-            Response<TrailerDto> response = await _jobService.TrailerPostPutAsync(trailer, Convert.ToInt32(_authUserService.GetUserId()));
+            Response<TrailerDto> response = await _jobService.TrailerPostPutAsync(trailer, _googleMapSettings.ApiKey, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 

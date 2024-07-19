@@ -769,7 +769,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         #endregion
 
         #region Trailer
-        public async Task<Response<TrailerDto>> TrailerPostPutAsync(TrailerDto trailer, int userId)
+        public async Task<Response<TrailerDto>> TrailerPostPutAsync(TrailerDto trailer,string apiKey, int userId)
         {
             Response<TrailerDto> response = new Response<TrailerDto>();
             try
@@ -781,7 +781,8 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     newtrailer.CreatedDate = DateTime.Now;
                     newtrailer.CreatedById = userId;
-
+                    newtrailer.HookupCoordinate = await GoogleMapsHelper.GetCoordinatesAsync(trailer.HookupLocation, apiKey);
+                    newtrailer.DropoffCoordinate = await GoogleMapsHelper.GetCoordinatesAsync(trailer.DropOffLocation, apiKey);
                     var res = await _repositoryTrailer.AddAsync(newtrailer);
 
                     response.Object = _mapper.Map<TrailerDto>(res);
@@ -808,6 +809,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.CreatedById = existingtrailer.CreatedById;
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
+                        res.HookupCoordinate = await GoogleMapsHelper.GetCoordinatesAsync(trailer.HookupLocation, apiKey);
+                        res.DropoffCoordinate = await GoogleMapsHelper.GetCoordinatesAsync(trailer.DropOffLocation, apiKey);
+
                         var updatedTrailer = await _repositoryTrailer.UpdateAsync(res);
                         response.Success = true;
                         response.Object = _mapper.Map<TrailerDto>(updatedTrailer);

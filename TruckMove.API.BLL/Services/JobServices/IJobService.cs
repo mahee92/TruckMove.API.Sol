@@ -32,7 +32,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response<ImageDto>> ImagePostAsync(ImageDto image, int userId);
 
         Task<Response> ImageDeleteAsync(int id);
-        Task<Response<TrailerDto>> TrailerPostPutAsync(TrailerDto trailer, int userId);
+        Task<Response<TrailerDto>> TrailerPostPutAsync(TrailerDto trailer,string apiKey, int userId);
         Task<Response> TrailerDeleteAsync(int id);
 
         Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId);

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +62,43 @@ namespace TruckMove.API.BLL.Helper
             }
         }
 
+        public static async Task<string> GetCoordinatesAsync(string address, string apiKey)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    var url = $"https://maps.googleapis.com/maps/api/geocode/json?address={Uri.EscapeDataString(address)}&key={apiKey}";
 
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    JObject json = JObject.Parse(responseBody);
+
+                    if (json["status"].ToString() == "OK")
+                    {
+                        var location = json["results"][0]["geometry"]["location"];
+                        double latitude = location["lat"].Value<double>();
+                        double longitude = location["lng"].Value<double>();
+
+                        return $"{latitude}, {longitude}";
+                    }
+                    else
+                    {
+                        return $"InvalidLocation";
+                    }
+                }
+                catch(Exception ex)
+                {
+                    
+                    return $"InvalidLocation";
+                }
+               
+            }
+        }
     }
+
+
 }
+
