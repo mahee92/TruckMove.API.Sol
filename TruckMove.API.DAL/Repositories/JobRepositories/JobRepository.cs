@@ -75,7 +75,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         public async Task<List<Job>> GetAllJobsByDriverAsync(int driverid, params string[] includeProperties)
         {
-            IQueryable<Job> query =  _dbSet;
+            IQueryable<Job> query = _dbSet;
 
             //foreach (var include in includeProperties)
             //{
@@ -113,7 +113,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             Acknowledgement acknowledge = new Acknowledgement
             {
                 LegId = legId,
-                JobId=JobId,
+                JobId = JobId,
                 Acknowledge = true
             };
             await _context.Set<Acknowledgement>().AddAsync(acknowledge);
