@@ -31,6 +31,7 @@ namespace TruckMove.API.BLL.Helper
         invalidLogin = 401,
         validationError = 422,
         AchknowledgeError = 700,
-        
+        statusError = 800,
+
     }
 }

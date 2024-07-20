@@ -73,7 +73,8 @@ namespace TruckMove.API.Controllers.JobControllers
         }
 
         [HttpPost("CheckList/PostPut")]
-        public async Task<IActionResult> PostPutAsync([FromBody] ChecklistDto checkList)
+        [ValidateDriverChange]
+        public async Task<IActionResult> PostPutAsync([FromHeader(Name = "JobId")] int JobId,[FromBody] ChecklistDto checkList)
         {
             Response<ChecklistDto> response = await _jobService.ChecklistPutAsync(checkList, Convert.ToInt32(_authUserService.GetUserId()));
            
@@ -93,7 +94,8 @@ namespace TruckMove.API.Controllers.JobControllers
 
         #region Leg
         [HttpPost("Leg/Post")]
-        public async Task<IActionResult> PostAsync([FromBody] LegDto leg)
+        [ValidateDriverChange]
+        public async Task<IActionResult> PostAsync([FromHeader(Name = "JobId")] int JobId, [FromBody] LegDto leg)
         {
             Response<LegDto> response = await _jobService.LegPostPutAsync(leg, _googleMapSettings.ApiKey, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
@@ -111,7 +113,8 @@ namespace TruckMove.API.Controllers.JobControllers
         #endregion
 
         [HttpPost("Purchase/PostPut")]
-        public async Task<IActionResult> PurchasePostPutAsync([FromBody] PurchaseDto purchase)
+        [ValidateDriverChange]
+        public async Task<IActionResult> PurchasePostPutAsync([FromHeader(Name = "JobId")] int JobId, [FromBody] PurchaseDto purchase)
         {
             Response<PurchaseDto> response = await _jobTaskService.PurchasePostPut(purchase, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
@@ -125,5 +128,6 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+
     }
 }

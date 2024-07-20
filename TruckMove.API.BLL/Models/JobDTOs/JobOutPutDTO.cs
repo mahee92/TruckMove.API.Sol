@@ -29,7 +29,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public virtual List<PurchaseDto> Purchases { get; set; }
 
-       
+
 
     }
 }

@@ -36,5 +36,8 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response> TrailerDeleteAsync(int id);
 
         Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId);
+        Task<Response> IsDriverChangeAllowed(int jobId);
+
+        Task<Response<LegHistoryDto>> GetLegHistory(int jobId);
     }
 }

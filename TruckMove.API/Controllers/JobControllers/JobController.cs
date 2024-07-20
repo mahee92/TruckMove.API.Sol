@@ -72,7 +72,7 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
-     
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
@@ -88,7 +88,42 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
-     
+
+        [HttpGet("IsDriverChangeAllowed")]
+        public async Task<IActionResult> IsDriverChangeAllowed(int jobId)
+        {
+            Response response = await _jobService.IsDriverChangeAllowed(jobId);
+            if (response.Success)
+            {
+
+                return Ok();
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+
+        [HttpGet("GetLegHistory")]
+        public async Task<IActionResult> GetLegHistory(int jobId)
+        {
+            Response<LegHistoryDto> response = await _jobService.GetLegHistory(jobId);
+            if (response.Success)
+            {
+
+                return Ok(response.Objects);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+
+       
         #endregion
 
         #region Contacts

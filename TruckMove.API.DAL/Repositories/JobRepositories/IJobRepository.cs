@@ -27,5 +27,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
        Task<int> GetNextLegNumber(int jobId);
 
        Task<bool> CheckAnyOngoingLegs(int jobId);
+
+        Task<bool> CheckDriverHasOngoingLegs(int jobId, int driverId);
+        Task<List<Leg>> GetLegsByJobId(int jobId);
     }
 }

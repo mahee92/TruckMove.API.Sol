@@ -18,5 +18,7 @@
         public static string? AchknowledgeError => "Achknowledge Error";
 
         public static string? OngoingLegError => "Ongoing Leg exists";
+
+        public static string? JobStatusError => "Sorry, we cannot make this change at the moment due to the current status of the job";
     }
 }

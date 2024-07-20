@@ -310,6 +310,8 @@ internal class Program
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IJobRepository, JobRepository>();
         builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();
+
+        builder.Services.AddScoped<ValidateDriverChangeAttributeFilter>();
     }
     private static void ConfigureMiddleware(WebApplication app, IConfiguration configuration)
     {
@@ -341,7 +343,7 @@ internal class Program
         app.UseAuthorization();
 
         // Custom middleware
-        app.UseMiddleware<RequestResponseLoggingMiddleware>();
+       // app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
         // Configure OData

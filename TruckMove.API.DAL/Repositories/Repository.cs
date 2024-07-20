@@ -123,6 +123,23 @@ namespace TruckMove.API.DAL.Repositories
             return entities.ToList();
         }
 
-        
+        public async Task<string> GetPropertyAsync(int id, string propertyName)
+        {
+
+            // Build a query to select only the specific property
+            var query = _dbSet
+                .Where(e => EF.Property<int>(e, "Id") == id && EF.Property<bool>(e, "IsActive"))
+                .Select(e => EF.Property<object>(e, propertyName))
+                .AsQueryable();
+
+            // Execute the query and get the property value
+            var value = await query.FirstOrDefaultAsync();
+            if(value == null)
+            {
+                return "-1";
+            }
+
+            return value?.ToString();
+        }
     }
 }

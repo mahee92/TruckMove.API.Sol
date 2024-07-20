@@ -236,6 +236,69 @@ namespace TruckMove.API.BLL.Services.JobServices
 
 
         }
+
+        public async Task<Response> IsDriverChangeAllowed(int jobId)
+        {
+            Response response = new Response();
+            try
+            {
+              var job = await _repository.GetAsync(jobId);
+              if(job.Status == (int)JobStatusEnum.Planned ||
+                 job.Status == (int)JobStatusEnum.Booked ||
+                 job.Status == (int)JobStatusEnum.ReadyForPickup ||
+                 job.Status == (int)JobStatusEnum.PreDepartureChecked ||
+                 job.Status == (int)JobStatusEnum.Acknowledged ||
+                 job.Status == (int)JobStatusEnum.Stopped)
+                {
+                    response.Success = true;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorType = ErrorCode.statusError;
+                    response.ErrorMessage = ErrorMessages.JobStatusError;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = ex.Message;
+                response.ErrorType = ErrorCode.dbError;
+
+            }
+            return response;
+
+        }
+
+        public async Task<Response<LegHistoryDto>> GetLegHistory(int jobId)
+        {
+            Response<LegHistoryDto> response = new Response<LegHistoryDto>();
+            try
+            {
+                var legs = await _jobRepository.GetLegsByJobId(jobId);
+                
+                if (legs.Count > 0)
+                {
+                    response.Success = true;
+                    response.Objects = legs.Select(l => _mapper.Map<LegHistoryDto>(l)).ToList();
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.NotFound;
+                    response.ErrorType = ErrorCode.NotFound;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = ex.Message;
+                response.ErrorType = ErrorCode.dbError;
+            }
+            return response;
+        }
+
         #endregion
 
 
@@ -869,6 +932,8 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
             return response;
         }
+
+        
 
 
         #endregion

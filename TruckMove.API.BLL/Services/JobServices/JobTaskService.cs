@@ -426,6 +426,20 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
             return response;
         }
+
+        public async Task<bool> IsDriverValidForJob(int jobId, int driverId)
+        {
+            string res = await _repository.GetPropertyAsync(jobId, "Driver");
+            if (res != null && res == driverId.ToString())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
         #endregion
 
     }

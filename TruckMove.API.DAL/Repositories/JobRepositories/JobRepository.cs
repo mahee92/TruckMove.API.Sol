@@ -20,14 +20,14 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         private readonly DbSet<JobSequence> _Sequence;
         public JobRepository(DbContextOptions<TrukMoveContext> options)
         {
-            
+
             _context = new TrukMoveContext(options);
             _dbSet = _context.Set<Job>();
             _Sequence = _context.Set<JobSequence>();
         }
         public async Task<int> GetNextJobId()
         {
-    
+
             var connection = _context.Database.GetDbConnection();
             await connection.OpenAsync();
 
@@ -67,7 +67,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             return false;
         }
 
-      
+
         public async Task<List<JobContact>> GetJobContactsByJobId(int jobId)
         {
             return await _context.Set<JobContact>().Where(x => x.JobId == jobId).ToListAsync();
@@ -88,7 +88,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         {
             var query = _dbSet.Where(e => e.IsActive && e.Driver == driverId).AsQueryable();
 
-           // string sqlQuery = query.ToQueryString();
+            // string sqlQuery = query.ToQueryString();
             return query;
         }
         public async Task<List<WayPoint>> GetWayPointsByJobId(int jobId)
@@ -122,14 +122,32 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         public async Task<int> GetNextLegNumber(int jobId)
         {
-           int legCount = await _context.Set<Leg>().Where(x=>x.JobId == jobId).CountAsync();
+            int legCount = await _context.Set<Leg>().Where(x=>x.JobId == jobId).CountAsync();
             return legCount + 1;
-            
+
         }
         public async Task<bool> CheckAnyOngoingLegs(int jobId)
         {
             return await _context.Set<Leg>().AnyAsync(x => x.JobId == jobId && x.Status != (int)TaskStatusEnum.Completed);
         }
 
+        public async Task<bool> CheckDriverHasOngoingLegs(int jobId, int driverId)
+        {
+            return await _context.Set<Leg>().AnyAsync(x => x.DriverId == driverId
+                                                        && x.JobId == jobId
+                                                        && x.Status != (int)LegStatusEnum.Completed
+                                                        );
+
+        }
+
+        public Task<List<Leg>> GetLegsByJobId(int jobId)
+        {
+            return _context.Set<Leg>()
+                          .Where(x => x.JobId == jobId)
+                          //.Include(x => x)
+                          .Include(x => x.StatusNavigation)
+                          .ToListAsync();
+
+        }
     }
 }
