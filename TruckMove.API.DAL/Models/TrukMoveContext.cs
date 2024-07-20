@@ -69,7 +69,7 @@ namespace TruckMove.API.DAL.Models
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
-               // optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-18;Trusted_Connection=True;");
+                //optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-18;Trusted_Connection=True;");
                 
             }
         }
@@ -668,6 +668,12 @@ namespace TruckMove.API.DAL.Models
 
                 entity.Property(e => e.StartTime).HasColumnType("datetime");
 
+                entity.HasOne(d => d.Driver)
+                   .WithMany(p => p.Legs)
+                   .HasForeignKey(d => d.DriverId)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_Legs_Users");
+
                 entity.HasOne(d => d.Job)
                     .WithMany(p => p.Legs)
                     .HasForeignKey(d => d.JobId)
@@ -685,6 +691,16 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.Variance)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Legs_Variances");
+
+                entity.HasOne(d => d.CreatedBy)
+                 .WithMany(p => p.LegCreatedBies)
+                 .HasForeignKey(d => d.CreatedById);
+
+               
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.LegUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById);
             });
 
             modelBuilder.Entity<LegStatus>(entity =>
@@ -695,9 +711,7 @@ namespace TruckMove.API.DAL.Models
 
                 entity.Property(e => e.Description).HasMaxLength(200);
 
-                entity.Property(e => e.Status)
-                    .HasMaxLength(20)
-                    .IsFixedLength();
+                entity.Property(e => e.Status).HasMaxLength(20);
             });
             modelBuilder.Entity<Acknowledgement>(entity =>
             {

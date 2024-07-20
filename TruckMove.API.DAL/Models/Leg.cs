@@ -24,5 +24,7 @@ namespace TruckMove.API.DAL.Models
         public virtual LegStatus StatusNavigation { get; set; } = null!;
         public virtual Variance VarianceNavigation { get; set; } = null!;
         public virtual Acknowledgement? Acknowledgement { get; set; }
+
+        public virtual User Driver { get; set; } = null!;
     }
 }

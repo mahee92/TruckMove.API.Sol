@@ -33,6 +33,10 @@ namespace TruckMove.API.DAL.Models
             PublicTransportCreatedBies = new HashSet<PublicTransport>();
             PurchaseAssigneeNavigations = new HashSet<Purchase>();
             PurchaseDriverNavigations = new HashSet<Purchase>();
+            Legs = new HashSet<Leg>();
+            LegCreatedBies = new HashSet<Leg>();
+
+            LegUpdatedBies = new HashSet<Leg>();
         }
 
         public int Id { get; set; }
@@ -80,5 +84,9 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Purchase> PurchaseUpdatedBies { get; set; }
         public virtual ICollection<Purchase> PurchaseCreatedBies { get; set; }
+
+        public virtual ICollection<Leg> Legs { get; set; }
+        public virtual ICollection<Leg> LegCreatedBies { get; internal set; }
+        public virtual ICollection<Leg> LegUpdatedBies { get; internal set; }
     }
 }

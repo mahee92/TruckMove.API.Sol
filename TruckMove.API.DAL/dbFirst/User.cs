@@ -19,6 +19,7 @@ namespace TruckMove.API.DAL.dbFirst
             JobCreatedBies = new HashSet<Job>();
             JobDriverNavigations = new HashSet<Job>();
             JobUpdatedBies = new HashSet<Job>();
+            Legs = new HashSet<Leg>();
             PermitsAndPlates = new HashSet<PermitsAndPlate>();
             PublicTransportAssigneeNavigations = new HashSet<PublicTransport>();
             PublicTransportDriverNavigations = new HashSet<PublicTransport>();
@@ -55,6 +56,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual ICollection<Job> JobCreatedBies { get; set; }
         public virtual ICollection<Job> JobDriverNavigations { get; set; }
         public virtual ICollection<Job> JobUpdatedBies { get; set; }
+        public virtual ICollection<Leg> Legs { get; set; }
         public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
         public virtual ICollection<PublicTransport> PublicTransportAssigneeNavigations { get; set; }
         public virtual ICollection<PublicTransport> PublicTransportDriverNavigations { get; set; }
