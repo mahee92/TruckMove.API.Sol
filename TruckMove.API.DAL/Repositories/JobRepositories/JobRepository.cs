@@ -144,7 +144,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         {
             return _context.Set<Leg>()
                           .Where(x => x.JobId == jobId)
-                          //.Include(x => x)
+                          .Include(x => x.Driver)
                           .Include(x => x.StatusNavigation)
                           .ToListAsync();
 

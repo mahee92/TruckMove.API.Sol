@@ -50,7 +50,8 @@ namespace TruckMove.API.BLL.Helper
             );
             CreateMap<LegStatus, LegStatusDto>();
             CreateMap<Leg, LegHistoryDto>()
-                .ForMember(dest => dest.StatusNavigation, opt => opt.MapFrom(src => src.StatusNavigation)
+                .ForMember(dest => dest.StatusNavigation, opt => opt.MapFrom(src => src.StatusNavigation))
+                .ForMember(dest => dest.Driver, opt => opt.MapFrom(src => src.Driver)
             );
 
         }
