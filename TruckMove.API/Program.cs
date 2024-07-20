@@ -124,6 +124,9 @@ internal class Program
             //cfg.CreateJsonDataReaderMap<PreDepartureChecklistDto>();
             profile.CreateGenericMap<UserInputDto, User>();
             profile.CreateGenericMap<User, UserOutputDto>();
+
+
+            
             profile.CreateGenericMap<Role, RoleDto>();
             profile.CreateGenericMap<Company, CompanyDto>();
             profile.CreateGenericMap<CompanyDto, Company>();
@@ -153,6 +156,7 @@ internal class Program
             profile.CreateGenericMap<JobStatus, JobStatusDto>();
             profile.CreateGenericMap<Leg, LegDto>();
             profile.CreateGenericMap<LegDto, Leg>();
+           
             profile.CreateGenericMap<PermitsAndPlate, PermitsAndPlateDto>();
             profile.CreateGenericMap<PermitsAndPlateDto, PermitsAndPlate>();
             profile.CreateGenericMap<PermitsAndPlateOutputDto, PermitsAndPlate>();

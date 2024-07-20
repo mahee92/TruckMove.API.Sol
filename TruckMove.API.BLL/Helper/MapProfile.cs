@@ -6,9 +6,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.BLL.Models.JobDTOs;
+using TruckMove.API.BLL.Models.TaskDTOs;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Models.VehicleDtos;
 using TruckMove.API.DAL.Models;
+using TaskStatus = TruckMove.API.DAL.Models.TaskStatus;
 
 namespace TruckMove.API.BLL.Helper
 {
@@ -28,6 +30,25 @@ namespace TruckMove.API.BLL.Helper
              .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes)
              );
             CreateMap<Vehicle, VehicleDto>();
+
+            CreateMap<TaskStatus, TaskStatusDto>();
+            CreateMap<TaskStatusDto, TaskStatus>();
+            CreateMap<User, UserDto>();
+            //
+            CreateMap<PermitsAndPlate, PermitsAndPlateOutputDto>()
+            .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+            .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
+            .ForMember(dest => dest.AssigneeNavigation, opt => opt.MapFrom(src => src.AssigneeNavigation))
+            .ForMember(dest => dest.StatusNavigation, opt => opt.MapFrom(src => src.StatusNavigation)
+            );
+            CreateMap<Accommodation, AccommodationOutputDto>()
+            .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+            .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
+            .ForMember(dest => dest.AssigneeNavigation, opt => opt.MapFrom(src => src.AssigneeNavigation))
+            .ForMember(dest => dest.StatusNavigation, opt => opt.MapFrom(src => src.StatusNavigation))
+            .ForMember(dest => dest.DriverNavigation, opt => opt.MapFrom(src => src.DriverNavigation)
+            );
+
         }
 
         public void CreateGenericMap<TSource, TDestination>()

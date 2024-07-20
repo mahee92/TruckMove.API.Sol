@@ -54,8 +54,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newPermitsAndPlate.CreatedById = userId;
 
                     var res = await _repositorypermitsAndPlate.AddAsync(newPermitsAndPlate);
+                    var res2 = await _repositorypermitsAndPlate.GetWithNestedIncludesAsync(res.Id, "AssigneeNavigation",
+                                                                           "StatusNavigation"
+                                                                           );
 
-                    response.Object = _mapper.Map<PermitsAndPlateDto>(res);
+                    response.Object = _mapper.Map<PermitsAndPlateOutputDto>(res2);
 
                     response.Success = true;
 
@@ -79,8 +82,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
                         var updatedPermit = await _repositorypermitsAndPlate.UpdateAsync(res);
+                        var updatedPermit2 = await _repositorypermitsAndPlate.GetWithNestedIncludesAsync(res.Id, "AssigneeNavigation",
+                                                                           "StatusNavigation"
+                                                                            );
                         response.Success = true;
-                        response.Object = _mapper.Map<PermitsAndPlateDto>(updatedPermit);
+                        response.Object = _mapper.Map<PermitsAndPlateOutputDto>(updatedPermit2);
 
 
                     }
@@ -186,7 +192,10 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newAccommodation.CreatedDate = DateTime.Now;
                     newAccommodation.CreatedById = userId;
                     var res = await _repositoryAccommodation.AddAsync(newAccommodation);
-                    response.Object = _mapper.Map<AccommodationDto>(res);
+                    var res2 = await _repositoryAccommodation.GetWithNestedIncludesAsync(res.Id, "AssigneeNavigation",
+                                                                        "StatusNavigation", "DriverNavigation"
+                                                                        );
+                    response.Object = _mapper.Map<AccommodationOutputDto>(res2);
                     response.Success = true;
                 }
                 else
@@ -207,8 +216,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
                         var updatedAccommodation = await _repositoryAccommodation.UpdateAsync(res);
+                        var res2 = await _repositoryAccommodation.GetWithNestedIncludesAsync(updatedAccommodation.Id, "AssigneeNavigation",
+                                                                        "StatusNavigation", "DriverNavigation"
+                                                                        );
                         response.Success = true;
-                        response.Object = _mapper.Map<AccommodationDto>(updatedAccommodation);
+                        response.Object = _mapper.Map<AccommodationOutputDto>(updatedAccommodation);
                     }
                 }
                 return response;
