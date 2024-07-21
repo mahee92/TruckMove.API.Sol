@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.TaskDTOs;
+using TruckMove.API.DAL.Models;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -17,7 +18,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response> ImageDeleteAsync(int id);
         Task<Response<AccommodationDto>> AccommodationPostPut(AccommodationDto accommodation, int userId);
         Task<Response> AccommodationDeleteAsync(int id);
-        Task<Response<PublicTransportDto>> PublicTransportPostPut(PublicTransportDto transport, int userId);
+        Task<Response<PublicTransportOutputDto>> PublicTransportPostPut(PublicTransportDto transport, int userId);
 
         Task<Response> PublicTransportDeleteAsync(int id);
         Task<Response<PurchaseDto>> PurchasePostPut(PurchaseDto purchase, int v);

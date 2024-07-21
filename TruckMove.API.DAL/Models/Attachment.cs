@@ -12,8 +12,12 @@ namespace TruckMove.API.DAL.Models
         public bool IsActive { get; set; }
         public int? AccommodationId { get; set; }
 
+        public int? PublicTransportId { get; set; }
+
         public virtual PermitsAndPlate? PermitAndPlate { get; set; }
 
         public virtual Accommodation? Accommodation { get; set; }
+
+        public virtual PublicTransport? PublicTransport { get; set; }
     }
 }

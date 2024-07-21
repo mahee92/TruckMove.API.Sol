@@ -266,9 +266,9 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-        public async Task<Response<PublicTransportDto>> PublicTransportPostPut(PublicTransportDto transport, int userId)
+        public async Task<Response<PublicTransportOutputDto>> PublicTransportPostPut(PublicTransportOutputDto transport, int userId)
         {
-            Response<PublicTransportDto> response = new Response<PublicTransportDto>();
+            Response<PublicTransportOutputDto> response = new Response<PublicTransportOutputDto>();
             try
             {
                 if (transport.Id == 0)
@@ -278,7 +278,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newTransport.CreatedDate = DateTime.Now;
                     newTransport.CreatedById = userId;
                     var res = await _repositoryPublicTransport.AddAsync(newTransport);
-                    response.Object = _mapper.Map<PublicTransportDto>(res);
+                    var res2 = await _repositoryPublicTransport.GetWithNestedIncludesAsync(res.Id, "AssigneeNavigation",
+                                                                   "StatusNavigation", "DriverNavigation"
+                                                                   );
+
+                    response.Object = _mapper.Map<PublicTransportOutputDto>(res2);
                     response.Success = true;
                 }
                 else
@@ -299,8 +303,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
                         var updatedTransport = await _repositoryPublicTransport.UpdateAsync(res);
+                        var res2 = await _repositoryPublicTransport.GetWithNestedIncludesAsync(updatedTransport.Id, "AssigneeNavigation",
+                                                                   "StatusNavigation", "DriverNavigation"
+                                                                   );
                         response.Success = true;
-                        response.Object = _mapper.Map<PublicTransportDto>(updatedTransport);
+                        response.Object = _mapper.Map<PublicTransportOutputDto>(res2);
                     }
                 }
                 return response;
@@ -439,6 +446,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                 return false;
             }
 
+        }
+
+        public Task<Response<PublicTransportOutputDto>> PublicTransportPostPut(PublicTransportDto transport, int userId)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

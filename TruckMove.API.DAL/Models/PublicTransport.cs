@@ -9,6 +9,7 @@ namespace TruckMove.API.DAL.Models
         public PublicTransport()
         {
             Notes = new HashSet<Note>();
+            Attachments = new HashSet<Attachment>();
         }
         public int Id { get; set; }
         public int JobId { get; set; }
@@ -36,5 +37,7 @@ namespace TruckMove.API.DAL.Models
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
         public virtual PublicTransportType? TransportTypeNavigation { get; set; }
+
+        public virtual ICollection<Attachment> Attachments { get; set; }
     }
 }

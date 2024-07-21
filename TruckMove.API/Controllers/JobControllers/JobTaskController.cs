@@ -6,6 +6,7 @@ using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.TaskDTOs;
 using TruckMove.API.BLL.Models.VehicleDtos;
 using TruckMove.API.BLL.Services.JobServices;
+using TruckMove.API.DAL.Models;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
 
@@ -132,7 +133,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpPost("PublicTransport/PostPut")]
         public async Task<IActionResult> PublicTransportPostPutAsync([FromBody] PublicTransportDto transport)
         {
-            Response<PublicTransportDto> response = await _jobTaskService.PublicTransportPostPut(transport, Convert.ToInt32(_authUserService.GetUserId()));
+            Response<PublicTransportOutputDto> response = await _jobTaskService.PublicTransportPostPut(transport, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 

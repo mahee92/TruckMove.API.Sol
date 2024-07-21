@@ -172,8 +172,7 @@ internal class Program
 
             profile.CreateGenericMap<PublicTransport, PublicTransportDto>();
             profile.CreateGenericMap<PublicTransportDto, PublicTransport>();
-            profile.CreateGenericMap<PublicTransport, PublicTransportOutputDto>();
-            profile.CreateGenericMap<PublicTransportOutputDto, PublicTransport>();
+          
 
             profile.CreateGenericMap<PurchaseDto, Purchase>();
             profile.CreateGenericMap<Purchase, PurchaseDto>();

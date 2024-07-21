@@ -68,8 +68,8 @@ namespace TruckMove.API.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-               optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
-                //optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-18;Trusted_Connection=True;");
+              // optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
+                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-18;Trusted_Connection=True;");
                 
             }
         }
@@ -779,6 +779,11 @@ namespace TruckMove.API.DAL.Models
                     .WithMany(p => p.Attachments)
                     .HasForeignKey(d => d.AccommodationId)
                     .HasConstraintName("FK_TaskAttachments_Accommodation");
+
+                entity.HasOne(d => d.PublicTransport)
+                  .WithMany(p => p.Attachments)
+                  .HasForeignKey(d => d.PublicTransportId)
+                  .HasConstraintName("FK_Attachments_PublicTransport");
             });
             modelBuilder.Entity<PublicTransport>(entity =>
             {
