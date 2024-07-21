@@ -21,7 +21,7 @@ namespace TruckMove.API.Controllers
         }
 
         [HttpPost("ImageAndAttachments/Upload")]
-        public async Task<IActionResult> Upload([FromForm] FileUpload fileUpload, bool? IsVehicle, bool? IsTrailer, bool? IsCompany, bool? IsContact,bool? IsPermitAndPlateAttachment, bool? IsAccomodation, bool? Ispurchase)
+        public async Task<IActionResult> Upload([FromForm] FileUpload fileUpload, bool? IsVehicle, bool? IsTrailer, bool? IsCompany, bool? IsContact, bool? IsPermitAndPlateAttachment, bool? IsAccomodation, bool? Ispurchase, bool? IsPublicTransport)
         {
             if (fileUpload == null || fileUpload.file == null || fileUpload.file.Length == 0)
             {
@@ -57,6 +57,10 @@ namespace TruckMove.API.Controllers
                 else if (Ispurchase == true)
                 {
                     filepath = Meta.PURCHASE_ATTACHMENT_PATH;
+                }
+                else if (IsPublicTransport == true)
+                {
+                    filepath = Meta.TRANSPORT_ATTACHMENT_PATH;
                 }
 
                 var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, fileUpload, filepath, Request.Scheme, Request.Host);

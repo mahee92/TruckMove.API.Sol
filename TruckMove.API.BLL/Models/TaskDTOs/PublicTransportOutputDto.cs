@@ -11,7 +11,7 @@ namespace TruckMove.API.DAL.Models
 {
     public class PublicTransportOutputDto : PublicTransportDto
     {
-       // public virtual ICollection<AttachmentDto> Attachments { get; set; }
+        public virtual ICollection<AttachmentDto> Attachments { get; set; }
 
         public virtual ICollection<NoteDto> Notes { get; set; }
 

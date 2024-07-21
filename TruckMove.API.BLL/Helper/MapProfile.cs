@@ -51,7 +51,7 @@ namespace TruckMove.API.BLL.Helper
             CreateMap<PublicTransportOutputDto, PublicTransport>();
             CreateMap<PublicTransport, PublicTransportOutputDto>()
            .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
-           //.ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
+           .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
            .ForMember(dest => dest.AssigneeNavigation, opt => opt.MapFrom(src => src.AssigneeNavigation))
            .ForMember(dest => dest.StatusNavigation, opt => opt.MapFrom(src => src.StatusNavigation))
            .ForMember(dest => dest.DriverNavigation, opt => opt.MapFrom(src => src.DriverNavigation)

@@ -210,6 +210,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                                                                             "PublicTransports.AssigneeNavigation",
                                                                             "PublicTransports.StatusNavigation",
                                                                             "PublicTransports.DriverNavigation",
+                                                                            "PublicTransports.Attachments",
                                                                             "Purchases");
 
                 if (job == null)

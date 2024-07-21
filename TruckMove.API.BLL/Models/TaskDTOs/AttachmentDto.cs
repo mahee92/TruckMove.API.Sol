@@ -13,7 +13,7 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
         public int? PermitAndPlateId { get; set; }
         public int? AccommodationId { get; set; }
 
-
+        public int? PublicTransportId { get; set; }
 
     }
 }

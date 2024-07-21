@@ -266,7 +266,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-        public async Task<Response<PublicTransportOutputDto>> PublicTransportPostPut(PublicTransportOutputDto transport, int userId)
+        public async Task<Response<PublicTransportOutputDto>> PublicTransportPostPut(PublicTransportDto transport, int userId)
         {
             Response<PublicTransportOutputDto> response = new Response<PublicTransportOutputDto>();
             try
@@ -448,10 +448,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         }
 
-        public Task<Response<PublicTransportOutputDto>> PublicTransportPostPut(PublicTransportDto transport, int userId)
-        {
-            throw new NotImplementedException();
-        }
+       
         #endregion
 
     }
