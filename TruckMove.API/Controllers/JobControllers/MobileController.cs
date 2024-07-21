@@ -128,5 +128,6 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+
     }
 }
