@@ -7,6 +7,7 @@ namespace TruckMove.API.DAL.dbFirst
     {
         public PublicTransport()
         {
+            Attachments = new HashSet<Attachment>();
             Notes = new HashSet<Note>();
         }
 
@@ -32,6 +33,7 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
         public virtual PublicTransportType? TransportTypeNavigation { get; set; }
+        public virtual ICollection<Attachment> Attachments { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
     }
 }
