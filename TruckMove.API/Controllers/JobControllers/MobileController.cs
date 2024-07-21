@@ -116,7 +116,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [ValidateDriverChange]
         public async Task<IActionResult> PurchasePostPutAsync([FromHeader(Name = "JobId")] int JobId, [FromBody] PurchaseDto purchase)
         {
-            Response<PurchaseDto> response = await _jobTaskService.PurchasePostPut(purchase, Convert.ToInt32(_authUserService.GetUserId()));
+            Response<PurchaseOutputDto> response = await _jobTaskService.PurchasePostPut(purchase, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 

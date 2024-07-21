@@ -165,7 +165,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpPost("Purchase/PostPut")]
         public async Task<IActionResult> PurchasePostPutAsync([FromBody] PurchaseDto purchase)
         {
-            Response<PurchaseDto> response = await _jobTaskService.PurchasePostPut(purchase, Convert.ToInt32(_authUserService.GetUserId()));
+            Response<PurchaseOutputDto> response = await _jobTaskService.PurchasePostPut(purchase, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 

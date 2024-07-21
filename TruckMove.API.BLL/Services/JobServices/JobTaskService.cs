@@ -355,9 +355,9 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-        public async Task<Response<PurchaseDto>> PurchasePostPut(PurchaseDto purchase, int userId)
+        public async Task<Response<PurchaseOutputDto>> PurchasePostPut(PurchaseDto purchase, int userId)
         {
-            Response<PurchaseDto> response = new Response<PurchaseDto>();
+            Response<PurchaseOutputDto> response = new Response<PurchaseOutputDto>();
             try
             {
                 if (purchase.Id == 0)
@@ -367,7 +367,10 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newPurchase.CreatedDate = DateTime.Now;
                     newPurchase.CreatedById = userId;
                     var res = await _repositoryPurchase.AddAsync(newPurchase);
-                    response.Object = _mapper.Map<PurchaseDto>(res);
+                    var res2 = await _repositoryPurchase.GetWithNestedIncludesAsync(res.Id, "AssigneeNavigation",
+                                                                  "StatusNavigation", "DriverNavigation"
+                                                                  );
+                    response.Object = _mapper.Map<PurchaseOutputDto>(res2);
                     response.Success = true;
                 }
                 else
@@ -388,8 +391,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
                         var updatedPurchase = await _repositoryPurchase.UpdateAsync(res);
+                        var res2 = await _repositoryPurchase.GetWithNestedIncludesAsync(updatedPurchase.Id, "AssigneeNavigation",
+                                                                 "StatusNavigation", "DriverNavigation"
+                                                                 );
                         response.Success = true;
-                        response.Object = _mapper.Map<PurchaseDto>(updatedPurchase);
+                        response.Object = _mapper.Map<PurchaseOutputDto>(res2);
                     }
                 }
                 return response;
