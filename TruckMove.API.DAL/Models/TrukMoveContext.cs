@@ -436,14 +436,9 @@ namespace TruckMove.API.DAL.Models
                   .HasConstraintName("FK_Notes_Checklist");
 
                 entity.HasOne(d => d.Job)
-
-                    .WithMany(p => p.Notes)
-
-                    .HasForeignKey(d => d.JobId)
-
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-
-                    .HasConstraintName("FK_Notes_Jobs");
+                      .WithMany(p => p.Notes)
+                      .HasForeignKey(d => d.JobId)
+                      .HasConstraintName("FK_Notes_Jobs");
 
                 entity.HasOne(d => d.Vehicle)
 

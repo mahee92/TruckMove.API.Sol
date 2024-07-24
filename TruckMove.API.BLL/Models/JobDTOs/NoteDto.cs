@@ -9,7 +9,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
     public class NoteDto
     {
         public int Id { get; set; }
-        public int JobId { get; set; }
+        public int? JobId { get; set; }
         public int? VehicleId { get; set; }
         public int? TrailerId { get; set; }
        

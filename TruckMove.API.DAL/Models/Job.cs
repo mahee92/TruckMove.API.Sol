@@ -44,7 +44,9 @@ namespace TruckMove.API.DAL.Models
 
         public DateTime? EstimatedDeliveryDate { get; set; }
 
-      
+        public string? Correspondence { get; set; }
+
+
 
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }

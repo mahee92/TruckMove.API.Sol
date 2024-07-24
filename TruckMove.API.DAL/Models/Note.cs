@@ -8,7 +8,7 @@ namespace TruckMove.API.DAL.Models
     public partial class Note : AuditableEntity, IActiveEntity
     {
         public int Id { get; set; }
-        public int JobId { get; set; }
+        public int? JobId { get; set; }
         public int? VehicleId { get; set; }
         public int? TrailerId { get; set; }
        

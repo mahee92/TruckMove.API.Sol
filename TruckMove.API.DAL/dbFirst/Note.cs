@@ -6,7 +6,7 @@ namespace TruckMove.API.DAL.dbFirst
     public partial class Note
     {
         public int Id { get; set; }
-        public int JobId { get; set; }
+        public int? JobId { get; set; }
         public int? VehicleId { get; set; }
         public int? TrailerId { get; set; }
         public int? ChecklistId { get; set; }
@@ -18,7 +18,7 @@ namespace TruckMove.API.DAL.dbFirst
 
         public virtual Accommodation? Accommodation { get; set; }
         public virtual Checklist? Checklist { get; set; }
-        public virtual Job Job { get; set; } = null!;
+        public virtual Job? Job { get; set; }
         public virtual PermitsAndPlate? PermitAndPlates { get; set; }
         public virtual PublicTransport? PublicTransport { get; set; }
         public virtual Trailer? Trailer { get; set; }

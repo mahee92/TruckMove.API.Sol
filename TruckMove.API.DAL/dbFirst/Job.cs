@@ -41,6 +41,7 @@ namespace TruckMove.API.DAL.dbFirst
         public string? PickupCoordinates { get; set; }
         public string? DropOfCoordinates { get; set; }
         public DateTime? EstimatedDeliveryDate { get; set; }
+        public string? Correspondence { get; set; }
 
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }
