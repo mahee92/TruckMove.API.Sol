@@ -34,6 +34,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public string JobStatus { get; set; }
 
+        public string? Correspondence { get; set; }
+
 
 
 
