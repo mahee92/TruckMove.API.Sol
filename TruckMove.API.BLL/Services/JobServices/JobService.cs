@@ -60,7 +60,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         {
             if (existingJob != null && existingJob.Status > (int)JobStatusEnum.ReadyForPickup)
             {
-                return (JobStatusEnum)Enum.Parse(typeof(JobStatusEnum), existingJob.Id.ToString());
+                return (JobStatusEnum)Enum.Parse(typeof(JobStatusEnum), existingJob.Status.ToString());
             }
             if (job.CompanyId > 0 &&
                 !string.IsNullOrWhiteSpace(job.PickupLocation) &&
