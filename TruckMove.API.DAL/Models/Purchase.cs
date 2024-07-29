@@ -11,7 +11,7 @@ namespace TruckMove.API.DAL.Models
         public int Status { get; set; }
         public int? Driver { get; set; }
         public bool? FromMobile { get; set; }
-        public bool? OrganizeNow { get; set; }
+        public bool OrganizeNow { get; set; }
         public int? Assignee { get; set; }
         public string? ReciptUrl { get; set; }
         public bool? IsFuel { get; set; }
