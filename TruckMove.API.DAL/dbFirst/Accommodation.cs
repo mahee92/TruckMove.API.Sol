@@ -24,7 +24,7 @@ namespace TruckMove.API.DAL.dbFirst
         public string? Email { get; set; }
         public string? ReferenceNumber { get; set; }
         public double? Price { get; set; }
-        public bool? OrganiseNow { get; set; }
+        public bool? OrganizeNow { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? DriverNavigation { get; set; }

@@ -146,7 +146,7 @@ namespace TruckMove.API.DAL.Models
                    .WithMany(p => p.AccommodationCreatedBies)
                    .HasForeignKey(d => d.CreatedById);
 
-                entity.Property(e => e.OrganiseNow)
+                entity.Property(e => e.OrganizeNow)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
@@ -857,7 +857,7 @@ namespace TruckMove.API.DAL.Models
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.OrganiseNow)
+                entity.Property(e => e.OrganizeNow)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
