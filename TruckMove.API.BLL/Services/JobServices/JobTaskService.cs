@@ -233,7 +233,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 return response;
             }
         }
-
+        
         public async Task<Response> AccommodationDeleteAsync(int id)
         {
             Response response = new Response();
