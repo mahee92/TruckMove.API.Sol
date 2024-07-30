@@ -159,17 +159,17 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
 
-       
 
 
-       
+
+
         #endregion
 
         #region WayPoint
-        [HttpPost("WayPoint/AddDelete")]
-        public async Task<IActionResult> AddDeleteWayPoint([FromBody] List<WayPointDto> wayPoints)
+        [HttpPost("{id}/WayPoint /AddDelete")]
+        public async Task<IActionResult> AddDeleteWayPoint(int id, [FromBody] List<WayPointDto> wayPoints)
         {
-            var response = await _jobService.WayPointAddDelete(wayPoints);
+            var response = await _jobService.WayPointAddDelete(id, wayPoints);
             if (response.Success)
             {
                 return Ok();

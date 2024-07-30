@@ -155,7 +155,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public bool IsPossibleToAdd(JobDto job)
         {
-            if (job.Id < 1 || job.CompanyId < 1)
+            if (job.Id < 1 || job.CompanyId < 1 || job.Controller < 1)
             {
                 return false;
             }
@@ -433,20 +433,23 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         #region WayPoint
 
-        public async Task<Response<WayPointDto>> WayPointAddDelete(List<WayPointDto> wayPoints)
+        public async Task<Response<WayPointDto>> WayPointAddDelete(int id,List<WayPointDto> wayPoints)
         {
             Response<WayPointDto> response = new Response<WayPointDto>();
             try
             {
 
-                List<WayPoint> existingWayPoints = await _jobRepository.GetWayPointsByJobId(wayPoints[0].JobId);
+                List<WayPoint> existingWayPoints = await _jobRepository.GetWayPointsByJobId(id);
                 if (existingWayPoints.Count > 0)
                 {
                     await _jobRepository.DeleteWaypointsByIdsAsync(existingWayPoints.Select(x => x.Id).ToList());
                 }
-
-                List<WayPoint> newWayPoints = CreateWayPointList(wayPoints);
-                await _jobRepository.AddWaypointsRangeAsync(newWayPoints);
+                if(wayPoints.Count>0)
+                {
+                    List<WayPoint> newWayPoints = CreateWayPointList(wayPoints);
+                    await _jobRepository.AddWaypointsRangeAsync(newWayPoints);
+                }
+                
                 response.Success = true;
             }
             catch (Exception ex)
