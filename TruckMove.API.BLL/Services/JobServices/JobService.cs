@@ -155,7 +155,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public bool IsPossibleToAdd(JobDto job)
         {
-            if (job.Id < 1 || job.CompanyId < 1 || job.Controller < 1)
+            if (job.Id < 1 || job.CompanyId < 1 || job.Controller== null ||job.Controller < 1)
             {
                 return false;
             }

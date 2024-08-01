@@ -181,6 +181,16 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.Status)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Accommodation_TaskStatus");
+
+                entity.HasMany(d => d.Attachments)
+                    .WithOne(p => p.Accommodation)
+                    .HasForeignKey(p => p.AccommodationId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Notes)
+                    .WithOne(p => p.Accommodation)
+                    .HasForeignKey(p => p.AccommodationId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Company>(entity =>
@@ -503,6 +513,18 @@ namespace TruckMove.API.DAL.Models
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.PermitsAndPlatesUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
+
+                entity.HasMany(d => d.Attachments)
+                    .WithOne(p => p.PermitAndPlate)
+                    .HasForeignKey(p => p.PermitAndPlateId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Notes)
+                    .WithOne(p => p.PermitAndPlates)
+                    .HasForeignKey(p => p.PermitAndPlatesId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+
             });
 
 
@@ -730,6 +752,7 @@ namespace TruckMove.API.DAL.Models
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
+
                 entity.Property(e => e.Rego).HasMaxLength(200);
 
                 entity.Property(e => e.Type).HasMaxLength(200);
@@ -745,6 +768,16 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.JobId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Trailers_Jobs");
+
+                entity.HasMany(d => d.Images)
+                    .WithOne(p => p.Trailer)
+                    .HasForeignKey(p => p.TrailerId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Notes)
+                    .WithOne(p => p.Trailer)
+                    .HasForeignKey(p => p.TrailerId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<HookupType>(entity =>
@@ -834,6 +867,18 @@ namespace TruckMove.API.DAL.Models
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.PublicTransportUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
+
+
+
+                entity.HasMany(d => d.Attachments)
+                    .WithOne(p => p.PublicTransport)
+                    .HasForeignKey(p => p.PublicTransportId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Notes)
+                     .WithOne(p => p.PublicTransport)
+                    .HasForeignKey(p => p.PublicTransportId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<PublicTransportType>(entity =>

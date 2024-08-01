@@ -57,8 +57,28 @@ namespace TruckMove.API.DAL.Repositories
                 _dbSet.Remove(entity);
                 await _context.SaveChangesAsync();
             }
-           
+
         }
+        //public async Task DeleteAsync(int id)
+        //{
+        //    // Load the entity with its related entities
+        //    var entity = await _dbSet
+        //        .Include(e => e.RelatedEntities) // Include the related entities
+        //        .FirstOrDefaultAsync(e => e.Id == id);
+
+        //    if (entity != null)
+        //    {
+        //        // Delete the related entities first
+        //        if (entity.RelatedEntities != null)
+        //        {
+        //            _context.RelatedEntities.RemoveRange(entity.RelatedEntities);
+        //        }
+
+        //        // Delete the main entity
+        //        _dbSet.Remove(entity);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //}
 
         public async Task<List<TEntity>> GetAllAsync()
         {

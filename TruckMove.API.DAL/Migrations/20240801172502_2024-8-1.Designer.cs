@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240801172502_2024-8-1")]
+    partial class _202481
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1724,7 +1726,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasOne("TruckMove.API.DAL.Models.Accommodation", "Accommodation")
                         .WithMany("Attachments")
                         .HasForeignKey("AccommodationId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_TaskAttachments_Accommodation");
 
                     b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
@@ -1734,13 +1735,11 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasOne("TruckMove.API.DAL.Models.PermitsAndPlate", "PermitAndPlate")
                         .WithMany("Attachments")
                         .HasForeignKey("PermitAndPlateId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
 
                     b.HasOne("TruckMove.API.DAL.Models.PublicTransport", "PublicTransport")
                         .WithMany("Attachments")
                         .HasForeignKey("PublicTransportId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Attachments_PublicTransport");
 
                     b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
@@ -1990,7 +1989,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasOne("TruckMove.API.DAL.Models.Accommodation", "Accommodation")
                         .WithMany("Notes")
                         .HasForeignKey("AccommodationId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Notes_Accommodation");
 
                     b.HasOne("TruckMove.API.DAL.Models.Checklist", "Checklist")
@@ -2012,13 +2010,11 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasOne("TruckMove.API.DAL.Models.PermitsAndPlate", "PermitAndPlates")
                         .WithMany("Notes")
                         .HasForeignKey("PermitAndPlatesId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Notes_PermitsAndPlates");
 
                     b.HasOne("TruckMove.API.DAL.Models.PublicTransport", "PublicTransport")
                         .WithMany("Notes")
                         .HasForeignKey("PublicTransportId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_Notes_PublicTransport");
 
                     b.HasOne("TruckMove.API.DAL.Models.Trailer", "Trailer")
