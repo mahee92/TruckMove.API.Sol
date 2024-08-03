@@ -24,7 +24,7 @@ namespace TruckMove.API.DAL.Models
         public int? ChecklistId { get; set; }
 
         public virtual Accommodation? Accommodation { get; set; }
-        public virtual Job Job { get; set; } = null!;
+        public virtual Job? Job { get; set; } = null!;
         public virtual PermitsAndPlate? PermitAndPlates { get; set; }
         public virtual Trailer? Trailer { get; set; }
         public virtual Vehicle? Vehicle { get; set; }
