@@ -443,10 +443,12 @@ namespace TruckMove.API.DAL.Models
                   .HasForeignKey(d => d.ChecklistId)
                   .HasConstraintName("FK_Notes_Checklist");
 
+                // Update the foreign key configuration
                 entity.HasOne(d => d.Job)
                       .WithMany(p => p.Notes)
                       .HasForeignKey(d => d.JobId)
-                      .HasConstraintName("FK_Notes_Jobs");
+                      .HasConstraintName("FK_Notes_Jobs")
+                      .OnDelete(DeleteBehavior.SetNull); // Ensure that the relationship is set to null if the Job is deleted
 
                 entity.HasOne(d => d.Vehicle)
 
