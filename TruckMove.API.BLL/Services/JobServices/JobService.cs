@@ -213,7 +213,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                                                                             "PublicTransports.Attachments",
                                                                             "Purchases.AssigneeNavigation",
                                                                             "Purchases.StatusNavigation",
-                                                                            "Purchases.DriverNavigation"
+                                                                            "Purchases.DriverNavigation",
+                                                                            "Notes"
                                                                             );
 
                 if (job == null)
@@ -226,10 +227,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                 {
 
                     response.Object = _mapper.Map<JobOutPutDTO>(job);
-
                     response.Object.Contacts = new List<ContactDto>();
                     response.Object.Contacts = job.JobContacts.Select(jc => _mapper.Map<ContactDto>(jc.Contact)).ToList();
-
                     response.Object.JobStatus = ((JobStatusEnum)job.Status).ToString();
 
 

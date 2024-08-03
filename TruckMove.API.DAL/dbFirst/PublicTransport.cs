@@ -28,6 +28,7 @@ namespace TruckMove.API.DAL.dbFirst
         public string? ReferenceNumber { get; set; }
         public double? TransportCost { get; set; }
         public string? RequiredFromsuburb { get; set; }
+        public string? Name { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? DriverNavigation { get; set; }

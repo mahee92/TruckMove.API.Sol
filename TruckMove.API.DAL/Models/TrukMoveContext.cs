@@ -827,7 +827,7 @@ namespace TruckMove.API.DAL.Models
 
                 entity.Property(e => e.ReferenceNumber).HasMaxLength(100);
 
-                entity.Property(e => e.Requiredsuburb).HasColumnName("requiredsuburb");
+                entity.Property(e => e.Name).HasMaxLength(100);
 
                 entity.HasOne(d => d.AssigneeNavigation)
                     .WithMany(p => p.PublicTransportAssigneeNavigations)

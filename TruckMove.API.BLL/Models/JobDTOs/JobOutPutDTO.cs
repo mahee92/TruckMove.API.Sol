@@ -31,6 +31,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public virtual List<PurchaseOutputDto> Purchases { get; set; }
 
+        public virtual ICollection<NoteDto> Notes { get; set; }
+
 
 
     }
