@@ -424,7 +424,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 else
                 {
 
-                    await _repositoryPublicTransport.DeleteAsync(id);
+                    await _repositoryPurchase.DeleteAsync(id);
                     response.Success = true;
                 }
 
