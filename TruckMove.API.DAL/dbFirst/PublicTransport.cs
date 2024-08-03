@@ -17,7 +17,7 @@ namespace TruckMove.API.DAL.dbFirst
         public bool OrganizeNow { get; set; }
         public int Status { get; set; }
         public DateTime? Daterequired { get; set; }
-        public string? Requiredsuburb { get; set; }
+        public string? RequiredTosuburb { get; set; }
         public int? Assignee { get; set; }
         public string? BookingInstructions { get; set; }
         public int? TransportType { get; set; }
@@ -27,6 +27,7 @@ namespace TruckMove.API.DAL.dbFirst
         public string? ArrivalAddress { get; set; }
         public string? ReferenceNumber { get; set; }
         public double? TransportCost { get; set; }
+        public string? RequiredFromsuburb { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? DriverNavigation { get; set; }
