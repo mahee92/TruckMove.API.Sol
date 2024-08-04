@@ -26,16 +26,19 @@ namespace TruckMove.API.Controllers.JobControllers
     public class JobController : ControllerBase
     {
 
+
         private readonly IAuthUserService _authUserService;
         private readonly IJobService _jobService;
         private readonly MySettings _mySettings;
+        private readonly GoogleMapSettings _googleMapSettings;
 
-        public JobController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings)
+        public JobController(IAuthUserService authUserService, IJobService jobService, IOptions<MySettings> mySettings, IOptions<GoogleMapSettings> googleMapSettings)
         {
            
             _authUserService = authUserService;
             _jobService = jobService;
             _mySettings = mySettings.Value;
+            _googleMapSettings = googleMapSettings.Value;
 
         }
 
@@ -69,7 +72,7 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
-     
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAsync(int id)
         {
@@ -78,6 +81,8 @@ namespace TruckMove.API.Controllers.JobControllers
 
             if (response.Success)
             {
+
+
                 return Ok(response.Object);
             }
             else
@@ -85,7 +90,42 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
-     
+
+        [HttpGet("IsDriverChangeAllowed")]
+        public async Task<IActionResult> IsDriverChangeAllowed(int jobId)
+        {
+            Response response = await _jobService.IsDriverChangeAllowed(jobId);
+            if (response.Success)
+            {
+
+                return Ok();
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+
+        [HttpGet("GetLegHistory")]
+        public async Task<IActionResult> GetLegHistory(int jobId)
+        {
+            Response<LegHistoryDto> response = await _jobService.GetLegHistory(jobId);
+            if (response.Success)
+            {
+
+                return Ok(response.Objects);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+
+       
         #endregion
 
         #region Contacts
@@ -121,17 +161,17 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
 
-       
 
 
-       
+
+
         #endregion
 
         #region WayPoint
-        [HttpPost("WayPoint/AddDelete")]
-        public async Task<IActionResult> AddDeleteWayPoint([FromBody] List<WayPointDto> wayPoints)
+        [HttpPost("{id}/WayPoint /AddDelete")]
+        public async Task<IActionResult> AddDeleteWayPoint(int id, [FromBody] List<WayPointDto> wayPoints)
         {
-            var response = await _jobService.WayPointAddDelete(wayPoints);
+            var response = await _jobService.WayPointAddDelete(id, wayPoints);
             if (response.Success)
             {
                 return Ok();
@@ -213,7 +253,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpPost("Trailer/PostPut")]
         public async Task<IActionResult> PostPutAsync([FromBody] TrailerDto trailer)
         {
-            Response<TrailerDto> response = await _jobService.TrailerPostPutAsync(trailer, Convert.ToInt32(_authUserService.GetUserId()));
+            Response<TrailerDto> response = await _jobService.TrailerPostPutAsync(trailer, _googleMapSettings.ApiKey, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 

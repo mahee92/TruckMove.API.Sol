@@ -9,6 +9,7 @@ using TruckMove.API.DAL.Repositories;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using static TruckMove.API.DAL.MasterData.MasterData;
+using TaskStatus = TruckMove.API.DAL.Models.TaskStatus;
 
 namespace TruckMove.API.BLL.Services
 {
@@ -53,13 +54,15 @@ namespace TruckMove.API.BLL.Services
             return response;
         }
 
-        public async Task<Response<UserOutputDto>> GetUsersByRoleAsync(RoleEnum role)
+        public async Task<Response<UserOutputDto>> GetUsersByRoleAsync(List<RoleEnum> roles)
         {
             
             Response<UserOutputDto> response = new Response<UserOutputDto>();
             try
             {
-                var res = await _repository.GetUsersByRoleAsync((int)role);
+
+                List<int> roleIds = roles.Select(role => (int)role).ToList();        
+                var res = await _repository.GetUsersByRolesAsync(roleIds);
                 response.Success = true;
                 if (res.Count > 0)
                 {
@@ -97,27 +100,51 @@ namespace TruckMove.API.BLL.Services
             }
             return response;
         }
-        //public async Task<Response<JobStatus>> GetAllHookupTypes()
-        //{
-        //    Response<JobStatus> response = new Response<JobStatus>();
-        //    try
-        //    {
-        //        var types = await _repository.GetAllRolesHookupTypes();
-        //        response.Success = true;
-        //        if (types.Count > 0)
-        //        {
-        //            response.Objects = new List<HookupType>();
-        //            response.Objects = types;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response.Success = false;
-        //        response.ErrorType = ErrorCode.dbError;
-        //        response.ErrorMessage = ex.Message;
-        //    }
-        //    return response;
-        //}
+
+        public async Task<Response<PublicTransportType>> GetAllPublicTransportTypes()
+        {
+            Response<PublicTransportType> response = new Response<PublicTransportType>();
+            try
+            {
+                var types = await _repository.GetPublicTransportTypes();
+                response.Success = true;
+                if (types.Count > 0)
+                {
+                    response.Objects = new List<PublicTransportType>();
+                    response.Objects = types;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+        public async Task<Response<TaskStatus>> GetAllTaskStatus()
+        {
+            Response<TaskStatus> response = new Response<TaskStatus>();
+            try
+            {
+                var types = await _repository.GetAllTasStatuses(); 
+                response.Success = true;
+                if (types.Count > 0)
+                {
+                    response.Objects = new List<TaskStatus>();
+                    response.Objects = types;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+
 
 
     }

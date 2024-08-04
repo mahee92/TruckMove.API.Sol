@@ -52,5 +52,35 @@ namespace TruckMove.API.DAL.MasterData
 
 
         }
+        public enum VariancesEnum
+        {
+            _default = 0,
+            DG = 1,
+            Sat_rate = 2,
+            Sun_rate = 3,
+            G7 = 4,
+            Public_Holiday = 5,
+            G4 = 6,
+            Bookining_Bullbar = 7
+
+
+
+        }
+
+        public enum TaskStatusEnum
+        {
+            Planned = 1,
+            InProgress = 2,
+            Completed = 3
+        }
+
+        public enum PublicTransportTypeEnum
+        {
+            Train = 1,
+            Plane = 2,
+            Taxi = 3,
+            Uber=4,
+            Other=5
+        }
     }
 }

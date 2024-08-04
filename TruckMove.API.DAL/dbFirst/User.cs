@@ -7,6 +7,8 @@ namespace TruckMove.API.DAL.dbFirst
     {
         public User()
         {
+            AccommodationAssigneeNavigations = new HashSet<Accommodation>();
+            AccommodationDriverNavigations = new HashSet<Accommodation>();
             CompanyCreatedBies = new HashSet<Company>();
             CompanyUpdatedBies = new HashSet<Company>();
             ContactCreatedBies = new HashSet<Contact>();
@@ -17,6 +19,12 @@ namespace TruckMove.API.DAL.dbFirst
             JobCreatedBies = new HashSet<Job>();
             JobDriverNavigations = new HashSet<Job>();
             JobUpdatedBies = new HashSet<Job>();
+            Legs = new HashSet<Leg>();
+            PermitsAndPlates = new HashSet<PermitsAndPlate>();
+            PublicTransportAssigneeNavigations = new HashSet<PublicTransport>();
+            PublicTransportDriverNavigations = new HashSet<PublicTransport>();
+            PurchaseAssigneeNavigations = new HashSet<Purchase>();
+            PurchaseDriverNavigations = new HashSet<Purchase>();
             UserRoleCreatedBies = new HashSet<UserRole>();
             UserRoleUpdatedBies = new HashSet<UserRole>();
             UserRoleUsers = new HashSet<UserRole>();
@@ -36,6 +44,8 @@ namespace TruckMove.API.DAL.dbFirst
 
         public virtual User? CreatedBy { get; set; }
         public virtual User? UpdatedBy { get; set; }
+        public virtual ICollection<Accommodation> AccommodationAssigneeNavigations { get; set; }
+        public virtual ICollection<Accommodation> AccommodationDriverNavigations { get; set; }
         public virtual ICollection<Company> CompanyCreatedBies { get; set; }
         public virtual ICollection<Company> CompanyUpdatedBies { get; set; }
         public virtual ICollection<Contact> ContactCreatedBies { get; set; }
@@ -46,6 +56,12 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual ICollection<Job> JobCreatedBies { get; set; }
         public virtual ICollection<Job> JobDriverNavigations { get; set; }
         public virtual ICollection<Job> JobUpdatedBies { get; set; }
+        public virtual ICollection<Leg> Legs { get; set; }
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
+        public virtual ICollection<PublicTransport> PublicTransportAssigneeNavigations { get; set; }
+        public virtual ICollection<PublicTransport> PublicTransportDriverNavigations { get; set; }
+        public virtual ICollection<Purchase> PurchaseAssigneeNavigations { get; set; }
+        public virtual ICollection<Purchase> PurchaseDriverNavigations { get; set; }
         public virtual ICollection<UserRole> UserRoleCreatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleUpdatedBies { get; set; }
         public virtual ICollection<UserRole> UserRoleUsers { get; set; }

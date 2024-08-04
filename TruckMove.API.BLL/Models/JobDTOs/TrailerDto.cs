@@ -16,7 +16,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         public string? DropOffLocation { get; set; }
         public string? Rego { get; set; }
         public string? Type { get; set; }
-
+        public string? HookupCoordinate { get; set; }
+        public string? DropoffCoordinate { get; set; }
 
 
         //public virtual List<ImageDto> Images { get; set; }

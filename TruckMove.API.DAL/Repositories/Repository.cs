@@ -57,8 +57,28 @@ namespace TruckMove.API.DAL.Repositories
                 _dbSet.Remove(entity);
                 await _context.SaveChangesAsync();
             }
-           
+
         }
+        //public async Task DeleteAsync(int id)
+        //{
+        //    // Load the entity with its related entities
+        //    var entity = await _dbSet
+        //        .Include(e => e.RelatedEntities) // Include the related entities
+        //        .FirstOrDefaultAsync(e => e.Id == id);
+
+        //    if (entity != null)
+        //    {
+        //        // Delete the related entities first
+        //        if (entity.RelatedEntities != null)
+        //        {
+        //            _context.RelatedEntities.RemoveRange(entity.RelatedEntities);
+        //        }
+
+        //        // Delete the main entity
+        //        _dbSet.Remove(entity);
+        //        await _context.SaveChangesAsync();
+        //    }
+        //}
 
         public async Task<List<TEntity>> GetAllAsync()
         {
@@ -123,8 +143,23 @@ namespace TruckMove.API.DAL.Repositories
             return entities.ToList();
         }
 
+        public async Task<string> GetPropertyAsync(int id, string propertyName)
+        {
 
+            // Build a query to select only the specific property
+            var query = _dbSet
+                .Where(e => EF.Property<int>(e, "Id") == id && EF.Property<bool>(e, "IsActive"))
+                .Select(e => EF.Property<object>(e, propertyName))
+                .AsQueryable();
 
+            // Execute the query and get the property value
+            var value = await query.FirstOrDefaultAsync();
+            if(value == null)
+            {
+                return "-1";
+            }
 
+            return value?.ToString();
+        }
     }
 }

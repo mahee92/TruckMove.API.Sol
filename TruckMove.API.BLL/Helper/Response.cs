@@ -30,6 +30,8 @@ namespace TruckMove.API.BLL.Helper
         alreadyExists = 409,
         invalidLogin = 401,
         validationError = 422,
-        noreco
+        AchknowledgeError = 700,
+        statusError = 800,
+
     }
 }

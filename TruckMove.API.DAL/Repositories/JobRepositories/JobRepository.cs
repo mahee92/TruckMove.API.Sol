@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.DAL.Repositories.JobRepositories
 {
@@ -18,14 +20,14 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         private readonly DbSet<JobSequence> _Sequence;
         public JobRepository(DbContextOptions<TrukMoveContext> options)
         {
-            
+
             _context = new TrukMoveContext(options);
             _dbSet = _context.Set<Job>();
             _Sequence = _context.Set<JobSequence>();
         }
         public async Task<int> GetNextJobId()
         {
-    
+
             var connection = _context.Database.GetDbConnection();
             await connection.OpenAsync();
 
@@ -65,7 +67,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             return false;
         }
 
-      
+
         public async Task<List<JobContact>> GetJobContactsByJobId(int jobId)
         {
             return await _context.Set<JobContact>().Where(x => x.JobId == jobId).ToListAsync();
@@ -73,7 +75,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         public async Task<List<Job>> GetAllJobsByDriverAsync(int driverid, params string[] includeProperties)
         {
-            IQueryable<Job> query =  _dbSet;
+            IQueryable<Job> query = _dbSet;
 
             //foreach (var include in includeProperties)
             //{
@@ -84,9 +86,9 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         }
         public IQueryable<Job> GetAllAsync(int driverId)
         {
-            var query = _dbSet.Where(e => e.IsActive && e.Driver == driverId).AsQueryable();
+            var query = _dbSet.Where(e => e.IsActive /*&& e.Driver == driverId*/).AsQueryable();
 
-           // string sqlQuery = query.ToQueryString();
+            // string sqlQuery = query.ToQueryString();
             return query;
         }
         public async Task<List<WayPoint>> GetWayPointsByJobId(int jobId)
@@ -106,7 +108,46 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             await _context.SaveChangesAsync();
             return entities.ToList();
         }
+        public async Task Acknowledge(int legId,int JobId)
+        {
+            Acknowledgement acknowledge = new Acknowledgement
+            {
+                LegId = legId,
+                JobId = JobId,
+                Acknowledge = true
+            };
+            await _context.Set<Acknowledgement>().AddAsync(acknowledge);
+            await _context.SaveChangesAsync();
+        }
 
+        public async Task<int> GetNextLegNumber(int jobId)
+        {
+            int legCount = await _context.Set<Leg>().Where(x=>x.JobId == jobId).CountAsync();
+            return legCount + 1;
 
+        }
+        public async Task<bool> CheckAnyOngoingLegs(int jobId)
+        {
+            return await _context.Set<Leg>().AnyAsync(x => x.JobId == jobId && x.Status != (int)TaskStatusEnum.Completed);
+        }
+
+        public async Task<bool> CheckDriverHasOngoingLegs(int jobId, int driverId)
+        {
+            return await _context.Set<Leg>().AnyAsync(x => x.DriverId == driverId
+                                                        && x.JobId == jobId
+                                                        && x.Status != (int)LegStatusEnum.Completed
+                                                        );
+
+        }
+
+        public Task<List<Leg>> GetLegsByJobId(int jobId)
+        {
+            return _context.Set<Leg>()
+                          .Where(x => x.JobId == jobId)
+                          .Include(x => x.Driver)
+                          .Include(x => x.StatusNavigation)
+                          .ToListAsync();
+
+        }
     }
 }

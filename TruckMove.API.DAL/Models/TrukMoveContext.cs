@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using static TruckMove.API.DAL.MasterData.MasterData;
@@ -18,6 +19,7 @@ namespace TruckMove.API.DAL.Models
         {
         }
 
+        public virtual DbSet<Accommodation> Accommodations { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
         public virtual DbSet<Job> Jobs { get; set; } = null!;
@@ -29,13 +31,10 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
 
-        public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
- 	   public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
-
         public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
         public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
 
-        public virtual DbSet<PreDepartureChecklist> PreDepartureChecklists { get; set; } = null!;
+
         public virtual DbSet<Note> Notes { get; set; } = null!;
 
         public virtual DbSet<Image> Images { get; set; } = null!;
@@ -47,6 +46,23 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<HookupType> HookupTypes { get; set; } = null!;
         public virtual DbSet<Trailer> Trailers { get; set; } = null!;
+
+        public virtual DbSet<PermitsAndPlate> PermitsAndPlates { get; set; } = null!;
+
+        public virtual DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
+
+        public virtual DbSet<Variance> Variances { get; set; } = null!;
+
+        public virtual DbSet<Checklist> Checklists { get; set; } = null!;
+
+        public virtual DbSet<Purchase> Purchases { get; set; } = null!;
+
+        public virtual DbSet<Attachment> Attachments { get; set; } = null!;
+        public virtual DbSet<PublicTransport> PublicTransports { get; set; } = null!;
+        public virtual DbSet<PublicTransportType> PublicTransportTypes { get; set; } = null!;
+
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -84,17 +100,98 @@ namespace TruckMove.API.DAL.Models
                    new JobStatus { Id = (int)JobStatusEnum.Completed, Status = JobStatusEnum.Completed.ToString(), Description = "A job that has been completed successfully" }
                );
 
-               modelBuilder.Entity<LegStatus>().HasData(
-                 new LegStatus { Id = (int)LegStatusEnum.Planned ,Status= LegStatusEnum.Planned.ToString()},
-                 new LegStatus { Id = (int)LegStatusEnum.InProgress, Status = LegStatusEnum.InProgress.ToString() },
-                 new LegStatus { Id = (int)LegStatusEnum.Completed , Status = LegStatusEnum.Completed.ToString() }
-                 );
+            modelBuilder.Entity<LegStatus>().HasData(
+              new LegStatus { Id = (int)LegStatusEnum.Planned, Status = LegStatusEnum.Planned.ToString() },
+              new LegStatus { Id = (int)LegStatusEnum.InProgress, Status = LegStatusEnum.InProgress.ToString() },
+              new LegStatus { Id = (int)LegStatusEnum.Completed, Status = LegStatusEnum.Completed.ToString() }
+              );
 
             modelBuilder.Entity<HookupType>().HasData(
-                 new HookupType { Id = (int)HookUpTypeEnum.HU_Single,Type= HookUpTypeEnum.HU_Single.ToString(), Description = "HU Single" },
+                 new HookupType { Id = (int)HookUpTypeEnum.HU_Single, Type = HookUpTypeEnum.HU_Single.ToString(), Description = "HU Single" },
                  new HookupType { Id = (int)HookUpTypeEnum.HU_Double, Type = HookUpTypeEnum.HU_Double.ToString(), Description = "HU Double" },
                  new HookupType { Id = (int)HookUpTypeEnum.FOUR_RA, Type = HookUpTypeEnum.FOUR_RA.ToString(), Description = "4RA (4 Rigid Axle )" }
                  );
+            modelBuilder.Entity<Variance>().HasData(
+                 new Variance { Id = (int)VariancesEnum._default, Name = VariancesEnum._default.ToString(), Description = "Default" },
+                 new Variance { Id = (int)VariancesEnum.DG, Name = VariancesEnum.DG.ToString(), Description = "DG" },
+                 new Variance { Id = (int)VariancesEnum.Sat_rate, Name = VariancesEnum.Sat_rate.ToString(), Description = "Sat Rate" },
+                 new Variance { Id = (int)VariancesEnum.Sun_rate, Name = VariancesEnum.Sun_rate.ToString(), Description = "Sun Rate" },
+                 new Variance { Id = (int)VariancesEnum.G7, Name = VariancesEnum.G7.ToString(), Description = "G7" },
+                 new Variance { Id = (int)VariancesEnum.Public_Holiday, Name = VariancesEnum.Public_Holiday.ToString(), Description = "Public Holiday" },
+                 new Variance { Id = (int)VariancesEnum.G4, Name = VariancesEnum.G4.ToString(), Description = "G4" },
+                 new Variance { Id = (int)VariancesEnum.Bookining_Bullbar, Name = VariancesEnum.Bookining_Bullbar.ToString(), Description = "Booking (Bullbar)" }
+             );
+            modelBuilder.Entity<TaskStatus>().HasData(
+                 new TaskStatus { Id = (int)TaskStatusEnum.Planned, Status = TaskStatusEnum.Planned.ToString() },
+                 new TaskStatus { Id = (int)TaskStatusEnum.InProgress, Status = TaskStatusEnum.InProgress.ToString() },
+                 new TaskStatus { Id = (int)TaskStatusEnum.Completed, Status = TaskStatusEnum.Completed.ToString() }
+                 );
+
+            modelBuilder.Entity<PublicTransportType>().HasData(
+                 new PublicTransportType { Id = (int)PublicTransportTypeEnum.Train, Type = PublicTransportTypeEnum.Train.ToString() },
+                  new PublicTransportType { Id = (int)PublicTransportTypeEnum.Plane, Type = PublicTransportTypeEnum.Plane.ToString() },
+                  new PublicTransportType { Id = (int)PublicTransportTypeEnum.Uber, Type = PublicTransportTypeEnum.Uber.ToString() },
+                  new PublicTransportType { Id = (int)PublicTransportTypeEnum.Taxi, Type = PublicTransportTypeEnum.Taxi.ToString() },
+                  new PublicTransportType { Id = (int)PublicTransportTypeEnum.Other, Type = PublicTransportTypeEnum.Other.ToString() }
+                 );
+
+            modelBuilder.Entity<Accommodation>(entity =>
+            {
+                entity.ToTable("Accommodation");
+
+                entity.Property(e => e.IsActive)
+                      .IsRequired()
+                      .HasDefaultValueSql("(CONVERT([bit],(1)))");
+                entity.HasOne(d => d.CreatedBy)
+                   .WithMany(p => p.AccommodationCreatedBies)
+                   .HasForeignKey(d => d.CreatedById);
+
+                
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.AccommodationUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById);
+
+                entity.Property(e => e.BookingDate).HasColumnType("datetime");
+
+                entity.Property(e => e.Email).HasMaxLength(50);
+
+                entity.Property(e => e.PhoneNumber).HasMaxLength(50);
+
+                entity.Property(e => e.ReferenceNumber).HasMaxLength(50);
+
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.AccommodationAssigneeNavigations)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_Accommodation_Users1");
+
+                entity.HasOne(d => d.DriverNavigation)
+                    .WithMany(p => p.AccommodationDriverNavigations)
+                    .HasForeignKey(d => d.Driver)
+                    .HasConstraintName("FK_Accommodation_Users");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Accommodations)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Accommodation_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.Accommodations)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Accommodation_TaskStatus");
+
+                entity.HasMany(d => d.Attachments)
+                    .WithOne(p => p.Accommodation)
+                    .HasForeignKey(p => p.AccommodationId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Notes)
+                    .WithOne(p => p.Accommodation)
+                    .HasForeignKey(p => p.AccommodationId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
 
             modelBuilder.Entity<Company>(entity =>
             {
@@ -104,7 +201,7 @@ namespace TruckMove.API.DAL.Models
 
                 entity.Property(e => e.AccountsEmail).HasMaxLength(100);
 
-               
+
 
                 entity.Property(e => e.CompanyName).HasMaxLength(100);
 
@@ -268,6 +365,64 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Status).HasMaxLength(50);
 
             });
+            modelBuilder.Entity<Checklist>(entity =>
+            {
+                entity.ToTable("Checklist");
+
+
+
+                entity.Property(e => e.IsActive)
+                   .IsRequired()
+                   .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
+
+                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
+
+                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
+
+                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
+
+                entity.Property(e => e.FrontDamage).HasMaxLength(10);
+
+                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
+
+                entity.Property(e => e.IsPre)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.JackAndTools).HasMaxLength(10);
+
+                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
+
+                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
+
+                entity.Property(e => e.Oil).HasMaxLength(10);
+
+                entity.Property(e => e.OwnersManual).HasMaxLength(10);
+
+                entity.Property(e => e.RearDamage).HasMaxLength(10);
+
+                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
+
+                entity.Property(e => e.SpareRim).HasMaxLength(10);
+
+                entity.Property(e => e.TyresCondition).HasMaxLength(10);
+
+                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
+
+                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
+
+                entity.Property(e => e.Water).HasMaxLength(10);
+
+                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
+
+                entity.HasOne(d => d.Job)
+                                   .WithMany(p => p.Checklists)
+                                   .HasForeignKey(d => d.JobId)
+                                   .OnDelete(DeleteBehavior.ClientSetNull)
+                                   .HasConstraintName("FK_PreDepartureChecklist_Jobs");
+            });
             modelBuilder.Entity<Note>(entity =>
 
             {
@@ -278,27 +433,22 @@ namespace TruckMove.API.DAL.Models
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
+                entity.HasOne(d => d.Accommodation)
+                  .WithMany(p => p.Notes)
+                  .HasForeignKey(d => d.AccommodationId)
+                  .HasConstraintName("FK_Notes_Accommodation");
+
+                entity.HasOne(d => d.Checklist)
+                  .WithMany(p => p.Notes)
+                  .HasForeignKey(d => d.ChecklistId)
+                  .HasConstraintName("FK_Notes_Checklist");
+
+                // Update the foreign key configuration
                 entity.HasOne(d => d.Job)
-
-                    .WithMany(p => p.Notes)
-
-                    .HasForeignKey(d => d.JobId)
-
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-
-                    .HasConstraintName("FK_Notes_Jobs");
-
-
-
-                entity.HasOne(d => d.PreDeparturechecklist)
-
-                    .WithMany(p => p.Notes)
-
-                    .HasForeignKey(d => d.PreDeparturechecklistId)
-
-                    .HasConstraintName("FK_Notes_PreDepartureChecklist");
-
-
+                      .WithMany(p => p.Notes)
+                      .HasForeignKey(d => d.JobId)
+                      .HasConstraintName("FK_Notes_Jobs")
+                      .OnDelete(DeleteBehavior.SetNull); // Ensure that the relationship is set to null if the Job is deleted
 
                 entity.HasOne(d => d.Vehicle)
 
@@ -313,113 +463,89 @@ namespace TruckMove.API.DAL.Models
                    .HasForeignKey(d => d.TrailerId)
                    .HasConstraintName("FK_Notes_Trailers");
 
+                entity.HasOne(d => d.PermitAndPlates)
+                   .WithMany(p => p.Notes)
+                   .HasForeignKey(d => d.PermitAndPlatesId)
+                   .HasConstraintName("FK_Notes_PermitsAndPlates");
+
+                entity.HasOne(d => d.PublicTransport)
+                 .WithMany(p => p.Notes)
+                 .HasForeignKey(d => d.PublicTransportId)
+                 .HasConstraintName("FK_Notes_PublicTransport");
+
             });
-
-
-
-            modelBuilder.Entity<PreDepartureChecklist>(entity =>
-
+            modelBuilder.Entity<PermitsAndPlate>(entity =>
             {
-
-                entity.ToTable("PreDepartureChecklist");
-
                 entity.Property(e => e.IsActive)
-                     .IsRequired()
-                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
+                   .IsRequired()
+                   .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
-                entity.HasIndex(e => e.JobId, "UQ_PreDepartureChecklist_JobId")
+                entity.Property(e => e.PermitNumber).HasMaxLength(50);
 
-                    .IsUnique();
+                entity.Property(e => e.PlateNumber).HasMaxLength(50);
 
+                entity.Property(e => e.Type).HasMaxLength(50);
 
-
-                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.FrontDamage).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
-
-
-
-                entity.Property(e => e.JackAndTools).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.Oil).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.OwnersManual).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.RearDamage).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.SpareRim).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.TyresCondition).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.Water).HasMaxLength(10);
-
-
-
-                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
-
-
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.PermitsAndPlates)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_PermitsAndPlates_Users");
 
                 entity.HasOne(d => d.Job)
-
-                    .WithOne(p => p.PreDepartureChecklist)
-
-                    .HasForeignKey<PreDepartureChecklist>(d => d.JobId)
-
+                    .WithMany(p => p.PermitsAndPlates)
+                    .HasForeignKey(d => d.JobId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PermitsAndPlates_Jobs");
 
-                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.PermitsAndPlates)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PermitsAndPlates_TaskStatus");
+
+                entity.HasIndex(e => e.CreatedById, "IX_PermitsAndPlate_CreatedById");
+
+                entity.HasIndex(e => e.UpdatedById, "IX_PermitsAndPlate_UpdatedById");
+
+
+                entity.HasOne(d => d.CreatedBy)
+                   .WithMany(p => p.PermitsAndPlatesCreatedBies)
+                   .HasForeignKey(d => d.CreatedById);
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.PermitsAndPlatesUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById);
+
+                entity.HasMany(d => d.Attachments)
+                    .WithOne(p => p.PermitAndPlate)
+                    .HasForeignKey(p => p.PermitAndPlateId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Notes)
+                    .WithOne(p => p.PermitAndPlates)
+                    .HasForeignKey(p => p.PermitAndPlatesId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
 
             });
+
+
+            modelBuilder.Entity<TaskStatus>(entity =>
+            {
+                entity.ToTable("TaskStatus");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Status).HasMaxLength(50);
+            });
+            modelBuilder.Entity<Variance>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name).HasMaxLength(50);
+            });
+
+
 
 
 
@@ -529,38 +655,10 @@ namespace TruckMove.API.DAL.Models
                      .HasForeignKey<Vehicle>(d => d.JobId)
                      .OnDelete(DeleteBehavior.ClientSetNull);
             });
-            modelBuilder.Entity<VehicleImage>(entity =>
-            {
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
-               
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.VehicleImages)
-                    .HasForeignKey(d => d.VehicleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VehicleImages_Vehicles");
-            });
 
-            modelBuilder.Entity<VehicleNote>(entity =>
-            {
-                entity.Property(e => e.IsVisibleToDriver)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
-
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.VehicleNotes)
-                    .HasForeignKey(d => d.VehicleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VehicleNotes_Vehicles");
-            });
             modelBuilder.Entity<WayPoint>(entity =>
             {
-               
+
                 entity.HasOne(d => d.Job)
 
                     .WithMany(p => p.WayPoints)
@@ -579,6 +677,20 @@ namespace TruckMove.API.DAL.Models
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
+                //  entity.Property(e => e.EndLocation).HasMaxLength(500);
+
+                entity.Property(e => e.EndTime).HasColumnType("datetime");
+
+                entity.Property(e => e.StartLocation).HasMaxLength(500);
+
+                entity.Property(e => e.StartTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Driver)
+                   .WithMany(p => p.Legs)
+                   .HasForeignKey(d => d.DriverId)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_Legs_Users");
+
                 entity.HasOne(d => d.Job)
                     .WithMany(p => p.Legs)
                     .HasForeignKey(d => d.JobId)
@@ -590,6 +702,22 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.Status)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Legs_LegStatus");
+
+                entity.HasOne(d => d.VarianceNavigation)
+                    .WithMany(p => p.Legs)
+                    .HasForeignKey(d => d.Variance)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Legs_Variances");
+
+                entity.HasOne(d => d.CreatedBy)
+                 .WithMany(p => p.LegCreatedBies)
+                 .HasForeignKey(d => d.CreatedById);
+
+               
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.LegUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById);
             });
 
             modelBuilder.Entity<LegStatus>(entity =>
@@ -600,9 +728,7 @@ namespace TruckMove.API.DAL.Models
 
                 entity.Property(e => e.Description).HasMaxLength(200);
 
-                entity.Property(e => e.Status)
-                    .HasMaxLength(20)
-                    .IsFixedLength();
+                entity.Property(e => e.Status).HasMaxLength(20);
             });
             modelBuilder.Entity<Acknowledgement>(entity =>
             {
@@ -610,6 +736,10 @@ namespace TruckMove.API.DAL.Models
 
                 entity.HasIndex(e => e.LegId, "UQ_Acknowledge_LegId")
                     .IsUnique();
+                entity.HasOne(d => d.Job)
+                .WithMany(p => p.Acknowledgements)
+                .HasForeignKey(d => d.JobId)
+                .HasConstraintName("FK_Acknowledgement_Jobs");
 
                 entity.HasOne(d => d.Leg)
                     .WithOne(p => p.Acknowledgement)
@@ -623,6 +753,7 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.IsActive)
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
 
                 entity.Property(e => e.Rego).HasMaxLength(200);
 
@@ -639,6 +770,16 @@ namespace TruckMove.API.DAL.Models
                     .HasForeignKey(d => d.JobId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Trailers_Jobs");
+
+                entity.HasMany(d => d.Images)
+                    .WithOne(p => p.Trailer)
+                    .HasForeignKey(p => p.TrailerId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Notes)
+                    .WithOne(p => p.Trailer)
+                    .HasForeignKey(p => p.TrailerId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<HookupType>(entity =>
@@ -648,6 +789,154 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Description).HasMaxLength(50);
 
                 entity.Property(e => e.Type).HasMaxLength(200);
+            });
+
+
+            modelBuilder.Entity<Attachment>(entity =>
+            {
+                entity.Property(e => e.IsActive)
+                 .IsRequired()
+                 .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.HasOne(d => d.PermitAndPlate)
+                    .WithMany(p => p.Attachments)
+                    .HasForeignKey(d => d.PermitAndPlateId)
+                    .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
+
+                entity.HasOne(d => d.Accommodation)
+                    .WithMany(p => p.Attachments)
+                    .HasForeignKey(d => d.AccommodationId)
+                    .HasConstraintName("FK_TaskAttachments_Accommodation");
+
+                entity.HasOne(d => d.PublicTransport)
+                  .WithMany(p => p.Attachments)
+                  .HasForeignKey(d => d.PublicTransportId)
+                  .HasConstraintName("FK_Attachments_PublicTransport");
+            });
+            modelBuilder.Entity<PublicTransport>(entity =>
+            {
+                entity.Property(e => e.IsActive)
+                .IsRequired()
+                .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.ToTable("PublicTransport");
+
+                entity.Property(e => e.ArrivalDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Daterequired).HasColumnType("datetime");
+
+                entity.Property(e => e.DepartureDateTime).HasColumnType("datetime");
+
+                entity.Property(e => e.ReferenceNumber).HasMaxLength(100);
+
+                entity.Property(e => e.Name).HasMaxLength(100);
+
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.PublicTransportAssigneeNavigations)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_PublicTransport_Users1");
+
+                entity.HasOne(d => d.DriverNavigation)
+                    .WithMany(p => p.PublicTransportDriverNavigations)
+                    .HasForeignKey(d => d.Driver)
+                    .HasConstraintName("FK_PublicTransport_Users");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PublicTransport_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PublicTransport_TaskStatus");
+
+                entity.HasOne(d => d.TransportTypeNavigation)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.TransportType)
+                    .HasConstraintName("FK_PublicTransport_PublicTransportTypes");
+
+                entity.HasOne(d => d.CreatedBy)
+                   .WithMany(p => p.PublicTransportCreatedBies)
+                   .HasForeignKey(d => d.CreatedById);
+
+                //entity.Property(e => e.OrganizeNow)
+                //    .IsRequired()
+                //    .HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.PublicTransportUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById);
+
+
+
+                entity.HasMany(d => d.Attachments)
+                    .WithOne(p => p.PublicTransport)
+                    .HasForeignKey(p => p.PublicTransportId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(d => d.Notes)
+                     .WithOne(p => p.PublicTransport)
+                    .HasForeignKey(p => p.PublicTransportId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<PublicTransportType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Type).HasMaxLength(20);
+            });
+
+            modelBuilder.Entity<Purchase>(entity =>
+            {
+                entity.ToTable("Purchase");
+
+                entity.Property(e => e.IsActive)
+                   .IsRequired()
+                   .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
+                entity.Property(e => e.FromMobile)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+               
+
+                entity.Property(e => e.Vendor).HasMaxLength(200);
+
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.PurchaseAssigneeNavigations)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_Purchase_Users1");
+
+                entity.HasOne(d => d.DriverNavigation)
+                    .WithMany(p => p.PurchaseDriverNavigations)
+                    .HasForeignKey(d => d.Driver)
+                    .HasConstraintName("FK_Purchase_Users");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Purchases)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Purchase_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.Purchases)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Purchase_TaskStatus");
+
+                entity.HasOne(d => d.CreatedBy)
+                 .WithMany(p => p.PurchaseCreatedBies)
+                 .HasForeignKey(d => d.CreatedById);
+
+
+
+                entity.HasOne(d => d.UpdatedBy)
+                    .WithMany(p => p.PurchaseUpdatedBies)
+                    .HasForeignKey(d => d.UpdatedById);
             });
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

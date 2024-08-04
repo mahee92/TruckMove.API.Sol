@@ -18,6 +18,8 @@ namespace TruckMove.API.DAL.dbFirst
         public string? DropOffLocation { get; set; }
         public string? Rego { get; set; }
         public string? Type { get; set; }
+        public string? HookupCoordinate { get; set; }
+        public string? DropoffCoordinate { get; set; }
 
         public virtual HookupType HookupTypeNavigation { get; set; } = null!;
         public virtual Job Job { get; set; } = null!;

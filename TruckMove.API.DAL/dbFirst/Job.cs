@@ -7,10 +7,16 @@ namespace TruckMove.API.DAL.dbFirst
     {
         public Job()
         {
+            Accommodations = new HashSet<Accommodation>();
+            Acknowledgements = new HashSet<Acknowledgement>();
+            Checklists = new HashSet<Checklist>();
             Images = new HashSet<Image>();
             JobContacts = new HashSet<JobContact>();
             Legs = new HashSet<Leg>();
             Notes = new HashSet<Note>();
+            PermitsAndPlates = new HashSet<PermitsAndPlate>();
+            PublicTransports = new HashSet<PublicTransport>();
+            Purchases = new HashSet<Purchase>();
             Trailers = new HashSet<Trailer>();
             WayPoints = new HashSet<WayPoint>();
         }
@@ -35,6 +41,7 @@ namespace TruckMove.API.DAL.dbFirst
         public string? PickupCoordinates { get; set; }
         public string? DropOfCoordinates { get; set; }
         public DateTime? EstimatedDeliveryDate { get; set; }
+        public string? Correspondence { get; set; }
 
         public virtual Company Company { get; set; } = null!;
         public virtual User? ControllerNavigation { get; set; }
@@ -43,12 +50,17 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual JobStatus? StatusNavigation { get; set; }
         public virtual User? UpdatedBy { get; set; }
         public virtual Vehicle? Vehicle { get; set; }
-        public virtual PreDepartureChecklist? PreDepartureChecklist { get; set; }
         public virtual Vehicle? VehicleNavigation { get; set; }
+        public virtual ICollection<Accommodation> Accommodations { get; set; }
+        public virtual ICollection<Acknowledgement> Acknowledgements { get; set; }
+        public virtual ICollection<Checklist> Checklists { get; set; }
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<JobContact> JobContacts { get; set; }
         public virtual ICollection<Leg> Legs { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
+        public virtual ICollection<PermitsAndPlate> PermitsAndPlates { get; set; }
+        public virtual ICollection<PublicTransport> PublicTransports { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; }
         public virtual ICollection<Trailer> Trailers { get; set; }
         public virtual ICollection<WayPoint> WayPoints { get; set; }
     }
