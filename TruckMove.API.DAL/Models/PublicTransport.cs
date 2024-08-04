@@ -4,7 +4,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class PublicTransport : AuditableEntity, IActiveEntity
+    public partial class PublicTransport : AuditableEntity, IActiveEntity, IJobUpdatable
     {
         public PublicTransport()
         {
@@ -43,5 +43,7 @@ namespace TruckMove.API.DAL.Models
         public virtual PublicTransportType? TransportTypeNavigation { get; set; }
 
         public virtual ICollection<Attachment> Attachments { get; set; }
+
+        public bool ShouldUpdateJob => true;
     }
 }

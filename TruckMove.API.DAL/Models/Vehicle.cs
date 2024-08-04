@@ -5,7 +5,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class Vehicle : AuditableEntity, IActiveEntity
+    public partial class Vehicle : AuditableEntity, IActiveEntity, IJobUpdatable
     {
         public Vehicle()
         {
@@ -29,5 +29,7 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Note> Notes { get; set; }
 
         public virtual ICollection<Image> Images { get; set; }
+
+        public bool ShouldUpdateJob => true;
     }
 }

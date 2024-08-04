@@ -5,7 +5,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public  class WayPoint 
+    public  class WayPoint : IJobUpdatable
     {
         public int Id { get; set; }
         public int JobId { get; set; }
@@ -13,6 +13,8 @@ namespace TruckMove.API.DAL.Models
         public string? Coordinates { get; set; }
 
         public virtual Job Job { get; set; } = null!;
-      
+
+        public bool ShouldUpdateJob => true;
+
     }
 }

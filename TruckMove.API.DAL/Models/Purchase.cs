@@ -4,7 +4,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class Purchase : AuditableEntity, IActiveEntity
+    public partial class Purchase : AuditableEntity, IActiveEntity,IJobUpdatable
     {
         public int Id { get; set; }
         public int JobId { get; set; }
@@ -26,5 +26,9 @@ namespace TruckMove.API.DAL.Models
         public virtual User? DriverNavigation { get; set; }
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
+
+        public bool ShouldUpdateJob => true; // This is just a property, not a database column       
+
+        
     }
 }

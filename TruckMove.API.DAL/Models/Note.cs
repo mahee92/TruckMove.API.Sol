@@ -5,7 +5,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class Note : AuditableEntity, IActiveEntity
+    public partial class Note : AuditableEntity, IActiveEntity, IJobUpdatable
     {
         public int Id { get; set; }
         public int? JobId { get; set; }
@@ -31,5 +31,9 @@ namespace TruckMove.API.DAL.Models
         public virtual PublicTransport? PublicTransport { get; set; }
 
         public virtual Checklist? Checklist { get; set; }
+
+        public bool ShouldUpdateJob => true;
+
+        int IJobUpdatable.JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

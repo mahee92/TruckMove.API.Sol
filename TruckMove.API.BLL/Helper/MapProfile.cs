@@ -34,7 +34,7 @@ namespace TruckMove.API.BLL.Helper
             CreateMap<TaskStatus, TaskStatusDto>();
             CreateMap<TaskStatusDto, TaskStatus>();
             CreateMap<User, UserDto>();
-            //
+
             CreateMap<PermitsAndPlate, PermitsAndPlateOutputDto>()
             .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
             .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
@@ -70,7 +70,11 @@ namespace TruckMove.API.BLL.Helper
                 .ForMember(dest => dest.StatusNavigation, opt => opt.MapFrom(src => src.StatusNavigation))
                 .ForMember(dest => dest.Driver, opt => opt.MapFrom(src => src.Driver)
             );
-          
+            CreateMap<JobContact, JobContactDto>();
+            CreateMap<JobContactDto, JobContact>()
+                .ForMember(dest => dest.Contact, opt => opt.MapFrom(src => src.Contact)
+                
+            );
 
         }
 

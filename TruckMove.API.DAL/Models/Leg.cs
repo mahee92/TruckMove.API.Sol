@@ -4,7 +4,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class Leg : AuditableEntity, IActiveEntity
+    public partial class Leg : AuditableEntity, IActiveEntity, IJobUpdatable
     {
         public int Id { get; set; }
         public int JobId { get; set; }
@@ -26,5 +26,7 @@ namespace TruckMove.API.DAL.Models
         public virtual Acknowledgement? Acknowledgement { get; set; }
 
         public virtual User Driver { get; set; } = null!;
+
+        public bool ShouldUpdateJob => true;
     }
 }

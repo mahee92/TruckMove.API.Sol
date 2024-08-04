@@ -91,6 +91,13 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             // string sqlQuery = query.ToQueryString();
             return query;
         }
+        public IQueryable<Job> GetAllAsync()
+        {
+            var query = _dbSet.Where(e => e.IsActive /*&& e.Driver == driverId*/).AsQueryable();
+
+            // string sqlQuery = query.ToQueryString();
+            return query;
+        }
         public async Task<List<WayPoint>> GetWayPointsByJobId(int jobId)
         {
             return await _context.Set<WayPoint>().Where(x => x.JobId == jobId).ToListAsync();

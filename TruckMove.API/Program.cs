@@ -67,7 +67,7 @@ internal class Program
     {
         builder.Services.AddControllers().AddOData(options =>
         {
-            options.Select().Filter().OrderBy().Expand().SetMaxTop(100); // Added Top option
+            options.Select().Filter().OrderBy().Expand().SetMaxTop(1000); // Added Top option
         });
         //.AddNewtonsoftJson(options =>
         //{
