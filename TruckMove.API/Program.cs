@@ -342,7 +342,7 @@ internal class Program
         app.UseAuthorization();
 
         // Custom middleware
-       // app.UseMiddleware<RequestResponseLoggingMiddleware>();
+        app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
         // Configure OData
