@@ -11,9 +11,9 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
     {
         public int Id { get; set; }
 
-        public int JobId { get; set; }
+         public int JobId { get; set; }
         public string Type { get; set; } = null!;
-        public bool OrganizeNow { get; set; }
+        public bool? OrganizeNow { get; set; }
         public int Status { get; set; }
         public int? Assignee { get; set; }
         public string? PermitNumber { get; set; }

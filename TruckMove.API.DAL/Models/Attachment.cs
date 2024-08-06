@@ -4,8 +4,9 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class Attachment : AuditableEntity, IActiveEntity
+    public partial class Attachment : AuditableEntity, IActiveEntity, IJobUpdatable
     {
+
         public int Id { get; set; }
         public int? PermitAndPlateId { get; set; }
         public string? Url { get; set; }
@@ -19,5 +20,10 @@ namespace TruckMove.API.DAL.Models
         public virtual Accommodation? Accommodation { get; set; }
 
         public virtual PublicTransport? PublicTransport { get; set; }
+
+
+        public bool ShouldUpdateJob => true;
+        public int JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
     }
 }

@@ -4,7 +4,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class Checklist : AuditableEntity, IActiveEntity
+    public partial class Checklist : AuditableEntity, IActiveEntity, IJobUpdatable
     {
         public Checklist()
         {
@@ -41,5 +41,7 @@ namespace TruckMove.API.DAL.Models
         public virtual Job Job { get; set; } = null!;
 
         public virtual ICollection<Note> Notes { get; set; }
+
+        public bool ShouldUpdateJob => true;
     }
 }

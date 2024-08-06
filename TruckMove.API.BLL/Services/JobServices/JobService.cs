@@ -245,6 +245,12 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         }
 
+        public IQueryable<JobOutPutDTO> GetAllAsync()
+        {
+            var jobs = _jobRepository.GetAllAsync();
+            return jobs.ProjectTo<JobOutPutDTO>(_mapper.ConfigurationProvider);
+        }
+
         public async Task<Response> IsDriverChangeAllowed(int jobId)
         {
             Response response = new Response();

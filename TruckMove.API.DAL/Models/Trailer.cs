@@ -5,7 +5,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public  class Trailer : AuditableEntity, IActiveEntity
+    public  class Trailer : AuditableEntity, IActiveEntity, IJobUpdatable
     {
         public int Id { get; set; }
         public int HookupType { get; set; }
@@ -25,5 +25,7 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
+
+        public bool ShouldUpdateJob => true;
     }
 }

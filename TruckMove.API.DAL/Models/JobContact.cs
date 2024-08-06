@@ -4,7 +4,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class JobContact : AuditableEntity, IActiveEntity
+    public partial class JobContact : AuditableEntity, IActiveEntity, IJobUpdatable
     {
         public int Id { get; set; }
         public int JobId { get; set; }
@@ -15,6 +15,8 @@ namespace TruckMove.API.DAL.Models
         public virtual Contact Contact { get; set; } = null!;
         public virtual Job Job { get; set; } = null!;
 
-       
+        public bool ShouldUpdateJob => true;
+
+
     }
 }
