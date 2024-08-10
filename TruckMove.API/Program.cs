@@ -28,6 +28,8 @@ using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OData.Edm; // Added for OData
 using TruckMove.API.BLL.Models.TaskDTOs;
+using Microsoft.OpenApi.Any;
+using static TruckMove.API.DAL.MasterData.MasterData;
 //using Newtonsoft.Json.Serialization;
 
 internal class Program
@@ -215,6 +217,24 @@ internal class Program
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 
+            c.MapType<Dictionary<JobStatusEnum, bool>>(() => new OpenApiSchema
+            {
+                Type = "object",
+                AdditionalProperties = new OpenApiSchema
+                {
+                    Type = "boolean"
+                },
+                Properties = Enum.GetValues(typeof(JobStatusEnum))
+          .Cast<JobStatusEnum>()
+          .ToDictionary(
+              status => status.ToString(),
+              status => new OpenApiSchema
+              {
+                  Type = "boolean",
+                  Example = new OpenApiBoolean(false) // Set default value
+              })
+            });
+
             // Add JWT Authentication
             var securityScheme = new OpenApiSecurityScheme
             {
@@ -266,6 +286,8 @@ internal class Program
 
 
             c.AddSecurityRequirement(securityRequirement);
+
+           
         });
 
         builder.Services.AddEndpointsApiExplorer();

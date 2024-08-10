@@ -84,20 +84,20 @@ namespace TruckMove.API.DAL.Models
           new Role { Id = (int)RoleEnum.Driver, RoleName = RoleEnum.Driver.ToString() }
           );
             modelBuilder.Entity<JobStatus>().HasData(
-                   new JobStatus { Id = (int)JobStatusEnum.Planned, Status = JobStatusEnum.Planned.ToString(), Description = "A job that has been created in the system but does not have the minimum required information to complete the booking" },
-                   new JobStatus { Id = (int)JobStatusEnum.Booked, Status = JobStatusEnum.Booked.ToString(), Description = "A job that has the minimum required information (pickup location, dropoff location, vehicle information, assigned driver)" },
-                   new JobStatus { Id = (int)JobStatusEnum.ReadyForPickup, Status = JobStatusEnum.ReadyForPickup.ToString(), Description = "A booked job that is on or passed the pickup date." },
-                   new JobStatus { Id = (int)JobStatusEnum.PreDepartureChecked, Status = JobStatusEnum.PreDepartureChecked.ToString(), Description = "Status once the driver has arrived to pick up the truck and is done the pre departure check" },
-                   new JobStatus { Id = (int)JobStatusEnum.Acknowledged, Status = JobStatusEnum.Acknowledged.ToString(), Description = "Driver has completed the acknowledgement " },
-                   new JobStatus { Id = (int)JobStatusEnum.InProgress, Status = JobStatusEnum.InProgress.ToString(), Description = "A job that is currently in progress" },
-                   new JobStatus { Id = (int)JobStatusEnum.Stopped, Status = JobStatusEnum.Stopped.ToString(), Description = "status when driver stops for the night" },
-                   new JobStatus { Id = (int)JobStatusEnum.Delayed, Status = JobStatusEnum.Delayed.ToString(), Description = "status when driver stops for the night" },
-                   new JobStatus { Id = (int)JobStatusEnum.Arrived, Status = JobStatusEnum.Arrived.ToString(), Description = "A job that has arrived at the destination" },
-                   new JobStatus { Id = (int)JobStatusEnum.ArrivalChecked, Status = JobStatusEnum.ArrivalChecked.ToString(), Description = "status when driver is competed arrival checklist" },
-                   new JobStatus { Id = (int)JobStatusEnum.QADone, Status = JobStatusEnum.QADone.ToString(), Description = "QA completed" },
-                   new JobStatus { Id = (int)JobStatusEnum.PaymentDone, Status = JobStatusEnum.PaymentDone.ToString(), Description = "Payment Done" },
-                   new JobStatus { Id = (int)JobStatusEnum.BillingDone, Status = JobStatusEnum.BillingDone.ToString(), Description = "Billing Done" },
-                   new JobStatus { Id = (int)JobStatusEnum.Completed, Status = JobStatusEnum.Completed.ToString(), Description = "A job that has been completed successfully" }
+                   new JobStatus { Id = (int)JobStatusEnum.Planned, Status = JobStatusEnum.Planned.ToString(), Description = "A job that has been created in the system but does not have the minimum required information to complete the booking",LightColour="red", DarkColour="blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.Booked, Status = JobStatusEnum.Booked.ToString(), Description = "A job that has the minimum required information (pickup location, dropoff location, vehicle information, assigned driver)", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.ReadyForPickup, Status = JobStatusEnum.ReadyForPickup.ToString(), Description = "A booked job that is on or passed the pickup date.", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.PreDepartureChecked, Status = JobStatusEnum.PreDepartureChecked.ToString(), Description = "Status once the driver has arrived to pick up the truck and is done the pre departure check", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.Acknowledged, Status = JobStatusEnum.Acknowledged.ToString(), Description = "Driver has completed the acknowledgement ", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.InProgress, Status = JobStatusEnum.InProgress.ToString(), Description = "A job that is currently in progress", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.Stopped, Status = JobStatusEnum.Stopped.ToString(), Description = "status when driver stops for the night", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.Delayed, Status = JobStatusEnum.Delayed.ToString(), Description = "status when driver stops for the night", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.Arrived, Status = JobStatusEnum.Arrived.ToString(), Description = "A job that has arrived at the destination", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.ArrivalChecked, Status = JobStatusEnum.ArrivalChecked.ToString(), Description = "status when driver is competed arrival checklist", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.QADone, Status = JobStatusEnum.QADone.ToString(), Description = "QA completed", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.PaymentDone, Status = JobStatusEnum.PaymentDone.ToString(), Description = "Payment Done", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.BillingDone, Status = JobStatusEnum.BillingDone.ToString(), Description = "Billing Done", LightColour = "red", DarkColour = "blue" },
+                   new JobStatus { Id = (int)JobStatusEnum.Completed, Status = JobStatusEnum.Completed.ToString(), Description = "A job that has been completed successfully", LightColour = "red", DarkColour = "blue" }
                );
 
             modelBuilder.Entity<LegStatus>().HasData(
@@ -363,6 +363,8 @@ namespace TruckMove.API.DAL.Models
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.Description).HasMaxLength(200);
                 entity.Property(e => e.Status).HasMaxLength(50);
+                entity.Property(e => e.Description).HasMaxLength(200);
+                entity.Property(e => e.LightColour).HasMaxLength(20);
 
             });
             modelBuilder.Entity<Checklist>(entity =>

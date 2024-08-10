@@ -8,6 +8,7 @@ using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.VehicleDtos;
 using TruckMove.API.BLL.Models.VehicleDTOs;
 using TruckMove.API.DAL.Models;
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -40,6 +41,8 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId);
         Task<Response> IsDriverChangeAllowed(int jobId);
+
+        Task<Response> UpdateStatus(int jobId, JobStatusEnum status);
 
         Task<Response<LegHistoryDto>> GetLegHistory(int jobId);
     }

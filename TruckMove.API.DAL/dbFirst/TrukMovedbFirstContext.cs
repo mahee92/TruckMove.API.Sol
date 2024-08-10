@@ -351,7 +351,11 @@
 
 //                entity.Property(e => e.Id).ValueGeneratedNever();
 
+//                entity.Property(e => e.DarkColour).HasMaxLength(20);
+
 //                entity.Property(e => e.Description).HasMaxLength(200);
+
+//                entity.Property(e => e.LightColour).HasMaxLength(20);
 
 //                entity.Property(e => e.Status).HasMaxLength(50);
 //            });

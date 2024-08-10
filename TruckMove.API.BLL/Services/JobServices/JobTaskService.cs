@@ -454,9 +454,31 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         }
 
-       
+
         #endregion
 
+
+        #region MyTasks
+        //get all tasks for a user
+        public async Task<Response<List<MyTaskDto>>> GetMyTasks(int userId)
+        {
+            Response<List<MyTaskDto>> response = new Response<List<MyTaskDto>>();
+            try
+            {
+                var tasks = await _jobRepository.GetMyTasks(userId);
+                response.Objects = _mapper.Map<List<MyTaskDto>>(tasks);
+                response.Success = true;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
+        #endregion
     }
 
 }

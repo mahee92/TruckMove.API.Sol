@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
@@ -23,6 +24,8 @@ namespace TruckMove.API.DAL.Models
 
 
         public bool ShouldUpdateJob => true;
+
+        [NotMapped]
         public int JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     }
