@@ -42,6 +42,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public virtual JobStatusDto? StatusNavigation { get; set; }
 
+        public virtual List<ChecklistDto>? Checklists { get; set; }
+
 
 
     }
