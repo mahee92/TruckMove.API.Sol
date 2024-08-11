@@ -62,17 +62,16 @@ internal class Program
         app.Run();
         Log.CloseAndFlush();
     }
-
+   
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
-        builder.Services.AddControllers().AddOData(options =>
-        {
-            options.Select().Filter().OrderBy().Expand().SetMaxTop(1000); // Added Top option
-        });
-        //.AddNewtonsoftJson(options =>
-        //{
-        //    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-        //});
+        var modelBuilder = new ODataConventionModelBuilder();
+        modelBuilder.EntitySet<JobOutPutDTO>("Test");
+
+        builder.Services.AddControllers().AddOData(
+            options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(
+                "odata",
+                modelBuilder.GetEdmModel()));
 
 
         // Configure CORS
