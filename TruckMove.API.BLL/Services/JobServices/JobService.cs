@@ -139,7 +139,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     response.Object = _mapper.Map<JobDto>(updatedJob);
 
                     //var resStatus = await _masterDataRepository.GetJobStatus((int)status);
-                    //response.Object.JobStatus = status.ToString();
+                    response.Object.JobStatus = status.ToString();
                     response.Success = true;
                 }
 
