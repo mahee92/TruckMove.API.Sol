@@ -6,7 +6,7 @@ namespace TruckMove.API.DAL.Models
 {
     public partial class Accommodation : AuditableEntity, IActiveEntity, IJobUpdatable
     {
-        public bool ShouldUpdateJob => true;
+        //public bool ShouldUpdateJob => true;
         public Accommodation()
         {
             Notes = new HashSet<Note>();

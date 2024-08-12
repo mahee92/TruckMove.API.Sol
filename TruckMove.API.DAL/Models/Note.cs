@@ -32,8 +32,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual Checklist? Checklist { get; set; }
 
-        public bool ShouldUpdateJob => true;
+       // public bool ShouldUpdateJob => true;
 
-        int IJobUpdatable.JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+       // int IJobUpdatable.JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

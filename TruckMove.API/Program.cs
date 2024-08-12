@@ -140,8 +140,7 @@ internal class Program
             profile.CreateGenericMap<Job, JobOutPutDTO>();
             profile.CreateGenericMap<Job, JobDto>();
             profile.CreateGenericMap<VehicleDto, Vehicle>();
-            profile.CreateGenericMap<VehicleOutputDto, Vehicle>();
-            profile.CreateGenericMap<Vehicle, VehicleOutputDto>();
+            
             profile.CreateGenericMap<WayPoint, WayPointDto>();
            
             profile.CreateGenericMap<Note, NoteDto>();

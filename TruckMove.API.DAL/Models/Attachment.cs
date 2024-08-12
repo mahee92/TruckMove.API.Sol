@@ -22,8 +22,8 @@ namespace TruckMove.API.DAL.Models
         public virtual PublicTransport? PublicTransport { get; set; }
 
 
-        public bool ShouldUpdateJob => true;
-        public int JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+       // public bool ShouldUpdateJob => true;
+       // public int JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     }
 }

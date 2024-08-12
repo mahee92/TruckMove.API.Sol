@@ -42,6 +42,6 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Note> Notes { get; set; }
 
-        public bool ShouldUpdateJob => true;
+       // public bool ShouldUpdateJob => true;
     }
 }
