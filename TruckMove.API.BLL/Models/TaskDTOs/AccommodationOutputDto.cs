@@ -10,13 +10,13 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
 {
     public class AccommodationOutputDto : AccommodationDto
     {
-        public virtual ICollection<AttachmentDto>? Attachments { get; set; }
+        public virtual ICollection<AttachmentDto> Attachments { get; set; }
 
-        public virtual ICollection<NoteDto>? Notes { get; set; }
+        public virtual ICollection<NoteDto> Notes { get; set; }
 
         public virtual UserDto? AssigneeNavigation { get; set; }
         public virtual UserDto? DriverNavigation { get; set; }
       
-        public virtual TaskStatusDto? StatusNavigation { get; set; } = null!;
+        public virtual TaskStatusDto StatusNavigation { get; set; } = null!;
     }
 }

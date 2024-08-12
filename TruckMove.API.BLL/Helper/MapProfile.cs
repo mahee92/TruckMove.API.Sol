@@ -9,7 +9,6 @@ using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.TaskDTOs;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Models.VehicleDtos;
-using TruckMove.API.BLL.Models.VehicleDTOs;
 using TruckMove.API.DAL.Models;
 using TaskStatus = TruckMove.API.DAL.Models.TaskStatus;
 
@@ -31,12 +30,6 @@ namespace TruckMove.API.BLL.Helper
              .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes)
              );
             CreateMap<Vehicle, VehicleDto>();
-            CreateMap<VehicleOutputDto, Vehicle>();
-            CreateMap<Vehicle, VehicleOutputDto>()
-                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes)
-            );
-
-
 
             CreateMap<TaskStatus, TaskStatusDto>();
             CreateMap<TaskStatusDto, TaskStatus>();

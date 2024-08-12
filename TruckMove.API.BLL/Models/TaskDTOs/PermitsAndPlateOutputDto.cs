@@ -10,12 +10,12 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
 {
     public class PermitsAndPlateOutputDto :PermitsAndPlateDto
     {
-        public virtual ICollection<AttachmentDto>? Attachments { get; set; }
+        public virtual ICollection<AttachmentDto> Attachments { get; set; }
 
-        public virtual ICollection<NoteDto>? Notes { get; set; }
+        public virtual ICollection<NoteDto> Notes { get; set; }
 
         public virtual UserDto? AssigneeNavigation { get; set; }
 
-        public virtual TaskStatusDto? StatusNavigation { get; set; }
+        public virtual TaskStatusDto StatusNavigation { get; set; }
     }
 }

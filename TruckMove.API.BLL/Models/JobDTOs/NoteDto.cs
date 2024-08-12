@@ -12,7 +12,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         public int? JobId { get; set; }
         public int? VehicleId { get; set; }
         public int? TrailerId { get; set; }
-
+       
         public int? ChecklistId { get; set; }
         public bool? VisibletoDriver { get; set; }
 
@@ -21,7 +21,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         public int? PublicTransportId { get; set; }
         public string? NoteText { get; set; }
 
-
+       
 
     }
 }

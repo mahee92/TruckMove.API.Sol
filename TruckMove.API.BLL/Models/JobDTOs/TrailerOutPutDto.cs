@@ -11,9 +11,9 @@ namespace TruckMove.API.BLL.Models.JobDTOs
     public class TrailerOutPutDto : TrailerDto
     {
         
-        public virtual HookupType? HookupTypeNavigation { get; set; } = null!;
-        public virtual List<NoteDto>? Notes { get; set; }
-        public virtual List<ImageDto>? Images { get; set; }
+        public virtual HookupType HookupTypeNavigation { get; set; } = null!;
+        public virtual List<NoteDto> Notes { get; set; }
+        public virtual List<ImageDto> Images { get; set; }
 
        
     }

@@ -44,7 +44,7 @@ internal class Program
           .Enrich.FromLogContext()
           .CreateLogger(); ;
 
-        Log.Logger = logger; // Set tZZfZzzzZ0ZZZjj
+        Log.Logger = logger; // Set the global logger
 
         builder.Logging.ClearProviders();
         builder.Logging.AddSerilog(logger);

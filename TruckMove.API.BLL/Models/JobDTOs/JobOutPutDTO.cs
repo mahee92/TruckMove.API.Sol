@@ -32,7 +32,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public virtual List<PurchaseOutputDto>? Purchases { get; set; }
 
-        public virtual List<NoteDto>? Notes { get; set; }
+        public virtual ICollection<NoteDto>? Notes { get; set; }
 
         public DateTime? LastModifiedDate { get; set; }
 
