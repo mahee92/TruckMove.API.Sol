@@ -33,7 +33,7 @@ namespace TruckMove.API.BLL.Helper
             CreateMap<Vehicle, VehicleDto>();
             CreateMap<VehicleOutputDto, Vehicle>();
             CreateMap<Vehicle, VehicleOutputDto>()
-                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes)
+                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
                 .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images)
             );
 
