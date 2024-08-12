@@ -189,32 +189,32 @@ namespace TruckMove.API.BLL.Services.JobServices
             {
 
 
-                var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
-                                                                            "Company",
-                                                                            "VehicleNavigation.Notes",
-                                                                            "VehicleNavigation.Images",
+                var job = await _repository.GetWithNestedIncludesAsync(id, "Company"
+                                                                            ,"JobContacts.Contact",
+                                                                            "VehicleNavigation",
+                                                                           // "VehicleNavigation.Images",
                                                                             "Trailers.Images",
                                                                             "Trailers.Notes",
                                                                             "WayPoints",
                                                                             "PermitsAndPlates.Attachments",
-                                                                            "PermitsAndPlates.Notes",
-                                                                            "PermitsAndPlates.AssigneeNavigation",
-                                                                            "PermitsAndPlates.StatusNavigation",
-                                                                            "Accommodations.Attachments",
-                                                                            "Accommodations.Notes",
-                                                                            "Accommodations.AssigneeNavigation",
-                                                                            "Accommodations.StatusNavigation",
-                                                                            "Accommodations.DriverNavigation",
-                                                                            "Accommodations.Attachments",
-                                                                            "PublicTransports.Notes",
-                                                                            "PublicTransports.AssigneeNavigation",
-                                                                            "PublicTransports.StatusNavigation",
-                                                                            "PublicTransports.DriverNavigation",
-                                                                            "PublicTransports.Attachments",
-                                                                            "Purchases.AssigneeNavigation",
-                                                                            "Purchases.StatusNavigation",
-                                                                            "Purchases.DriverNavigation",
-                                                                            "Notes"
+                                                                            "PermitsAndPlates.Notes"//,
+                                                                            //"PermitsAndPlates.AssigneeNavigation",
+                                                                            //"PermitsAndPlates.StatusNavigation",
+                                                                            //"Accommodations.Attachments",
+                                                                            //"Accommodations.Notes",
+                                                                            //"Accommodations.AssigneeNavigation",
+                                                                            //"Accommodations.StatusNavigation",
+                                                                            //"Accommodations.DriverNavigation",
+                                                                            //"Accommodations.Attachments",
+                                                                            //"PublicTransports.Notes",
+                                                                            //"PublicTransports.AssigneeNavigation",
+                                                                            //"PublicTransports.StatusNavigation",
+                                                                            //"PublicTransports.DriverNavigation",
+                                                                            //"PublicTransports.Attachments",
+                                                                            //"Purchases.AssigneeNavigation",
+                                                                            //"Purchases.StatusNavigation",
+                                                                            //"Purchases.DriverNavigation",
+                                                                            //"Notes"
                                                                             );
 
                 if (job == null)
@@ -418,7 +418,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     await _repository.UpdateAsync(job);
 
-                    response.Object.JobStatus = status.ToString();
+                  //  response.Object.JobStatus = status.ToString();
                 }
 
                 return response;
