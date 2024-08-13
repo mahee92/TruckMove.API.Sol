@@ -4,7 +4,7 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public  class PermitsAndPlate : AuditableEntity, IActiveEntity, IJobUpdatable
+    public  class PermitsAndPlate : AuditableEntity, IActiveEntity
     {
         //public bool ShouldUpdateJob => true;
         public PermitsAndPlate()

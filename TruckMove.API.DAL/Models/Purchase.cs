@@ -27,7 +27,7 @@ namespace TruckMove.API.DAL.Models
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
 
-       // public bool ShouldUpdateJob => true; // This is just a property, not a database column       
+        public bool ShouldUpdateJob => true; // This is just a property, not a database column       
 
         
     }

@@ -68,7 +68,10 @@ internal class Program
         var modelBuilder = new ODataConventionModelBuilder();
         modelBuilder.EntitySet<JobOutPutDTO>("Test");
 
-        builder.Services.AddControllers().AddOData(
+        builder.Services.AddControllers(options =>
+        {
+            options.Filters.Add<ODataExceptionFilter>();
+        }).AddOData(
             options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(
                 "odata",
                 modelBuilder.GetEdmModel()));
@@ -309,6 +312,7 @@ internal class Program
         builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();
 
         builder.Services.AddScoped<ValidateDriverChangeAttributeFilter>();
+        builder.Services.AddScoped<ODataExceptionFilter>();
     }
     private static void ConfigureMiddleware(WebApplication app, IConfiguration configuration)
     {
@@ -340,7 +344,8 @@ internal class Program
         app.UseAuthorization();
 
         // Custom middleware
-       // app.UseMiddleware<RequestResponseLoggingMiddleware>();
+        app.UseMiddleware<GlobalExceptionMiddleware>();
+        // app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
         // Configure OData

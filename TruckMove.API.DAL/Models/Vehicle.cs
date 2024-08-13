@@ -9,8 +9,9 @@ namespace TruckMove.API.DAL.Models
     {
         public Vehicle()
         {
-           
-           
+
+            Notes = new HashSet<Note>();
+            Images = new HashSet<Image>();
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -30,6 +31,6 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Image> Images { get; set; }
 
-        //public bool ShouldUpdateJob => true;
+        public bool ShouldUpdateJob => true;
     }
 }

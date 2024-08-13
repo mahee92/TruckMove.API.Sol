@@ -9,8 +9,8 @@ namespace TruckMove.API.DAL.Repositories
 {
     public interface IJobUpdatable
     {
-      // int JobId { get; set; }
-        ////bool ShouldUpdateJob { get; }
+       int JobId { get; set; }
+       bool ShouldUpdateJob { get; }
         
     }
 }

@@ -14,7 +14,7 @@ namespace TruckMove.API.DAL.Models
 
         public virtual Job Job { get; set; } = null!;
 
-        //public bool ShouldUpdateJob => true;
+        public bool ShouldUpdateJob => true;
 
     }
 }

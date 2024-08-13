@@ -9,6 +9,7 @@ using TruckMove.API.Settings;
 
 namespace TruckMove.API.Controllers.JobControllers
 {
+    [ServiceFilter(typeof(ODataExceptionFilter))]
     public class TestController : ODataController
     {
         private readonly IAuthUserService _authUserService;

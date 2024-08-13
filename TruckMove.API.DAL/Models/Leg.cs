@@ -27,6 +27,6 @@ namespace TruckMove.API.DAL.Models
 
         public virtual User Driver { get; set; } = null!;
 
-        //public bool ShouldUpdateJob => true;
+        public bool ShouldUpdateJob => true;
     }
 }

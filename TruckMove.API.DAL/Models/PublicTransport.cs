@@ -44,6 +44,6 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Attachment> Attachments { get; set; }
 
-        //public bool ShouldUpdateJob => true;
+        public bool ShouldUpdateJob => true;
     }
 }

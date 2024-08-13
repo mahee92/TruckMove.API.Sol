@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
@@ -22,8 +23,10 @@ namespace TruckMove.API.DAL.Models
         public virtual PublicTransport? PublicTransport { get; set; }
 
 
-       // public bool ShouldUpdateJob => true;
-       // public int JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool ShouldUpdateJob => true;
+ 
+       [NotMapped]
+       public int JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     }
 }
