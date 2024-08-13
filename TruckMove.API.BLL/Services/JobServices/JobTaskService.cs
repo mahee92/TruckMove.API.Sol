@@ -11,8 +11,7 @@ using TruckMove.API.DAL.Repositories;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.VehicleDtos;
-
-
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -26,7 +25,8 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<Accommodation> _repositoryAccommodation;
         private readonly IRepository<PublicTransport> _repositoryPublicTransport;
         private readonly IRepository<Purchase> _repositoryPurchase;
-        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation, IRepository<PublicTransport> repositoryPublicTransport, IRepository<Purchase> repositoryPurchase)
+        private readonly ITaskRepository _taskRepository;
+        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation, IRepository<PublicTransport> repositoryPublicTransport, IRepository<Purchase> repositoryPurchase, ITaskRepository taskRepository)
         {
             _mapper = mapper;
             _repository = repository;
@@ -36,6 +36,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryAccommodation = repositoryAccomadation;
             _repositoryPublicTransport = repositoryPublicTransport;
             _repositoryPurchase = repositoryPurchase;
+            _taskRepository = taskRepository;
 
 
         }
@@ -460,22 +461,65 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         #region MyTasks
         //get all tasks for a user
-        public async Task<Response<List<MyTaskDto>>> GetMyTasks(int userId)
+        public async Task<Response<MyTaskDto>> GetMyTasks(int userId)
         {
-            Response<List<MyTaskDto>> response = new Response<List<MyTaskDto>>();
+            var response = new Response<MyTaskDto>();
+
             try
             {
-                var tasks = await _jobRepository.GetMyTasks(userId);
-                response.Objects = _mapper.Map<List<MyTaskDto>>(tasks);
+                var permitTasks = _taskRepository.GetPermitsAndPlateTasksByUserId(userId);
+                var accommodationTasks = _taskRepository.GetAccommodationTasksByUserId(userId);
+                var publicTransportTasks = _taskRepository.GetPublicTransportTasksByUserId(userId);
+                var purchaseTasks = _taskRepository.GetPurchaseTasksByUserId(userId);
+                var jobTasks = _taskRepository.GetJobTasksByUserId(userId);
+
+                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, jobTasks);
+
+                // Now use the results
+                var permitsResult = await permitTasks;
+                var accommodationsResult = await accommodationTasks;
+                var publicTransportsResult = await publicTransportTasks;
+                var purchasesResult = await purchaseTasks;
+                var jobsResult = await jobTasks;
+
+                // Now you can proceed with mapping and adding to the response
+                AddMappedTasksToResponse(response.Object.PermitsAndPlates, permitsResult);
+                AddMappedTasksToResponse(response.Object.Accommodations, accommodationsResult);
+                AddMappedTasksToResponse(response.Object.PublicTransports, publicTransportsResult);
+                AddMappedTasksToResponse(response.Object.Purchases, purchasesResult);
+
+                if (jobsResult != null && jobsResult.Any())
+                {
+                    response.Object.JobTasks = jobsResult.ToDictionary(
+                        task => task.Id,
+                        task => task.Status switch
+                        {
+                            (int)JobStatusEnum.Arrived => "QA Task",
+                            (int)JobStatusEnum.QADone => "Payment Task",
+                            (int)JobStatusEnum.PaymentDone => "Billing Task",
+                            _ => "Hide"
+                        }
+                    );
+                }
+
+               
                 response.Success = true;
-                return response;
             }
             catch (Exception ex)
             {
                 response.Success = false;
                 response.ErrorType = ErrorCode.dbError;
                 response.ErrorMessage = ex.Message;
-                return response;
+            }
+
+            return response;
+        }
+
+        private void AddMappedTasksToResponse<TInput, TOutput>(List<TOutput> destinationList, List<TInput> sourceList)
+        {
+            if (sourceList != null && sourceList.Any())
+            {
+                destinationList.AddRange(_mapper.Map<List<TOutput>>(sourceList));
             }
         }
         #endregion
