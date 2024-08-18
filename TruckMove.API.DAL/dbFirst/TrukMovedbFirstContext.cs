@@ -1,729 +1,745 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-
-namespace TruckMove.API.DAL.dbFirst
-{
-    public partial class TrukMovedbFirstContext : DbContext
-    {
-        public TrukMovedbFirstContext()
-        {
-        }
-
-        public TrukMovedbFirstContext(DbContextOptions<TrukMovedbFirstContext> options)
-            : base(options)
-        {
-        }
-
-        public virtual DbSet<Accommodation> Accommodations { get; set; } = null!;
-        public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
-        public virtual DbSet<Attachment> Attachments { get; set; } = null!;
-        public virtual DbSet<Checklist> Checklists { get; set; } = null!;
-        public virtual DbSet<Company> Companies { get; set; } = null!;
-        public virtual DbSet<Contact> Contacts { get; set; } = null!;
-        public virtual DbSet<HookupType> HookupTypes { get; set; } = null!;
-        public virtual DbSet<Image> Images { get; set; } = null!;
-        public virtual DbSet<Job> Jobs { get; set; } = null!;
-        public virtual DbSet<JobContact> JobContacts { get; set; } = null!;
-        public virtual DbSet<JobSequence> JobSequences { get; set; } = null!;
-        public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
-        public virtual DbSet<Leg> Legs { get; set; } = null!;
-        public virtual DbSet<LegStatus> LegStatuses { get; set; } = null!;
-        public virtual DbSet<Note> Notes { get; set; } = null!;
-        public virtual DbSet<PermitsAndPlate> PermitsAndPlates { get; set; } = null!;
-        public virtual DbSet<PublicTransport> PublicTransports { get; set; } = null!;
-        public virtual DbSet<PublicTransportType> PublicTransportTypes { get; set; } = null!;
-        public virtual DbSet<Purchase> Purchases { get; set; } = null!;
-        public virtual DbSet<Role> Roles { get; set; } = null!;
-        public virtual DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
-        public virtual DbSet<Trailer> Trailers { get; set; } = null!;
-        public virtual DbSet<User> Users { get; set; } = null!;
-        public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
-        public virtual DbSet<Variance> Variances { get; set; } = null!;
-        public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
-        public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
-        public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
-        public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-dbFirst;Trusted_Connection=True;");
-            }
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Accommodation>(entity =>
-            {
-                entity.ToTable("Accommodation");
-
-                entity.Property(e => e.BookingDate).HasColumnType("datetime");
-
-                entity.Property(e => e.Email).HasMaxLength(50);
-
-                entity.Property(e => e.PhoneNumber).HasMaxLength(50);
-
-                entity.Property(e => e.ReferenceNumber).HasMaxLength(50);
-
-                entity.HasOne(d => d.AssigneeNavigation)
-                    .WithMany(p => p.AccommodationAssigneeNavigations)
-                    .HasForeignKey(d => d.Assignee)
-                    .HasConstraintName("FK_Accommodation_Users1");
-
-                entity.HasOne(d => d.DriverNavigation)
-                    .WithMany(p => p.AccommodationDriverNavigations)
-                    .HasForeignKey(d => d.Driver)
-                    .HasConstraintName("FK_Accommodation_Users");
-
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.Accommodations)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Accommodation_Jobs");
-
-                entity.HasOne(d => d.StatusNavigation)
-                    .WithMany(p => p.Accommodations)
-                    .HasForeignKey(d => d.Status)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Accommodation_TaskStatus");
-            });
-
-            modelBuilder.Entity<Acknowledgement>(entity =>
-            {
-                entity.ToTable("Acknowledgement");
-
-                entity.HasIndex(e => e.LegId, "UQ_Acknowledge_LegId")
-                    .IsUnique();
-
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.Acknowledgements)
-                    .HasForeignKey(d => d.JobId)
-                    .HasConstraintName("FK_Acknowledgement_Jobs");
+﻿//using System;
+//using System.Collections.Generic;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore.Metadata;
+
+//namespace TruckMove.API.DAL.dbFirst
+//{
+//    public partial class TrukMovedbFirstContext : DbContext
+//    {
+//        public TrukMovedbFirstContext()
+//        {
+//        }
+
+//        public TrukMovedbFirstContext(DbContextOptions<TrukMovedbFirstContext> options)
+//            : base(options)
+//        {
+//        }
+
+//        public virtual DbSet<Accommodation> Accommodations { get; set; } = null!;
+//        public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
+//        public virtual DbSet<Attachment> Attachments { get; set; } = null!;
+//        public virtual DbSet<CheckListImage> CheckListImages { get; set; } = null!;
+//        public virtual DbSet<Checklist> Checklists { get; set; } = null!;
+//        public virtual DbSet<Company> Companies { get; set; } = null!;
+//        public virtual DbSet<Contact> Contacts { get; set; } = null!;
+//        public virtual DbSet<HookupType> HookupTypes { get; set; } = null!;
+//        public virtual DbSet<Image> Images { get; set; } = null!;
+//        public virtual DbSet<Job> Jobs { get; set; } = null!;
+//        public virtual DbSet<JobContact> JobContacts { get; set; } = null!;
+//        public virtual DbSet<JobSequence> JobSequences { get; set; } = null!;
+//        public virtual DbSet<JobStatus> JobStatuses { get; set; } = null!;
+//        public virtual DbSet<Leg> Legs { get; set; } = null!;
+//        public virtual DbSet<LegStatus> LegStatuses { get; set; } = null!;
+//        public virtual DbSet<Note> Notes { get; set; } = null!;
+//        public virtual DbSet<PermitsAndPlate> PermitsAndPlates { get; set; } = null!;
+//        public virtual DbSet<PublicTransport> PublicTransports { get; set; } = null!;
+//        public virtual DbSet<PublicTransportType> PublicTransportTypes { get; set; } = null!;
+//        public virtual DbSet<Purchase> Purchases { get; set; } = null!;
+//        public virtual DbSet<Role> Roles { get; set; } = null!;
+//        public virtual DbSet<TaskStatus> TaskStatuses { get; set; } = null!;
+//        public virtual DbSet<Trailer> Trailers { get; set; } = null!;
+//        public virtual DbSet<User> Users { get; set; } = null!;
+//        public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
+//        public virtual DbSet<Variance> Variances { get; set; } = null!;
+//        public virtual DbSet<Vehicle> Vehicles { get; set; } = null!;
+//        public virtual DbSet<VehicleImage> VehicleImages { get; set; } = null!;
+//        public virtual DbSet<VehicleNote> VehicleNotes { get; set; } = null!;
+//        public virtual DbSet<WayPoint> WayPoints { get; set; } = null!;
+
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+//                optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-dbFirst;Trusted_Connection=True;");
+//            }
+//        }
+
+//        protected override void OnModelCreating(ModelBuilder modelBuilder)
+//        {
+//            modelBuilder.Entity<Accommodation>(entity =>
+//            {
+//                entity.ToTable("Accommodation");
+
+//                entity.Property(e => e.BookingDate).HasColumnType("datetime");
+
+//                entity.Property(e => e.Email).HasMaxLength(50);
+
+//                entity.Property(e => e.PhoneNumber).HasMaxLength(50);
+
+//                entity.Property(e => e.ReferenceNumber).HasMaxLength(50);
+
+//                entity.HasOne(d => d.AssigneeNavigation)
+//                    .WithMany(p => p.AccommodationAssigneeNavigations)
+//                    .HasForeignKey(d => d.Assignee)
+//                    .HasConstraintName("FK_Accommodation_Users1");
+
+//                entity.HasOne(d => d.DriverNavigation)
+//                    .WithMany(p => p.AccommodationDriverNavigations)
+//                    .HasForeignKey(d => d.Driver)
+//                    .HasConstraintName("FK_Accommodation_Users");
+
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Accommodations)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Accommodation_Jobs");
+
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.Accommodations)
+//                    .HasForeignKey(d => d.Status)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Accommodation_TaskStatus");
+//            });
+
+//            modelBuilder.Entity<Acknowledgement>(entity =>
+//            {
+//                entity.ToTable("Acknowledgement");
+
+//                entity.HasIndex(e => e.LegId, "UQ_Acknowledge_LegId")
+//                    .IsUnique();
 
-                entity.HasOne(d => d.Leg)
-                    .WithOne(p => p.Acknowledgement)
-                    .HasForeignKey<Acknowledgement>(d => d.LegId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Acknowledgement_Legs");
-            });
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Acknowledgements)
+//                    .HasForeignKey(d => d.JobId)
+//                    .HasConstraintName("FK_Acknowledgement_Jobs");
 
-            modelBuilder.Entity<Attachment>(entity =>
-            {
-                entity.HasOne(d => d.Accommodation)
-                    .WithMany(p => p.Attachments)
-                    .HasForeignKey(d => d.AccommodationId)
-                    .HasConstraintName("FK_TaskAttachments_Accommodation");
+//                entity.HasOne(d => d.Leg)
+//                    .WithOne(p => p.Acknowledgement)
+//                    .HasForeignKey<Acknowledgement>(d => d.LegId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Acknowledgement_Legs");
+//            });
 
-                entity.HasOne(d => d.PermitAndPlate)
-                    .WithMany(p => p.Attachments)
-                    .HasForeignKey(d => d.PermitAndPlateId)
-                    .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
+//            modelBuilder.Entity<Attachment>(entity =>
+//            {
+//                entity.HasOne(d => d.Accommodation)
+//                    .WithMany(p => p.Attachments)
+//                    .HasForeignKey(d => d.AccommodationId)
+//                    .HasConstraintName("FK_TaskAttachments_Accommodation");
 
-                entity.HasOne(d => d.PublicTransport)
-                    .WithMany(p => p.Attachments)
-                    .HasForeignKey(d => d.PublicTransportId)
-                    .HasConstraintName("FK_Attachments_PublicTransport");
-            });
+//                entity.HasOne(d => d.PermitAndPlate)
+//                    .WithMany(p => p.Attachments)
+//                    .HasForeignKey(d => d.PermitAndPlateId)
+//                    .HasConstraintName("FK_TaskAttachments_PermitsAndPlates");
 
-            modelBuilder.Entity<Checklist>(entity =>
-            {
-                entity.ToTable("Checklist");
+//                entity.HasOne(d => d.PublicTransport)
+//                    .WithMany(p => p.Attachments)
+//                    .HasForeignKey(d => d.PublicTransportId)
+//                    .HasConstraintName("FK_Attachments_PublicTransport");
+//            });
 
-                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
+//            modelBuilder.Entity<CheckListImage>(entity =>
+//            {
+//                entity.Property(e => e.Url).HasColumnName("url");
 
-                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
+//                entity.HasOne(d => d.Checklist)
+//                    .WithMany(p => p.CheckListImages)
+//                    .HasForeignKey(d => d.ChecklistId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_CheckListPhotos_Checklist");
+//            });
 
-                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
+//            modelBuilder.Entity<Checklist>(entity =>
+//            {
+//                entity.ToTable("Checklist");
 
-                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
+//                entity.Property(e => e.AirAndElectrics).HasMaxLength(10);
 
-                entity.Property(e => e.FrontDamage).HasMaxLength(10);
+//                entity.Property(e => e.AllLightsAndIndicators).HasMaxLength(10);
 
-                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
+//                entity.Property(e => e.CheckInsideTruckTrailer).HasMaxLength(10);
 
-                entity.Property(e => e.IsPre)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
+//                entity.Property(e => e.CheckTruckHeight).HasMaxLength(10);
 
-                entity.Property(e => e.JackAndTools).HasMaxLength(10);
+//                entity.Property(e => e.FrontDamage).HasMaxLength(10);
 
-                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
+//                entity.Property(e => e.FuelLevel).HasColumnType("decimal(5, 2)");
 
-                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
+//                entity.Property(e => e.IsPre)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("((1))");
 
-                entity.Property(e => e.Oil).HasMaxLength(10);
+//                entity.Property(e => e.JackAndTools).HasMaxLength(10);
 
-                entity.Property(e => e.OwnersManual).HasMaxLength(10);
+//                entity.Property(e => e.KeysFobTotalKeys).HasMaxLength(10);
 
-                entity.Property(e => e.RearDamage).HasMaxLength(10);
+//                entity.Property(e => e.LeftHandDamage).HasMaxLength(10);
 
-                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
+//                entity.Property(e => e.Oil).HasMaxLength(10);
 
-                entity.Property(e => e.SpareRim).HasMaxLength(10);
+//                entity.Property(e => e.OwnersManual).HasMaxLength(10);
 
-                entity.Property(e => e.TyresCondition).HasMaxLength(10);
+//                entity.Property(e => e.RearDamage).HasMaxLength(10);
 
-                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
+//                entity.Property(e => e.RightHandDamage).HasMaxLength(10);
 
-                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
+//                entity.Property(e => e.SpareRim).HasMaxLength(10);
 
-                entity.Property(e => e.Water).HasMaxLength(10);
+//                entity.Property(e => e.TyresCondition).HasMaxLength(10);
 
-                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
+//                entity.Property(e => e.VehicleCleanFreeOfRubbish).HasMaxLength(10);
 
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.Checklists)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
-            });
+//                entity.Property(e => e.VisuallyDipAndCheckTaps).HasMaxLength(10);
 
-            modelBuilder.Entity<Company>(entity =>
-            {
-                entity.HasIndex(e => e.CreatedById, "IX_Companies_CreatedById");
+//                entity.Property(e => e.Water).HasMaxLength(10);
 
-                entity.HasIndex(e => e.UpdatedById, "IX_Companies_UpdatedById");
+//                entity.Property(e => e.WindscreenDamageWipers).HasMaxLength(10);
 
-                entity.Property(e => e.AccountsEmail).HasMaxLength(100);
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Checklists)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_PreDepartureChecklist_Jobs");
+//            });
 
-                entity.Property(e => e.CompanyAbn).HasColumnName("CompanyABN");
+//            modelBuilder.Entity<Company>(entity =>
+//            {
+//                entity.HasIndex(e => e.CreatedById, "IX_Companies_CreatedById");
 
-                entity.Property(e => e.CompanyName).HasMaxLength(100);
+//                entity.HasIndex(e => e.UpdatedById, "IX_Companies_UpdatedById");
 
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+//                entity.Property(e => e.AccountsEmail).HasMaxLength(100);
 
-                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+//                entity.Property(e => e.CompanyAbn).HasColumnName("CompanyABN");
 
-                entity.Property(e => e.PrimaryEmail).HasMaxLength(100);
+//                entity.Property(e => e.CompanyName).HasMaxLength(100);
 
-                entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.CompanyCreatedBies)
-                    .HasForeignKey(d => d.CreatedById);
+//                entity.Property(e => e.IsActive)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
-                entity.HasOne(d => d.UpdatedBy)
-                    .WithMany(p => p.CompanyUpdatedBies)
-                    .HasForeignKey(d => d.UpdatedById);
-            });
+//                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-            modelBuilder.Entity<Contact>(entity =>
-            {
-                entity.HasIndex(e => e.CompanyId, "IX_Contacts_CompanyId");
+//                entity.Property(e => e.PrimaryEmail).HasMaxLength(100);
 
-                entity.HasIndex(e => e.CreatedById, "IX_Contacts_CreatedById");
+//                entity.HasOne(d => d.CreatedBy)
+//                    .WithMany(p => p.CompanyCreatedBies)
+//                    .HasForeignKey(d => d.CreatedById);
 
-                entity.HasIndex(e => e.UpdatedById, "IX_Contacts_UpdatedById");
+//                entity.HasOne(d => d.UpdatedBy)
+//                    .WithMany(p => p.CompanyUpdatedBies)
+//                    .HasForeignKey(d => d.UpdatedById);
+//            });
 
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+//            modelBuilder.Entity<Contact>(entity =>
+//            {
+//                entity.HasIndex(e => e.CompanyId, "IX_Contacts_CompanyId");
 
-                entity.HasOne(d => d.Company)
-                    .WithMany(p => p.Contacts)
-                    .HasForeignKey(d => d.CompanyId);
+//                entity.HasIndex(e => e.CreatedById, "IX_Contacts_CreatedById");
 
-                entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.ContactCreatedBies)
-                    .HasForeignKey(d => d.CreatedById);
+//                entity.HasIndex(e => e.UpdatedById, "IX_Contacts_UpdatedById");
 
-                entity.HasOne(d => d.UpdatedBy)
-                    .WithMany(p => p.ContactUpdatedBies)
-                    .HasForeignKey(d => d.UpdatedById);
-            });
+//                entity.Property(e => e.IsActive)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
-            modelBuilder.Entity<HookupType>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.HasOne(d => d.Company)
+//                    .WithMany(p => p.Contacts)
+//                    .HasForeignKey(d => d.CompanyId);
 
-                entity.Property(e => e.Description).HasMaxLength(50);
+//                entity.HasOne(d => d.CreatedBy)
+//                    .WithMany(p => p.ContactCreatedBies)
+//                    .HasForeignKey(d => d.CreatedById);
 
-                entity.Property(e => e.Type).HasMaxLength(200);
-            });
+//                entity.HasOne(d => d.UpdatedBy)
+//                    .WithMany(p => p.ContactUpdatedBies)
+//                    .HasForeignKey(d => d.UpdatedById);
+//            });
 
-            modelBuilder.Entity<Image>(entity =>
-            {
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.Images)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Images_Jobs");
+//            modelBuilder.Entity<HookupType>(entity =>
+//            {
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.HasOne(d => d.Trailer)
-                    .WithMany(p => p.Images)
-                    .HasForeignKey(d => d.TrailerId)
-                    .HasConstraintName("FK_Images_Trailers");
+//                entity.Property(e => e.Description).HasMaxLength(50);
 
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.Images)
-                    .HasForeignKey(d => d.VehicleId)
-                    .HasConstraintName("FK_Images_Vehicles");
-            });
+//                entity.Property(e => e.Type).HasMaxLength(200);
+//            });
 
-            modelBuilder.Entity<Job>(entity =>
-            {
-                entity.HasIndex(e => e.CompanyId, "IX_Jobs_CompanyId");
+//            modelBuilder.Entity<Image>(entity =>
+//            {
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Images)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Images_Jobs");
 
-                entity.HasIndex(e => e.Controller, "IX_Jobs_Controller");
+//                entity.HasOne(d => d.Trailer)
+//                    .WithMany(p => p.Images)
+//                    .HasForeignKey(d => d.TrailerId)
+//                    .HasConstraintName("FK_Images_Trailers");
 
-                entity.HasIndex(e => e.CreatedById, "IX_Jobs_CreatedById");
+//                entity.HasOne(d => d.Vehicle)
+//                    .WithMany(p => p.Images)
+//                    .HasForeignKey(d => d.VehicleId)
+//                    .HasConstraintName("FK_Images_Vehicles");
+//            });
 
-                entity.HasIndex(e => e.UpdatedById, "IX_Jobs_UpdatedById");
+//            modelBuilder.Entity<Job>(entity =>
+//            {
+//                entity.HasIndex(e => e.CompanyId, "IX_Jobs_CompanyId");
 
-                entity.HasIndex(e => e.VehicleId, "UQ_Jobs_VehicleId")
-                    .IsUnique();
+//                entity.HasIndex(e => e.Controller, "IX_Jobs_Controller");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.HasIndex(e => e.CreatedById, "IX_Jobs_CreatedById");
 
-                entity.Property(e => e.EstimatedDeliveryDate).HasColumnType("datetime");
+//                entity.HasIndex(e => e.UpdatedById, "IX_Jobs_UpdatedById");
 
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+//                entity.HasIndex(e => e.VehicleId, "UQ_Jobs_VehicleId")
+//                    .IsUnique();
 
-                entity.Property(e => e.PickupDate).HasColumnType("datetime");
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.HasOne(d => d.Company)
-                    .WithMany(p => p.Jobs)
-                    .HasForeignKey(d => d.CompanyId);
+//                entity.Property(e => e.EstimatedDeliveryDate).HasColumnType("datetime");
 
-                entity.HasOne(d => d.ControllerNavigation)
-                    .WithMany(p => p.JobControllerNavigations)
-                    .HasForeignKey(d => d.Controller);
+//                entity.Property(e => e.IsActive)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
-                entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.JobCreatedBies)
-                    .HasForeignKey(d => d.CreatedById);
+//                entity.Property(e => e.PickupDate).HasColumnType("datetime");
 
-                entity.HasOne(d => d.DriverNavigation)
-                    .WithMany(p => p.JobDriverNavigations)
-                    .HasForeignKey(d => d.Driver)
-                    .HasConstraintName("FK_Jobs_Users");
+//                entity.HasOne(d => d.Company)
+//                    .WithMany(p => p.Jobs)
+//                    .HasForeignKey(d => d.CompanyId);
 
-                entity.HasOne(d => d.StatusNavigation)
-                    .WithMany(p => p.Jobs)
-                    .HasForeignKey(d => d.Status)
-                    .HasConstraintName("FK_Jobs_JobStatus");
+//                entity.HasOne(d => d.ControllerNavigation)
+//                    .WithMany(p => p.JobControllerNavigations)
+//                    .HasForeignKey(d => d.Controller);
 
-                entity.HasOne(d => d.UpdatedBy)
-                    .WithMany(p => p.JobUpdatedBies)
-                    .HasForeignKey(d => d.UpdatedById);
+//                entity.HasOne(d => d.CreatedBy)
+//                    .WithMany(p => p.JobCreatedBies)
+//                    .HasForeignKey(d => d.CreatedById);
 
-                entity.HasOne(d => d.Vehicle)
-                    .WithOne(p => p.Job)
-                    .HasForeignKey<Job>(d => d.VehicleId)
-                    .HasConstraintName("FK_Jobs_Vehicles");
-            });
+//                entity.HasOne(d => d.DriverNavigation)
+//                    .WithMany(p => p.JobDriverNavigations)
+//                    .HasForeignKey(d => d.Driver)
+//                    .HasConstraintName("FK_Jobs_Users");
 
-            modelBuilder.Entity<JobContact>(entity =>
-            {
-                entity.HasIndex(e => e.ContactId, "IX_JobContacts_ContactId");
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.Jobs)
+//                    .HasForeignKey(d => d.Status)
+//                    .HasConstraintName("FK_Jobs_JobStatus");
 
-                entity.HasIndex(e => e.JobId, "IX_JobContacts_JobId");
+//                entity.HasOne(d => d.UpdatedBy)
+//                    .WithMany(p => p.JobUpdatedBies)
+//                    .HasForeignKey(d => d.UpdatedById);
 
-                entity.HasOne(d => d.Contact)
-                    .WithMany(p => p.JobContacts)
-                    .HasForeignKey(d => d.ContactId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_JobContacts_Contacts");
+//                entity.HasOne(d => d.Vehicle)
+//                    .WithOne(p => p.Job)
+//                    .HasForeignKey<Job>(d => d.VehicleId)
+//                    .HasConstraintName("FK_Jobs_Vehicles");
+//            });
 
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.JobContacts)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_JobContacts_Jobs");
-            });
+//            modelBuilder.Entity<JobContact>(entity =>
+//            {
+//                entity.HasIndex(e => e.ContactId, "IX_JobContacts_ContactId");
 
-            modelBuilder.Entity<JobSequence>(entity =>
-            {
-                entity.HasNoKey();
+//                entity.HasIndex(e => e.JobId, "IX_JobContacts_JobId");
 
-                entity.ToTable("JobSequence");
-            });
+//                entity.HasOne(d => d.Contact)
+//                    .WithMany(p => p.JobContacts)
+//                    .HasForeignKey(d => d.ContactId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_JobContacts_Contacts");
 
-            modelBuilder.Entity<JobStatus>(entity =>
-            {
-                entity.ToTable("JobStatus");
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.JobContacts)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_JobContacts_Jobs");
+//            });
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//            modelBuilder.Entity<JobSequence>(entity =>
+//            {
+//                entity.HasNoKey();
 
-                entity.Property(e => e.Description).HasMaxLength(200);
+//                entity.ToTable("JobSequence");
+//            });
 
-                entity.Property(e => e.Status).HasMaxLength(50);
-            });
+//            modelBuilder.Entity<JobStatus>(entity =>
+//            {
+//                entity.ToTable("JobStatus");
 
-            modelBuilder.Entity<Leg>(entity =>
-            {
-                entity.Property(e => e.EndLocation).HasMaxLength(500);
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.EndTime).HasColumnType("datetime");
+//                entity.Property(e => e.DarkColour).HasMaxLength(20);
 
-                entity.Property(e => e.StartLocation).HasMaxLength(500);
+//                entity.Property(e => e.Description).HasMaxLength(200);
 
-                entity.Property(e => e.StartTime).HasColumnType("datetime");
+//                entity.Property(e => e.LightColour).HasMaxLength(20);
 
-                entity.HasOne(d => d.Driver)
-                    .WithMany(p => p.Legs)
-                    .HasForeignKey(d => d.DriverId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Legs_Users");
+//                entity.Property(e => e.Status).HasMaxLength(50);
+//            });
 
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.Legs)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Legs_Jobs");
+//            modelBuilder.Entity<Leg>(entity =>
+//            {
+//                entity.Property(e => e.EndLocation).HasMaxLength(500);
 
-                entity.HasOne(d => d.StatusNavigation)
-                    .WithMany(p => p.Legs)
-                    .HasForeignKey(d => d.Status)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Legs_LegStatus");
+//                entity.Property(e => e.EndTime).HasColumnType("datetime");
 
-                entity.HasOne(d => d.VarianceNavigation)
-                    .WithMany(p => p.Legs)
-                    .HasForeignKey(d => d.Variance)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Legs_Variances");
-            });
+//                entity.Property(e => e.StartLocation).HasMaxLength(500);
 
-            modelBuilder.Entity<LegStatus>(entity =>
-            {
-                entity.ToTable("LegStatus");
+//                entity.Property(e => e.StartTime).HasColumnType("datetime");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.HasOne(d => d.Driver)
+//                    .WithMany(p => p.Legs)
+//                    .HasForeignKey(d => d.DriverId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Legs_Users");
 
-                entity.Property(e => e.Description).HasMaxLength(200);
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Legs)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Legs_Jobs");
 
-                entity.Property(e => e.Status).HasMaxLength(20);
-            });
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.Legs)
+//                    .HasForeignKey(d => d.Status)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Legs_LegStatus");
 
-            modelBuilder.Entity<Note>(entity =>
-            {
-                entity.Property(e => e.Note1).HasColumnName("Note");
+//                entity.HasOne(d => d.VarianceNavigation)
+//                    .WithMany(p => p.Legs)
+//                    .HasForeignKey(d => d.Variance)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Legs_Variances");
+//            });
 
-                entity.HasOne(d => d.Accommodation)
-                    .WithMany(p => p.Notes)
-                    .HasForeignKey(d => d.AccommodationId)
-                    .HasConstraintName("FK_Notes_Accommodation");
+//            modelBuilder.Entity<LegStatus>(entity =>
+//            {
+//                entity.ToTable("LegStatus");
 
-                entity.HasOne(d => d.Checklist)
-                    .WithMany(p => p.Notes)
-                    .HasForeignKey(d => d.ChecklistId)
-                    .HasConstraintName("FK_Notes_Checklist");
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.Notes)
-                    .HasForeignKey(d => d.JobId)
-                    .HasConstraintName("FK_Notes_Jobs");
+//                entity.Property(e => e.Description).HasMaxLength(200);
 
-                entity.HasOne(d => d.PermitAndPlates)
-                    .WithMany(p => p.Notes)
-                    .HasForeignKey(d => d.PermitAndPlatesId)
-                    .HasConstraintName("FK_Notes_PermitsAndPlates");
+//                entity.Property(e => e.Status).HasMaxLength(20);
+//            });
 
-                entity.HasOne(d => d.PublicTransport)
-                    .WithMany(p => p.Notes)
-                    .HasForeignKey(d => d.PublicTransportId)
-                    .HasConstraintName("FK_Notes_PublicTransport");
+//            modelBuilder.Entity<Note>(entity =>
+//            {
+//                entity.Property(e => e.Note1).HasColumnName("Note");
 
-                entity.HasOne(d => d.Trailer)
-                    .WithMany(p => p.Notes)
-                    .HasForeignKey(d => d.TrailerId)
-                    .HasConstraintName("FK_Notes_Trailers");
+//                entity.HasOne(d => d.Accommodation)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.AccommodationId)
+//                    .HasConstraintName("FK_Notes_Accommodation");
 
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.Notes)
-                    .HasForeignKey(d => d.VehicleId)
-                    .HasConstraintName("FK_Notes_Vehicles");
-            });
+//                entity.HasOne(d => d.Checklist)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.ChecklistId)
+//                    .HasConstraintName("FK_Notes_Checklist");
 
-            modelBuilder.Entity<PermitsAndPlate>(entity =>
-            {
-                entity.Property(e => e.PermitNumber).HasMaxLength(50);
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.JobId)
+//                    .HasConstraintName("FK_Notes_Jobs");
 
-                entity.Property(e => e.PlateNumber).HasMaxLength(50);
+//                entity.HasOne(d => d.PermitAndPlates)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.PermitAndPlatesId)
+//                    .HasConstraintName("FK_Notes_PermitsAndPlates");
 
-                entity.Property(e => e.Type).HasMaxLength(50);
+//                entity.HasOne(d => d.PublicTransport)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.PublicTransportId)
+//                    .HasConstraintName("FK_Notes_PublicTransport");
 
-                entity.HasOne(d => d.AssigneeNavigation)
-                    .WithMany(p => p.PermitsAndPlates)
-                    .HasForeignKey(d => d.Assignee)
-                    .HasConstraintName("FK_PermitsAndPlates_Users");
+//                entity.HasOne(d => d.Trailer)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.TrailerId)
+//                    .HasConstraintName("FK_Notes_Trailers");
 
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.PermitsAndPlates)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PermitsAndPlates_Jobs");
+//                entity.HasOne(d => d.Vehicle)
+//                    .WithMany(p => p.Notes)
+//                    .HasForeignKey(d => d.VehicleId)
+//                    .HasConstraintName("FK_Notes_Vehicles");
+//            });
 
-                entity.HasOne(d => d.StatusNavigation)
-                    .WithMany(p => p.PermitsAndPlates)
-                    .HasForeignKey(d => d.Status)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PermitsAndPlates_TaskStatus");
-            });
+//            modelBuilder.Entity<PermitsAndPlate>(entity =>
+//            {
+//                entity.Property(e => e.PermitNumber).HasMaxLength(50);
 
-            modelBuilder.Entity<PublicTransport>(entity =>
-            {
-                entity.ToTable("PublicTransport");
+//                entity.Property(e => e.PlateNumber).HasMaxLength(50);
 
-                entity.Property(e => e.ArrivalDateTime).HasColumnType("datetime");
+//                entity.Property(e => e.Type).HasMaxLength(50);
 
-                entity.Property(e => e.Daterequired).HasColumnType("datetime");
+//                entity.HasOne(d => d.AssigneeNavigation)
+//                    .WithMany(p => p.PermitsAndPlates)
+//                    .HasForeignKey(d => d.Assignee)
+//                    .HasConstraintName("FK_PermitsAndPlates_Users");
 
-                entity.Property(e => e.DepartureDateTime).HasColumnType("datetime");
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.PermitsAndPlates)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_PermitsAndPlates_Jobs");
 
-                entity.Property(e => e.Name).HasMaxLength(100);
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.PermitsAndPlates)
+//                    .HasForeignKey(d => d.Status)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_PermitsAndPlates_TaskStatus");
+//            });
 
-                entity.Property(e => e.ReferenceNumber).HasMaxLength(100);
+//            modelBuilder.Entity<PublicTransport>(entity =>
+//            {
+//                entity.ToTable("PublicTransport");
 
-                entity.HasOne(d => d.AssigneeNavigation)
-                    .WithMany(p => p.PublicTransportAssigneeNavigations)
-                    .HasForeignKey(d => d.Assignee)
-                    .HasConstraintName("FK_PublicTransport_Users1");
+//                entity.Property(e => e.ArrivalDateTime).HasColumnType("datetime");
 
-                entity.HasOne(d => d.DriverNavigation)
-                    .WithMany(p => p.PublicTransportDriverNavigations)
-                    .HasForeignKey(d => d.Driver)
-                    .HasConstraintName("FK_PublicTransport_Users");
+//                entity.Property(e => e.Daterequired).HasColumnType("datetime");
 
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.PublicTransports)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PublicTransport_Jobs");
+//                entity.Property(e => e.DepartureDateTime).HasColumnType("datetime");
 
-                entity.HasOne(d => d.StatusNavigation)
-                    .WithMany(p => p.PublicTransports)
-                    .HasForeignKey(d => d.Status)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PublicTransport_TaskStatus");
+//                entity.Property(e => e.Name).HasMaxLength(100);
 
-                entity.HasOne(d => d.TransportTypeNavigation)
-                    .WithMany(p => p.PublicTransports)
-                    .HasForeignKey(d => d.TransportType)
-                    .HasConstraintName("FK_PublicTransport_PublicTransportTypes");
-            });
+//                entity.Property(e => e.ReferenceNumber).HasMaxLength(100);
 
-            modelBuilder.Entity<PublicTransportType>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.HasOne(d => d.AssigneeNavigation)
+//                    .WithMany(p => p.PublicTransportAssigneeNavigations)
+//                    .HasForeignKey(d => d.Assignee)
+//                    .HasConstraintName("FK_PublicTransport_Users1");
 
-                entity.Property(e => e.Type).HasMaxLength(20);
-            });
+//                entity.HasOne(d => d.DriverNavigation)
+//                    .WithMany(p => p.PublicTransportDriverNavigations)
+//                    .HasForeignKey(d => d.Driver)
+//                    .HasConstraintName("FK_PublicTransport_Users");
 
-            modelBuilder.Entity<Purchase>(entity =>
-            {
-                entity.ToTable("Purchase");
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.PublicTransports)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_PublicTransport_Jobs");
 
-                entity.Property(e => e.FromMobile)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.PublicTransports)
+//                    .HasForeignKey(d => d.Status)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_PublicTransport_TaskStatus");
 
-                entity.Property(e => e.Vendor).HasMaxLength(200);
+//                entity.HasOne(d => d.TransportTypeNavigation)
+//                    .WithMany(p => p.PublicTransports)
+//                    .HasForeignKey(d => d.TransportType)
+//                    .HasConstraintName("FK_PublicTransport_PublicTransportTypes");
+//            });
 
-                entity.HasOne(d => d.AssigneeNavigation)
-                    .WithMany(p => p.PurchaseAssigneeNavigations)
-                    .HasForeignKey(d => d.Assignee)
-                    .HasConstraintName("FK_Purchase_Users1");
+//            modelBuilder.Entity<PublicTransportType>(entity =>
+//            {
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.HasOne(d => d.DriverNavigation)
-                    .WithMany(p => p.PurchaseDriverNavigations)
-                    .HasForeignKey(d => d.Driver)
-                    .HasConstraintName("FK_Purchase_Users");
+//                entity.Property(e => e.Type).HasMaxLength(20);
+//            });
 
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.Purchases)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Purchase_Jobs");
+//            modelBuilder.Entity<Purchase>(entity =>
+//            {
+//                entity.ToTable("Purchase");
 
-                entity.HasOne(d => d.StatusNavigation)
-                    .WithMany(p => p.Purchases)
-                    .HasForeignKey(d => d.Status)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Purchase_TaskStatus");
-            });
+//                entity.Property(e => e.FromMobile)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("((1))");
 
-            modelBuilder.Entity<Role>(entity =>
-            {
-                entity.Property(e => e.RoleName).HasMaxLength(50);
-            });
+//                entity.Property(e => e.Vendor).HasMaxLength(200);
 
-            modelBuilder.Entity<TaskStatus>(entity =>
-            {
-                entity.ToTable("TaskStatus");
+//                entity.HasOne(d => d.AssigneeNavigation)
+//                    .WithMany(p => p.PurchaseAssigneeNavigations)
+//                    .HasForeignKey(d => d.Assignee)
+//                    .HasConstraintName("FK_Purchase_Users1");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.HasOne(d => d.DriverNavigation)
+//                    .WithMany(p => p.PurchaseDriverNavigations)
+//                    .HasForeignKey(d => d.Driver)
+//                    .HasConstraintName("FK_Purchase_Users");
 
-                entity.Property(e => e.Status).HasMaxLength(50);
-            });
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Purchases)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Purchase_Jobs");
 
-            modelBuilder.Entity<Trailer>(entity =>
-            {
-                entity.Property(e => e.Rego).HasMaxLength(200);
+//                entity.HasOne(d => d.StatusNavigation)
+//                    .WithMany(p => p.Purchases)
+//                    .HasForeignKey(d => d.Status)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Purchase_TaskStatus");
+//            });
 
-                entity.Property(e => e.Type).HasMaxLength(200);
+//            modelBuilder.Entity<Role>(entity =>
+//            {
+//                entity.Property(e => e.RoleName).HasMaxLength(50);
+//            });
 
-                entity.HasOne(d => d.HookupTypeNavigation)
-                    .WithMany(p => p.Trailers)
-                    .HasForeignKey(d => d.HookupType)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Trailers_HookupTypes");
+//            modelBuilder.Entity<TaskStatus>(entity =>
+//            {
+//                entity.ToTable("TaskStatus");
 
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.Trailers)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Trailers_Jobs");
-            });
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasIndex(e => e.CreatedById, "IX_Users_CreatedById");
+//                entity.Property(e => e.Status).HasMaxLength(50);
+//            });
 
-                entity.HasIndex(e => e.UpdatedById, "IX_Users_UpdatedById");
+//            modelBuilder.Entity<Trailer>(entity =>
+//            {
+//                entity.Property(e => e.Rego).HasMaxLength(200);
 
-                entity.Property(e => e.Email).HasMaxLength(100);
+//                entity.Property(e => e.Type).HasMaxLength(200);
 
-                entity.Property(e => e.FirstName).HasMaxLength(100);
+//                entity.HasOne(d => d.HookupTypeNavigation)
+//                    .WithMany(p => p.Trailers)
+//                    .HasForeignKey(d => d.HookupType)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Trailers_HookupTypes");
 
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.Trailers)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Trailers_Jobs");
+//            });
 
-                entity.Property(e => e.LastName).HasMaxLength(100);
+//            modelBuilder.Entity<User>(entity =>
+//            {
+//                entity.HasIndex(e => e.CreatedById, "IX_Users_CreatedById");
 
-                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+//                entity.HasIndex(e => e.UpdatedById, "IX_Users_UpdatedById");
 
-                entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.InverseCreatedBy)
-                    .HasForeignKey(d => d.CreatedById);
+//                entity.Property(e => e.Email).HasMaxLength(100);
 
-                entity.HasOne(d => d.UpdatedBy)
-                    .WithMany(p => p.InverseUpdatedBy)
-                    .HasForeignKey(d => d.UpdatedById);
-            });
+//                entity.Property(e => e.FirstName).HasMaxLength(100);
 
-            modelBuilder.Entity<UserRole>(entity =>
-            {
-                entity.ToTable("UserRole");
+//                entity.Property(e => e.IsActive)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
-                entity.HasIndex(e => e.CreatedById, "IX_UserRole_CreatedById");
+//                entity.Property(e => e.LastName).HasMaxLength(100);
 
-                entity.HasIndex(e => e.RoleId, "IX_UserRole_RoleId");
+//                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-                entity.HasIndex(e => e.UpdatedById, "IX_UserRole_UpdatedById");
+//                entity.HasOne(d => d.CreatedBy)
+//                    .WithMany(p => p.InverseCreatedBy)
+//                    .HasForeignKey(d => d.CreatedById);
 
-                entity.HasIndex(e => e.UserId, "IX_UserRole_UserId");
+//                entity.HasOne(d => d.UpdatedBy)
+//                    .WithMany(p => p.InverseUpdatedBy)
+//                    .HasForeignKey(d => d.UpdatedById);
+//            });
 
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
+//            modelBuilder.Entity<UserRole>(entity =>
+//            {
+//                entity.ToTable("UserRole");
 
-                entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.UserRoleCreatedBies)
-                    .HasForeignKey(d => d.CreatedById);
+//                entity.HasIndex(e => e.CreatedById, "IX_UserRole_CreatedById");
 
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.UserRoles)
-                    .HasForeignKey(d => d.RoleId);
+//                entity.HasIndex(e => e.RoleId, "IX_UserRole_RoleId");
 
-                entity.HasOne(d => d.UpdatedBy)
-                    .WithMany(p => p.UserRoleUpdatedBies)
-                    .HasForeignKey(d => d.UpdatedById);
+//                entity.HasIndex(e => e.UpdatedById, "IX_UserRole_UpdatedById");
 
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserRoleUsers)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-            });
+//                entity.HasIndex(e => e.UserId, "IX_UserRole_UserId");
 
-            modelBuilder.Entity<Variance>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+//                entity.Property(e => e.IsActive)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
-                entity.Property(e => e.Name).HasMaxLength(50);
-            });
+//                entity.HasOne(d => d.CreatedBy)
+//                    .WithMany(p => p.UserRoleCreatedBies)
+//                    .HasForeignKey(d => d.CreatedById);
 
-            modelBuilder.Entity<Vehicle>(entity =>
-            {
-                entity.HasIndex(e => e.JobId, "UQ_Vehicles_JobId2")
-                    .IsUnique();
+//                entity.HasOne(d => d.Role)
+//                    .WithMany(p => p.UserRoles)
+//                    .HasForeignKey(d => d.RoleId);
 
-                entity.Property(e => e.Colour)
-                    .HasMaxLength(100)
-                    .IsFixedLength();
+//                entity.HasOne(d => d.UpdatedBy)
+//                    .WithMany(p => p.UserRoleUpdatedBies)
+//                    .HasForeignKey(d => d.UpdatedById);
 
-                entity.Property(e => e.Make)
-                    .HasMaxLength(100)
-                    .IsFixedLength();
+//                entity.HasOne(d => d.User)
+//                    .WithMany(p => p.UserRoleUsers)
+//                    .HasForeignKey(d => d.UserId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull);
+//            });
 
-                entity.Property(e => e.Model)
-                    .HasMaxLength(100)
-                    .IsFixedLength();
+//            modelBuilder.Entity<Variance>(entity =>
+//            {
+//                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Rego)
-                    .HasMaxLength(100)
-                    .IsFixedLength();
+//                entity.Property(e => e.Name).HasMaxLength(50);
+//            });
 
-                entity.Property(e => e.Vin)
-                    .HasMaxLength(100)
-                    .HasColumnName("VIN")
-                    .IsFixedLength();
+//            modelBuilder.Entity<Vehicle>(entity =>
+//            {
+//                entity.HasIndex(e => e.JobId, "UQ_Vehicles_JobId2")
+//                    .IsUnique();
 
-                entity.Property(e => e.Year)
-                    .HasMaxLength(100)
-                    .IsFixedLength();
+//                entity.Property(e => e.Colour)
+//                    .HasMaxLength(100)
+//                    .IsFixedLength();
 
-                entity.HasOne(d => d.JobNavigation)
-                    .WithOne(p => p.VehicleNavigation)
-                    .HasForeignKey<Vehicle>(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Vehicles_Jobs_JobId2");
-            });
+//                entity.Property(e => e.Make)
+//                    .HasMaxLength(100)
+//                    .IsFixedLength();
 
-            modelBuilder.Entity<VehicleImage>(entity =>
-            {
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.VehicleImages)
-                    .HasForeignKey(d => d.VehicleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VehicleImages_Vehicles");
-            });
+//                entity.Property(e => e.Model)
+//                    .HasMaxLength(100)
+//                    .IsFixedLength();
 
-            modelBuilder.Entity<VehicleNote>(entity =>
-            {
-                entity.Property(e => e.IsVisibleToDriver)
-                    .IsRequired()
-                    .HasDefaultValueSql("((1))");
+//                entity.Property(e => e.Rego)
+//                    .HasMaxLength(100)
+//                    .IsFixedLength();
 
-                entity.HasOne(d => d.Vehicle)
-                    .WithMany(p => p.VehicleNotes)
-                    .HasForeignKey(d => d.VehicleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_VehicleNotes_Vehicles");
-            });
+//                entity.Property(e => e.Vin)
+//                    .HasMaxLength(100)
+//                    .HasColumnName("VIN")
+//                    .IsFixedLength();
 
-            modelBuilder.Entity<WayPoint>(entity =>
-            {
-                entity.HasOne(d => d.Job)
-                    .WithMany(p => p.WayPoints)
-                    .HasForeignKey(d => d.JobId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_WayPoints_Jobs");
-            });
+//                entity.Property(e => e.Year)
+//                    .HasMaxLength(100)
+//                    .IsFixedLength();
 
-            modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
+//                entity.HasOne(d => d.JobNavigation)
+//                    .WithOne(p => p.VehicleNavigation)
+//                    .HasForeignKey<Vehicle>(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_Vehicles_Jobs_JobId2");
+//            });
 
-            OnModelCreatingPartial(modelBuilder);
-        }
+//            modelBuilder.Entity<VehicleImage>(entity =>
+//            {
+//                entity.HasOne(d => d.Vehicle)
+//                    .WithMany(p => p.VehicleImages)
+//                    .HasForeignKey(d => d.VehicleId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_VehicleImages_Vehicles");
+//            });
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-    }
-}
+//            modelBuilder.Entity<VehicleNote>(entity =>
+//            {
+//                entity.Property(e => e.IsVisibleToDriver)
+//                    .IsRequired()
+//                    .HasDefaultValueSql("((1))");
+
+//                entity.HasOne(d => d.Vehicle)
+//                    .WithMany(p => p.VehicleNotes)
+//                    .HasForeignKey(d => d.VehicleId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_VehicleNotes_Vehicles");
+//            });
+
+//            modelBuilder.Entity<WayPoint>(entity =>
+//            {
+//                entity.HasOne(d => d.Job)
+//                    .WithMany(p => p.WayPoints)
+//                    .HasForeignKey(d => d.JobId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_WayPoints_Jobs");
+//            });
+
+//            modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
+
+//            OnModelCreatingPartial(modelBuilder);
+//        }
+
+//        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+//    }
+//}

@@ -156,5 +156,17 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                           .ToListAsync();
 
         }
+
+        public async void DeleteCheckListIagesByCheckListId(int checkListId)
+        {
+            var entities = await _context.Set<CheckListImage>().Where(e => e.ChecklistId == checkListId).ToListAsync();
+            _context.Set<CheckListImage>().RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddCheckListImages(List<CheckListImage> checkListimagses)
+        {
+             await _context.Set<CheckListImage>().AddRangeAsync(checkListimagses);
+        }
     }
 }

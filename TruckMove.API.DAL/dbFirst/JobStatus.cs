@@ -13,6 +13,8 @@ namespace TruckMove.API.DAL.dbFirst
         public int Id { get; set; }
         public string Status { get; set; } = null!;
         public string? Description { get; set; }
+        public string? LightColour { get; set; }
+        public string? DarkColour { get; set; }
 
         public virtual ICollection<Job> Jobs { get; set; }
     }

@@ -178,6 +178,9 @@ internal class Program
             profile.CreateGenericMap<PurchaseDto, Purchase>();
             profile.CreateGenericMap<Purchase, PurchaseDto>();
 
+            profile.CreateGenericMap<CheckListImage, CheckListImageDto>();
+            profile.CreateGenericMap<CheckListImageDto, CheckListImage>();
+
 
 
 

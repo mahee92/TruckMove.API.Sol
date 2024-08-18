@@ -61,7 +61,7 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<PublicTransport> PublicTransports { get; set; } = null!;
         public virtual DbSet<PublicTransportType> PublicTransportTypes { get; set; } = null!;
 
-
+        public virtual DbSet<CheckListImage> CheckListImages { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -937,6 +937,17 @@ namespace TruckMove.API.DAL.Models
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.PurchaseUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
+
+                modelBuilder.Entity<CheckListImage>(entity =>
+                {
+                    entity.Property(e => e.Url).HasColumnName("url");
+
+                    entity.HasOne(d => d.Checklist)
+                        .WithMany(p => p.CheckListImages)
+                        .HasForeignKey(d => d.ChecklistId)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_CheckListPhotos_Checklist");
+                });
             });
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

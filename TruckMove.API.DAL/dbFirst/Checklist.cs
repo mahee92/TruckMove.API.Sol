@@ -7,6 +7,7 @@ namespace TruckMove.API.DAL.dbFirst
     {
         public Checklist()
         {
+            CheckListImages = new HashSet<CheckListImage>();
             Notes = new HashSet<Note>();
         }
 
@@ -36,6 +37,7 @@ namespace TruckMove.API.DAL.dbFirst
         public bool? IsPre { get; set; }
 
         public virtual Job Job { get; set; } = null!;
+        public virtual ICollection<CheckListImage> CheckListImages { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
     }
 }

@@ -131,7 +131,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
             }
             try
             {                
-               var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, fileUpload, Meta.CONTACT_IMG_PATH, Request.Scheme, Request.Host);
+               var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, fileUpload.file, Meta.CONTACT_IMG_PATH, Request.Scheme, Request.Host);
                return Ok(fileUrl);
 
             }

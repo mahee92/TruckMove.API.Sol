@@ -54,6 +54,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryTrailer = repositoryTrailer;
             _masterDataRepository = masterDataRepository;
             _repositoryLeg = repositoryLeg;
+           
         }
         #region Job
         public JobStatusEnum DetermineJobStatus(JobDto job, Job? existingJob = null)
@@ -602,6 +603,16 @@ namespace TruckMove.API.BLL.Services.JobServices
             var jobs = _jobRepository.GetAllAsync(driverId);
             return jobs.ProjectTo<MobileJobDto>(_mapper.ConfigurationProvider);
         }
+
+        public List<CheckListImage> CreateImageList(int checkListId, List<string> Urls)
+        {
+            List<CheckListImage> checkListImages = new List<CheckListImage>();
+            foreach (var url in Urls)
+            {
+                checkListImages.Add(new CheckListImage { ChecklistId = checkListId, Url = url });
+            }
+            return checkListImages;
+        }
         public async Task<Response<ChecklistDto>> ChecklistPutAsync(ChecklistDto checkList, int userId)
         {
             Response<ChecklistDto> response = new Response<ChecklistDto>();
@@ -618,6 +629,13 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newChecklist.Notes = new List<Note>();
                     HandleNotes(checkList, newChecklist);
                     var res = await _repositorypreChecklist.AddAsync(newChecklist);
+                   
+                    if(checkList.CheckListImages.Count > 0)
+                    {
+                         var checkListimagses = CreateImageList(res.Id, checkList.CheckListImages.Select(x => x.Url).ToList());
+                         await _jobRepository.AddCheckListImages(checkListimagses);
+                    }
+
 
                     response.Object = _mapper.Map<ChecklistDto>(res);
 
@@ -649,9 +667,17 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
                         HandleNotes(checkList, existingCheckList);
-                        var updatedVehicle = await _repositorypreChecklist.UpdateAsync(res);
+                        var updatedcheckList = await _repositorypreChecklist.UpdateAsync(res);
+
+                       _jobRepository.DeleteCheckListIagesByCheckListId(updatedcheckList.Id);
+                        
+                        if (checkList.CheckListImages.Count > 0)
+                        {
+                            var checkListimagses = CreateImageList(res.Id, checkList.CheckListImages.Select(x => x.Url).ToList());
+                            await _jobRepository.AddCheckListImages(checkListimagses);
+                        }
                         response.Success = true;
-                        response.Object = _mapper.Map<ChecklistDto>(updatedVehicle);
+                        response.Object = _mapper.Map<ChecklistDto>(updatedcheckList);
 
 
                     }
