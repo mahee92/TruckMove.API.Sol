@@ -475,34 +475,22 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                 await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, jobTasks);
 
-                // Now use the results
+               
                 var permitsResult = await permitTasks;
                 var accommodationsResult = await accommodationTasks;
                 var publicTransportsResult = await publicTransportTasks;
                 var purchasesResult = await purchaseTasks;
                 var jobsResult = await jobTasks;
 
-                // Now you can proceed with mapping and adding to the response
+                
                 AddMappedTasksToResponse(response.Object.PermitsAndPlates, permitsResult);
                 AddMappedTasksToResponse(response.Object.Accommodations, accommodationsResult);
                 AddMappedTasksToResponse(response.Object.PublicTransports, publicTransportsResult);
                 AddMappedTasksToResponse(response.Object.Purchases, purchasesResult);
+                AddMappedTasksToResponse(response.Object.QAJobs, jobTasks);
 
-                if (jobsResult != null && jobsResult.Any())
-                {
-                    response.Object.JobTasks = jobsResult.ToDictionary(
-                        task => task.Id,
-                        task => task.Status switch
-                        {
-                            (int)JobStatusEnum.Arrived => "QA Task",
-                            (int)JobStatusEnum.QADone => "Payment Task",
-                            (int)JobStatusEnum.PaymentDone => "Billing Task",
-                            _ => "Hide"
-                        }
-                    );
-                }
 
-               
+
                 response.Success = true;
             }
             catch (Exception ex)

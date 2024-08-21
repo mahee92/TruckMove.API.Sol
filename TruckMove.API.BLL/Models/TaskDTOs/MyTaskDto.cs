@@ -22,7 +22,10 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
 
         public virtual List<PurchaseOutputDto>? Purchases { get; set; }
 
-        public virtual Dictionary<int, string>? JobTasks { get; set; }
+        public virtual List<JobDto>? QAJobs { get; set; }
+        //
+
+
 
 
 

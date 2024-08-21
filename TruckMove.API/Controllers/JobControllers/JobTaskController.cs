@@ -194,5 +194,23 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         #endregion
 
+        #region MyTask
+        [HttpGet("MyTask")]
+        public async Task<IActionResult> GetMyTasks()
+        {
+            Response<MyTaskDto> response = await _jobTaskService.GetMyTasks(Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
+
     }
 }
