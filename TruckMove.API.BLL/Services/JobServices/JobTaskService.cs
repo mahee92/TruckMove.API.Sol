@@ -487,7 +487,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 AddMappedTasksToResponse(response.Object.Accommodations, accommodationsResult);
                 AddMappedTasksToResponse(response.Object.PublicTransports, publicTransportsResult);
                 AddMappedTasksToResponse(response.Object.Purchases, purchasesResult);
-                AddMappedTasksToResponse(response.Object.QAJobs, jobsResult);
+                AddMappedTasksToResponse(response.Object.Jobs, jobsResult);
 
 
 

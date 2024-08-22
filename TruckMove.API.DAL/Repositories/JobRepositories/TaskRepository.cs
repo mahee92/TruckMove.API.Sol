@@ -53,12 +53,19 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         public async Task<List<Job>> GetJobTasksByUserId(int userId)
         {
             return await _context.Set<Job>()
-                                 .Include(x => x.VehicleNavigation)
-                                 .Include(x => x.StatusNavigation)
-                                 .Include(x => x.DriverNavigation)
                                  .Where(x => x.IsActive == true &&
                                              x.Controller == userId &&
                                              x.Status != (int)JobStatusEnum.Completed)
+                                 .Select(x => new Job
+                                 {
+                                     Id = x.Id,
+                                     PickupLocation = x.PickupLocation,
+                                     DropOfLocation = x.DropOfLocation,
+                                     VehicleNavigation = x.VehicleNavigation,
+                                     StatusNavigation = x.StatusNavigation,
+                                     DriverNavigation = x.DriverNavigation,
+                                     QALegCount = x.Legs.Count(y => y.Status == (int)TaskStatusEnum.Completed),
+                                 })
                                  .ToListAsync();
         }
     }
