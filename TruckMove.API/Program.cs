@@ -64,17 +64,19 @@ internal class Program
         app.Run();
         Log.CloseAndFlush();
     }
-
+   
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
-        builder.Services.AddControllers().AddOData(options =>
+        var modelBuilder = new ODataConventionModelBuilder();
+        modelBuilder.EntitySet<JobOutPutDTO>("Test");
+
+        builder.Services.AddControllers(options =>
         {
-            options.Select().Filter().OrderBy().Expand().SetMaxTop(1000); // Added Top option
-        });
-        //.AddNewtonsoftJson(options =>
-        //{
-        //    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-        //});
+            options.Filters.Add<ODataExceptionFilter>();
+        }).AddOData(
+            options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(
+                "odata",
+                modelBuilder.GetEdmModel()));
 
 
         // Configure CORS
@@ -143,8 +145,7 @@ internal class Program
             profile.CreateGenericMap<Job, JobOutPutDTO>();
             profile.CreateGenericMap<Job, JobDto>();
             profile.CreateGenericMap<VehicleDto, Vehicle>();
-            profile.CreateGenericMap<VehicleOutputDto, Vehicle>();
-            profile.CreateGenericMap<Vehicle, VehicleOutputDto>();
+            
             profile.CreateGenericMap<WayPoint, WayPointDto>();
            
             profile.CreateGenericMap<Note, NoteDto>();
@@ -333,6 +334,7 @@ internal class Program
         builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();
 
         builder.Services.AddScoped<ValidateDriverChangeAttributeFilter>();
+        builder.Services.AddScoped<ODataExceptionFilter>();
     }
     private static void ConfigureMiddleware(WebApplication app, IConfiguration configuration)
     {
@@ -364,7 +366,8 @@ internal class Program
         app.UseAuthorization();
 
         // Custom middleware
-       // app.UseMiddleware<RequestResponseLoggingMiddleware>();
+        app.UseMiddleware<GlobalExceptionMiddleware>();
+        // app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
         // Configure OData

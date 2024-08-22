@@ -61,16 +61,16 @@ namespace TruckMove.API.DAL.Repositories
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
                 // do nothing 
             }
-           
+
 
         }
 
-       
+
         public async Task<TEntity> GetAsync(int id)
         {
           

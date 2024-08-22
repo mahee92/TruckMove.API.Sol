@@ -24,9 +24,9 @@ namespace TruckMove.API.DAL.Models
 
 
         public bool ShouldUpdateJob => true;
-
-        [NotMapped]
-        public int JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+ 
+       [NotMapped]
+       public int JobId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     }
 }
