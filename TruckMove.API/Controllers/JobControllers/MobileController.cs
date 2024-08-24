@@ -15,7 +15,7 @@ namespace TruckMove.API.Controllers.JobControllers
 {
     [ApiController]
     [Route("[controller]")]
-   // [Authorize(Roles = "Driver")]
+    [Authorize(Roles = "Driver")]
     public class MobileController : Controller
     {
         private readonly IAuthUserService _authUserService;
@@ -73,7 +73,7 @@ namespace TruckMove.API.Controllers.JobControllers
         }
 
         [HttpPost("CheckList/PostPut")]
-       // [ValidateDriverChange]
+        [ValidateDriverChange]
         public async Task<IActionResult> PostPutAsync([FromHeader(Name = "JobId")] int JobId,[FromBody] ChecklistDto checkList)
         {
             Response<ChecklistDto> response = await _jobService.ChecklistPutAsync(checkList, Convert.ToInt32(_authUserService.GetUserId()));
