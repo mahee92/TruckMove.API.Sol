@@ -8,20 +8,20 @@ namespace TruckMove.API.DAL.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //migrationBuilder.AddColumn<string>(
-            //    name: "DarkColour",
-            //    table: "JobStatus",
-            //    type: "nvarchar(max)",
-            //    nullable: true);
+            migrationBuilder.AddColumn<string>(
+                name: "DarkColour",
+                table: "JobStatus",
+                type: "nvarchar(max)",
+                nullable: true);
 
-            //migrationBuilder.AddColumn<string>(
-            //    name: "LightColour",
-            //    table: "JobStatus",
-            //    type: "nvarchar(20)",
-            //    maxLength: 20,
-            //    nullable: true);
+            migrationBuilder.AddColumn<string>(
+                name: "LightColour",
+                table: "JobStatus",
+                type: "nvarchar(20)",
+                maxLength: 20,
+                nullable: true);
 
-           
+
 
             migrationBuilder.UpdateData(
                 table: "JobStatus",
