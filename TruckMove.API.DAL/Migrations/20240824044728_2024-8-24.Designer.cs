@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240824044728_2024-8-24")]
+    partial class _2024824
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -312,28 +314,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("Checklist", (string)null);
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.CheckListImage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ChecklistId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("url");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChecklistId");
-
-                    b.ToTable("CheckListImages");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
@@ -1843,17 +1823,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("TruckMove.API.DAL.Models.CheckListImage", b =>
-                {
-                    b.HasOne("TruckMove.API.DAL.Models.Checklist", "Checklist")
-                        .WithMany("CheckListImages")
-                        .HasForeignKey("ChecklistId")
-                        .IsRequired()
-                        .HasConstraintName("FK_CheckListPhotos_Checklist");
-
-                    b.Navigation("Checklist");
-                });
-
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
                 {
                     b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
@@ -2380,8 +2349,6 @@ namespace TruckMove.API.DAL.Migrations
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Checklist", b =>
                 {
-                    b.Navigation("CheckListImages");
-
                     b.Navigation("Notes");
                 });
 

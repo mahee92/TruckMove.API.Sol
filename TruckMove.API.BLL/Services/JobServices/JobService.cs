@@ -79,6 +79,91 @@ namespace TruckMove.API.BLL.Services.JobServices
 
             return JobStatusEnum.Planned;
         }
+
+        public bool IsPossibleToAdd(JobDto job)
+        {
+            if (job.Id < 1 || job.CompanyId < 1 || job.Controller == null || job.Controller < 1)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<Response> IsDriverChangeAllowed(int jobId)
+        {
+            Response response = new Response();
+            try
+            {
+                var job = await _repository.GetAsync(jobId);
+                if (job.Status == (int)JobStatusEnum.Planned ||
+                   job.Status == (int)JobStatusEnum.Booked ||
+                   job.Status == (int)JobStatusEnum.ReadyForPickup ||
+                   job.Status == (int)JobStatusEnum.PreDepartureChecked ||
+                   job.Status == (int)JobStatusEnum.Acknowledged ||
+                   job.Status == (int)JobStatusEnum.Stopped)
+                {
+                    response.Success = true;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorType = ErrorCode.statusError;
+                    response.ErrorMessage = ErrorMessages.JobStatusError;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = ex.Message;
+                response.ErrorType = ErrorCode.dbError;
+
+            }
+            return response;
+
+        }
+
+        public bool validateUpdateStatus(int perviosStatus,int newStatus)
+        {
+            if (newStatus - 1 == perviosStatus)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<Response> UpdateStatus(int jobId, JobStatusEnum status)
+        {
+            Response response = new Response();
+            var job = await _repository.GetAsync(jobId);
+            if (job == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ErrorMessages.NotFound;
+                response.ErrorType = ErrorCode.NotFound;
+            }
+            //check permition
+            if (validateUpdateStatus(job.Status ?? 1, (int)status))
+            {
+
+                job.Status = (int)status;
+                var updatedJob = await _repository.UpdateAsync(job);
+                response.Success = true;
+
+            }
+            else
+            {
+                response.Success = false;
+                response.ErrorMessage = ErrorMessages.JobStatusError;
+                response.ErrorType = ErrorCode.statusError;
+            }
+
+            return response;
+
+
+        }
+
+
         public async Task<Response<JobDto>> PostPutAsync(JobDto job, int userId)
         {
             Response<JobDto> response = new Response<JobDto>();
@@ -154,14 +239,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-        public bool IsPossibleToAdd(JobDto job)
-        {
-            if (job.Id < 1 || job.CompanyId < 1 || job.Controller== null ||job.Controller < 1)
-            {
-                return false;
-            }
-            return true;
-        }
+        
 
         public async Task<Response> GetNextJobId()
         {
@@ -252,39 +330,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             return jobs.ProjectTo<JobOutPutDTO>(_mapper.ConfigurationProvider);
         }
 
-        public async Task<Response> IsDriverChangeAllowed(int jobId)
-        {
-            Response response = new Response();
-            try
-            {
-              var job = await _repository.GetAsync(jobId);
-              if(job.Status == (int)JobStatusEnum.Planned ||
-                 job.Status == (int)JobStatusEnum.Booked ||
-                 job.Status == (int)JobStatusEnum.ReadyForPickup ||
-                 job.Status == (int)JobStatusEnum.PreDepartureChecked ||
-                 job.Status == (int)JobStatusEnum.Acknowledged ||
-                 job.Status == (int)JobStatusEnum.Stopped)
-                {
-                    response.Success = true;
-                }
-                else
-                {
-                    response.Success = false;
-                    response.ErrorType = ErrorCode.statusError;
-                    response.ErrorMessage = ErrorMessages.JobStatusError;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.ErrorMessage = ex.Message;
-                response.ErrorType = ErrorCode.dbError;
-
-            }
-            return response;
-
-        }
+        
 
         public async Task<Response<LegHistoryDto>> GetLegHistory(int jobId)
         {
