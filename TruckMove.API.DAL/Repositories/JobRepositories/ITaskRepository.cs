@@ -14,5 +14,6 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         Task<List<PublicTransport>> GetPublicTransportTasksByUserId(int userId);
         Task<List<Purchase>> GetPurchaseTasksByUserId(int userId);
         Task<List<Job>> GetJobTasksByUserId(int userId);
+        Task<List<Job>> GetDrivingTasksByUserId(int userId);
     }
 }

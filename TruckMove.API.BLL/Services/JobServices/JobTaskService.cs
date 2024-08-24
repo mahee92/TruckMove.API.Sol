@@ -471,23 +471,49 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var accommodationTasks = _taskRepository.GetAccommodationTasksByUserId(userId);
                 var publicTransportTasks = _taskRepository.GetPublicTransportTasksByUserId(userId);
                 var purchaseTasks = _taskRepository.GetPurchaseTasksByUserId(userId);
-                var jobTasks = _taskRepository.GetJobTasksByUserId(userId);
+                var drivingTasks = _taskRepository.GetDrivingTasksByUserId(userId);
+                // var jobTasks = _taskRepository.GetJobTasksByUserId(userId);
 
-                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, jobTasks);
+                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks/*, jobTasks*/);
 
                
                 var permitsResult = await permitTasks;
                 var accommodationsResult = await accommodationTasks;
                 var publicTransportsResult = await publicTransportTasks;
                 var purchasesResult = await purchaseTasks;
-                var jobsResult = await jobTasks;
+                var drivingResult = await drivingTasks;
+                // var jobsResult = await jobTasks;
+                response.Object = new MyTaskDto();
+                if(permitsResult != null)
+                {
+                    response.Object.PermitsAndPlates = new List<PermitsAndPlateOutputDto>();
+                    AddMappedTasksToResponse(response.Object.PermitsAndPlates, permitsResult);
+                }
+                if (accommodationsResult != null)
+                {
+                    response.Object.Accommodations = new List<AccommodationOutputDto>();
+                    AddMappedTasksToResponse(response.Object.Accommodations, accommodationsResult);
+                }
+                if(publicTransportsResult != null)
+                {
+                    response.Object.PublicTransports = new List<PublicTransportOutputDto>();
+                    AddMappedTasksToResponse(response.Object.PublicTransports, publicTransportsResult);
+                }
+                if (purchasesResult != null)
+                {
+                    response.Object.Purchases = new List<PurchaseOutputDto>();
+                    AddMappedTasksToResponse(response.Object.Purchases, purchasesResult);
+                }
+                if (drivingResult != null)
+                {
+                    response.Object.DrivingTasks = new List<Job>();
+                    AddMappedTasksToResponse(response.Object.DrivingTasks, drivingResult);
+                }
 
-                
-                AddMappedTasksToResponse(response.Object.PermitsAndPlates, permitsResult);
-                AddMappedTasksToResponse(response.Object.Accommodations, accommodationsResult);
-                AddMappedTasksToResponse(response.Object.PublicTransports, publicTransportsResult);
-                AddMappedTasksToResponse(response.Object.Purchases, purchasesResult);
-                AddMappedTasksToResponse(response.Object.Jobs, jobsResult);
+
+
+
+                //AddMappedTasksToResponse(response.Object.Jobs, jobsResult);
 
 
 
