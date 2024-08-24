@@ -676,13 +676,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     HandleNotes(checkList, newChecklist);
                     var res = await _repositorypreChecklist.AddAsync(newChecklist);
                    
-                    if(checkList.CheckListImages !=null && checkList.CheckListImages.Count > 0)
-                    {
-                         var checkListimagses = CreateImageList(res.Id, checkList.CheckListImages.Select(x => x.Url).ToList());
-                         await _jobRepository.AddCheckListImages(checkListimagses);
-                    }
-
-
+                    HandleImages(checkList, newChecklist);
                     response.Object = _mapper.Map<ChecklistDto>(res);
 
 
@@ -713,15 +707,18 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
                         HandleNotes(checkList, existingCheckList);
+                        await _jobRepository.DeleteCheckListIagesByCheckListId(checkList.Id);
+                        HandleImages(checkList, existingCheckList);
+
                         var updatedcheckList = await _repositorypreChecklist.UpdateAsync(res);
 
-                       _jobRepository.DeleteCheckListIagesByCheckListId(updatedcheckList.Id);
+                       
                         
-                        if (checkList.CheckListImages != null && checkList.CheckListImages.Count > 0)
-                        {
-                            var checkListimagses = CreateImageList(res.Id, checkList.CheckListImages.Select(x => x.Url).ToList());
-                            await _jobRepository.AddCheckListImages(checkListimagses);
-                        }
+                        //if (checkList.CheckListImages != null && checkList.CheckListImages.Count > 0)
+                        //{
+                        //    var checkListimagses = CreateImageList(res.Id, checkList.CheckListImages.Select(x => x.Url).ToList());
+                        //    await _jobRepository.AddCheckListImages(checkListimagses);
+                        //}
                         response.Success = true;
                         response.Object = _mapper.Map<ChecklistDto>(updatedcheckList);
 
@@ -778,6 +775,22 @@ namespace TruckMove.API.BLL.Services.JobServices
             {
                 checkList.Notes.Remove(note);
             }
+        }
+
+        public void HandleImages(ChecklistDto checkListdto, Checklist checkList)
+        {
+
+            foreach (var imagedto in checkListdto.CheckListImages)
+            {
+                var image = _mapper.Map<CheckListImage>(imagedto);
+                if (image.Id == 0)
+                {
+                    checkList.CheckListImages.Add(image); 
+                }
+               
+            }
+
+            
         }
 
         public async void ChangeJobStatus(int jobId, int status)

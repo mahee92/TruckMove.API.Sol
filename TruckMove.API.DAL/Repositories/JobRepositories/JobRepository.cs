@@ -157,7 +157,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         }
 
-        public async void DeleteCheckListIagesByCheckListId(int checkListId)
+        public async Task DeleteCheckListIagesByCheckListId(int checkListId)
         {
             var entities = await _context.Set<CheckListImage>().Where(e => e.ChecklistId == checkListId).ToListAsync();
             _context.Set<CheckListImage>().RemoveRange(entities);
