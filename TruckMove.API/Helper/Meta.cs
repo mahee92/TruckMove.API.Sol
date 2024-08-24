@@ -13,5 +13,7 @@
         public const string ACCOMODATION_ATTACHMENT_PATH = "Accomodation//Attachments";
         public const string PURCHASE_ATTACHMENT_PATH = "Purchase//Attachments";
         public const string TRANSPORT_ATTACHMENT_PATH = "Transport//Attachments";
+
+        public const string CHECKLIST_IMG_PATH = "Vehicle//Images";
     }
 }

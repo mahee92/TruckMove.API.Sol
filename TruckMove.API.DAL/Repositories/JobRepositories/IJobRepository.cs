@@ -31,5 +31,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         Task<bool> CheckDriverHasOngoingLegs(int jobId, int driverId);
         Task<List<Leg>> GetLegsByJobId(int jobId);
+
+        Task DeleteCheckListIagesByCheckListId(int checkListId);
+        Task AddCheckListImages(List<CheckListImage> checkListimagses);
     }
 }

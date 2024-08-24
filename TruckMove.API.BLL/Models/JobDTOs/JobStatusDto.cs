@@ -11,5 +11,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         public int Id { get; set; }
         public string Status { get; set; } = null!;
         public string? Description { get; set; }
+        public string? LightColour { get; set; }
+        public string? DarkColour { get; set; }
     }
 }

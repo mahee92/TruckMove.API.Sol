@@ -73,6 +73,7 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public bool IsPre { get; set; }
 
-        public virtual List<NoteDto> Notes { get; set; }
+        public virtual List<NoteDto>? Notes { get; set; }
+        public virtual List<CheckListImageDto>? CheckListImages { get; set; }
     }
 }

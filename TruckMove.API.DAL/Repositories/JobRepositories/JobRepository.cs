@@ -86,7 +86,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         }
         public IQueryable<Job> GetAllAsync(int driverId)
         {
-            var query = _dbSet.Where(e => e.IsActive /*&& e.Driver == driverId*/).AsQueryable();
+            var query = _dbSet.Where(e => e.IsActive && e.Driver == driverId).AsQueryable();
 
             // string sqlQuery = query.ToQueryString();
             return query;
@@ -155,6 +155,18 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                           .Include(x => x.StatusNavigation)
                           .ToListAsync();
 
+        }
+
+        public async Task DeleteCheckListIagesByCheckListId(int checkListId)
+        {
+            var entities = await _context.Set<CheckListImage>().Where(e => e.ChecklistId == checkListId).ToListAsync();
+            _context.Set<CheckListImage>().RemoveRange(entities);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddCheckListImages(List<CheckListImage> checkListimagses)
+        {
+             await _context.Set<CheckListImage>().AddRangeAsync(checkListimagses);
         }
     }
 }

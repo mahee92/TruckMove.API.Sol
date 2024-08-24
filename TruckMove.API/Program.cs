@@ -180,6 +180,9 @@ internal class Program
             profile.CreateGenericMap<PurchaseDto, Purchase>();
             profile.CreateGenericMap<Purchase, PurchaseDto>();
 
+            profile.CreateGenericMap<CheckListImage, CheckListImageDto>();
+            profile.CreateGenericMap<CheckListImageDto, CheckListImage>();
+
 
 
 
@@ -332,6 +335,7 @@ internal class Program
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IJobRepository, JobRepository>();
         builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();
+        builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
         builder.Services.AddScoped<ValidateDriverChangeAttributeFilter>();
         builder.Services.AddScoped<ODataExceptionFilter>();
