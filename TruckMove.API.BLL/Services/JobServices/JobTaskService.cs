@@ -480,14 +480,14 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var accommodationsResult = await accommodationTasks;
                 var publicTransportsResult = await publicTransportTasks;
                 var purchasesResult = await purchaseTasks;
-                var jobsResult = await jobTasks;
+               // var jobsResult = await jobTasks;
 
                 
                 AddMappedTasksToResponse(response.Object.PermitsAndPlates, permitsResult);
                 AddMappedTasksToResponse(response.Object.Accommodations, accommodationsResult);
                 AddMappedTasksToResponse(response.Object.PublicTransports, publicTransportsResult);
                 AddMappedTasksToResponse(response.Object.Purchases, purchasesResult);
-                AddMappedTasksToResponse(response.Object.Jobs, jobsResult);
+               // AddMappedTasksToResponse(response.Object.Jobs, jobsResult);
 
 
 
