@@ -23,11 +23,9 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
         public virtual List<PurchaseOutputDto>? Purchases { get; set; }
 
         public virtual List<Job>? DrivingTasks { get; set; }
-        //
 
-
-
-
-
+        public virtual List<Job>? MyJobs { get; set; }
+        
+        public Dictionary<DateTime, int>? UpcommingJobsByPickupDate { get; internal set; }
     }
 }

@@ -15,8 +15,8 @@ namespace TruckMove.API.DAL.Models
             CompanyUpdatedBies = new HashSet<Company>();
             ContactCreatedBies = new HashSet<Contact>();
             ContactUpdatedBies = new HashSet<Contact>();
-            InverseCreatedBy = new HashSet<User>();
-            InverseUpdatedBy = new HashSet<User>();
+            //InverseCreatedBy = new HashSet<User>();
+            //InverseUpdatedBy = new HashSet<User>();
             JobControllerNavigations = new HashSet<Job>();
             JobCreatedBies = new HashSet<Job>();
             JobUpdatedBies = new HashSet<Job>();
@@ -53,8 +53,8 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Company> CompanyUpdatedBies { get; set; }
         public virtual ICollection<Contact> ContactCreatedBies { get; set; }
         public virtual ICollection<Contact> ContactUpdatedBies { get; set; }
-        public virtual ICollection<User> InverseCreatedBy { get; set; }
-        public virtual ICollection<User> InverseUpdatedBy { get; set; }
+        //public virtual ICollection<User> InverseCreatedBy { get; set; }
+        //public virtual ICollection<User> InverseUpdatedBy { get; set; }
         public virtual ICollection<Job> JobControllerNavigations { get; set; }
         public virtual ICollection<Job> JobCreatedBies { get; set; }
         public virtual ICollection<Job> JobUpdatedBies { get; set; }

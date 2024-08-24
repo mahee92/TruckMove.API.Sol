@@ -143,6 +143,28 @@ namespace TruckMove.API.BLL.Services
             }
             return response;
         }
+        
+        public async Task<Response<JobStatus>> GetAllJobStatus()
+        {
+            Response<JobStatus> response = new Response<JobStatus>();
+            try
+            {
+                var types = await _repository.GetAllJobStatus();
+                response.Success = true;
+                if (types.Count > 0)
+                {
+                    response.Objects = new List<JobStatus>();
+                    response.Objects = types;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
 
 
 

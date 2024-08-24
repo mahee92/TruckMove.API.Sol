@@ -574,13 +574,13 @@ namespace TruckMove.API.DAL.Models
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
 
-                entity.HasOne(d => d.CreatedBy)
-                    .WithMany(p => p.InverseCreatedBy)
-                    .HasForeignKey(d => d.CreatedById);
+                //entity.HasOne(d => d.CreatedBy)
+                //   // .WithMany(p => p.InverseCreatedBy)
+                //    .HasForeignKey(d => d.CreatedById);
 
-                entity.HasOne(d => d.UpdatedBy)
-                    .WithMany(p => p.InverseUpdatedBy)
-                    .HasForeignKey(d => d.UpdatedById);
+                //entity.HasOne(d => d.UpdatedBy)
+                //   // .WithMany(p => p.InverseUpdatedBy)
+                //    .HasForeignKey(d => d.UpdatedById);
             });
 
             modelBuilder.Entity<UserRole>(entity =>

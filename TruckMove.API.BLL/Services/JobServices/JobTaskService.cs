@@ -472,9 +472,13 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var publicTransportTasks = _taskRepository.GetPublicTransportTasksByUserId(userId);
                 var purchaseTasks = _taskRepository.GetPurchaseTasksByUserId(userId);
                 var drivingTasks = _taskRepository.GetDrivingTasksByUserId(userId);
-                // var jobTasks = _taskRepository.GetJobTasksByUserId(userId);
+                
+                var myJobs = _taskRepository.GetJobsByUserId(userId);
 
-                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks/*, jobTasks*/);
+                var UpcommingJobsByPickupDate = _taskRepository.GetUpcommingJobsByPickupDate();
+
+
+                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks, myJobs, UpcommingJobsByPickupDate);
 
                
                 var permitsResult = await permitTasks;
@@ -482,34 +486,46 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var publicTransportsResult = await publicTransportTasks;
                 var purchasesResult = await purchaseTasks;
                 var drivingResult = await drivingTasks;
-                // var jobsResult = await jobTasks;
+                var myJobsResult = await myJobs;
+                var UpcommingJobsByPickupDateResult = await UpcommingJobsByPickupDate;
+               
                 response.Object = new MyTaskDto();
-                if(permitsResult != null)
+                if(permitsResult != null && permitsResult.Count>0)
                 {
                     response.Object.PermitsAndPlates = new List<PermitsAndPlateOutputDto>();
                     AddMappedTasksToResponse(response.Object.PermitsAndPlates, permitsResult);
                 }
-                if (accommodationsResult != null)
+                if (accommodationsResult != null && accommodationsResult.Count > 0)
                 {
                     response.Object.Accommodations = new List<AccommodationOutputDto>();
                     AddMappedTasksToResponse(response.Object.Accommodations, accommodationsResult);
                 }
-                if(publicTransportsResult != null)
+                if (publicTransportsResult != null && publicTransportsResult.Count > 0)
                 {
                     response.Object.PublicTransports = new List<PublicTransportOutputDto>();
                     AddMappedTasksToResponse(response.Object.PublicTransports, publicTransportsResult);
                 }
-                if (purchasesResult != null)
+                if (purchasesResult != null && purchasesResult.Count > 0)
                 {
                     response.Object.Purchases = new List<PurchaseOutputDto>();
                     AddMappedTasksToResponse(response.Object.Purchases, purchasesResult);
                 }
-                if (drivingResult != null)
+                if (drivingResult != null && drivingResult.Count > 0)
                 {
                     response.Object.DrivingTasks = new List<Job>();
                     AddMappedTasksToResponse(response.Object.DrivingTasks, drivingResult);
                 }
+                if (myJobsResult != null && myJobsResult.Count > 0)
+                {
+                    response.Object.MyJobs = new List<Job>();
+                    AddMappedTasksToResponse(response.Object.MyJobs, myJobsResult);
+                }
+                response.Object.UpcommingJobsByPickupDate = new Dictionary<DateTime, int>();
+                if (UpcommingJobsByPickupDateResult != null && UpcommingJobsByPickupDateResult.Count > 0)
+                {
 
+                    response.Object.UpcommingJobsByPickupDate = UpcommingJobsByPickupDateResult;
+                }
 
 
 

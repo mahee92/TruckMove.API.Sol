@@ -27,13 +27,14 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                                                                   x.Status != (int)TaskStatusEnum.Completed &&
                                                                   x.IsActive == true)
                                                             .Select(x => new Accommodation
-                                                            {   JobId=x.JobId,
+                                                            {
+                                                                JobId = x.JobId,
                                                                 Id = x.Id,
                                                                 DriverNavigation = x.DriverNavigation,
-                                                                BookingDate = x.BookingDate,                       
+                                                                BookingDate = x.BookingDate,
                                                             }).ToListAsync();
             }
-               
+
         }
         public async Task<List<PermitsAndPlate>> GetPermitsAndPlateTasksByUserId(int userId)
         {
@@ -101,9 +102,11 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                                                                    }).ToListAsync();
             }
         }
-        public async Task<List<Job>> GetJobTasksByUserId(int userId)
+        public async Task<List<Job>> GetJobsByUserId(int userId)
         {
-            return await _context.Set<Job>()
+            using (var context = new TrukMoveContext(_options))
+            {
+                return await context.Set<Job>()
                                  .Where(x => x.IsActive == true &&
                                              x.Controller == userId &&
                                              x.Status != (int)JobStatusEnum.Completed)
@@ -112,12 +115,36 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                                      Id = x.Id,
                                      PickupLocation = x.PickupLocation,
                                      DropOfLocation = x.DropOfLocation,
-                                     VehicleNavigation = x.VehicleNavigation,
+                                     Vehicle = x.Vehicle,
                                      StatusNavigation = x.StatusNavigation,
-                                     DriverNavigation = x.DriverNavigation,
-                                     QALegCount = x.Legs.Count(y => y.Status == (int)TaskStatusEnum.Completed),
-                                 })
+                                     DriverNavigation = x.DriverNavigation
+                                     // QALegCount = x.Legs.Count(y => y.Status == (int)TaskStatusEnum.Completed),
+                                 })/*.OrderByDescending(x => x.LastModifiedDate)*/
                                  .ToListAsync();
+
+            }
+        }
+
+        public async Task<Dictionary<DateTime, int>> GetUpcommingJobsByPickupDate()
+        {
+            using (var context = new TrukMoveContext(_options))
+            {
+                // Fetch the relevant data from the database first
+                var upcomingJobDates = await context.Set<Job>()
+                    .Where(job => job.IsActive &&
+                           job.PickupDate.HasValue && 
+                           job.PickupDate.Value > DateTime.Now)
+                    .Select(job => job.PickupDate.Value.Date)
+                    .ToListAsync();
+
+                // Group by PickupDate and count the number of jobs for each date
+                var groupedJobVolumes = upcomingJobDates
+                    .GroupBy(date => date)
+                    .OrderBy(group => group.Key)
+                    .ToDictionary(group => group.Key, group => group.Count());
+
+                return groupedJobVolumes;
+            }
         }
     }
 }

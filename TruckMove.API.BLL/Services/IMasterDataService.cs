@@ -21,5 +21,6 @@ namespace TruckMove.API.BLL.Services
         Task<Response<PublicTransportType>> GetAllPublicTransportTypes();
 
         Task<Response<TaskStatus>> GetAllTaskStatus();
+        Task<Response<JobStatus>> GetAllJobStatus();
     }
 }

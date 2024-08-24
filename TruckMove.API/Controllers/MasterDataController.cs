@@ -131,5 +131,19 @@ namespace TruckMove.API.Controllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+        [HttpGet("/JobStatuses")]
+        public async Task<IActionResult> JobStatuses()
+        {
+            var response = await _masterdataService.GetAllJobStatus();
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
     }
 }
