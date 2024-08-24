@@ -630,7 +630,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     HandleNotes(checkList, newChecklist);
                     var res = await _repositorypreChecklist.AddAsync(newChecklist);
                    
-                    if(checkList.CheckListImages.Count > 0)
+                    if(checkList.CheckListImages !=null && checkList.CheckListImages.Count > 0)
                     {
                          var checkListimagses = CreateImageList(res.Id, checkList.CheckListImages.Select(x => x.Url).ToList());
                          await _jobRepository.AddCheckListImages(checkListimagses);
@@ -671,7 +671,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                        _jobRepository.DeleteCheckListIagesByCheckListId(updatedcheckList.Id);
                         
-                        if (checkList.CheckListImages.Count > 0)
+                        if (checkList.CheckListImages != null && checkList.CheckListImages.Count > 0)
                         {
                             var checkListimagses = CreateImageList(res.Id, checkList.CheckListImages.Select(x => x.Url).ToList());
                             await _jobRepository.AddCheckListImages(checkListimagses);
