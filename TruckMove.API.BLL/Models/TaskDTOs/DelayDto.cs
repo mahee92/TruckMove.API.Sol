@@ -16,6 +16,6 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
 
-        public virtual List<DelayDriversDto>? DelayDrivers { get; set; }
+        public virtual List<DelayDriverDto>? DelayDrivers { get; set; }
     }
 }

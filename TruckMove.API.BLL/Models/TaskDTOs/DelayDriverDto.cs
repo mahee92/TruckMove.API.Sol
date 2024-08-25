@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TruckMove.API.BLL.Models.TaskDTOs
 {
-    public class DelayDriversDto
+    public class DelayDriverDto
     {
         public int Id { get; set; }
         public int DelayId { get; set; }

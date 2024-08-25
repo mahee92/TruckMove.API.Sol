@@ -194,6 +194,38 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         #endregion
 
+        #region Delays
+
+        [HttpPost("Delays/PostPut")]
+        public async Task<IActionResult> PostPutAsync([FromBody] DelayDto delay)
+        {
+            Response<DelayDto> response = await _jobTaskService.DelayPostPut(delay, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpDelete("Delays/Delete")]
+        public async Task<IActionResult> DelaysDeleteAsync(int id)
+        {
+            Response response = await _jobTaskService.DelayDeleteAsync(id);
+            if (response.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
+
         #region MyTask
         [HttpGet("MyTask")]
         public async Task<IActionResult> GetMyTasks()

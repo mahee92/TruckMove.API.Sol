@@ -182,6 +182,11 @@ internal class Program
 
             profile.CreateGenericMap<CheckListImage, CheckListImageDto>();
             profile.CreateGenericMap<CheckListImageDto, CheckListImage>();
+            profile.CreateGenericMap<DelayDto, Delay>();
+            profile.CreateGenericMap<Delay, DelayDto>();
+
+            profile.CreateGenericMap<DelayDriverDto, DelayDriver>();
+            profile.CreateGenericMap<DelayDriver, DelayDriverDto>();
 
 
 
@@ -330,6 +335,8 @@ internal class Program
         builder.Services.AddScoped<IRepository<Accommodation>, Repository<Accommodation>>();
         builder.Services.AddScoped<IRepository<PublicTransport>, Repository<PublicTransport>>();
         builder.Services.AddScoped<IRepository<Purchase>, Repository<Purchase>>();
+        builder.Services.AddScoped<IRepository<Delay>, Repository<Delay>>();
+
 
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();

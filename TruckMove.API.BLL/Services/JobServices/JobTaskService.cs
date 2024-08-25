@@ -13,6 +13,7 @@ using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.VehicleDtos;
 using static TruckMove.API.DAL.MasterData.MasterData;
 
+
 namespace TruckMove.API.BLL.Services.JobServices
 {
     public class JobTaskService : IJobTaskService
@@ -26,7 +27,8 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<PublicTransport> _repositoryPublicTransport;
         private readonly IRepository<Purchase> _repositoryPurchase;
         private readonly ITaskRepository _taskRepository;
-        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation, IRepository<PublicTransport> repositoryPublicTransport, IRepository<Purchase> repositoryPurchase, ITaskRepository taskRepository)
+        private readonly IRepository<Delay> _repositoryDelay;
+        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation, IRepository<PublicTransport> repositoryPublicTransport, IRepository<Purchase> repositoryPurchase, ITaskRepository taskRepository,IRepository<Delay> delay)
         {
             _mapper = mapper;
             _repository = repository;
@@ -37,6 +39,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryPublicTransport = repositoryPublicTransport;
             _repositoryPurchase = repositoryPurchase;
             _taskRepository = taskRepository;
+            _repositoryDelay = delay;
 
 
         }
@@ -459,6 +462,125 @@ namespace TruckMove.API.BLL.Services.JobServices
         #endregion
 
 
+        #region Delay
+        
+        public void HandleDrivers(DelayDto delayDto, Delay delay)
+        {
+
+            foreach (var DelayDriver in delayDto.DelayDrivers)
+            {
+               
+                if (DelayDriver.Id == 0)
+                {
+                    var delayDriver = new DelayDriver();
+                    delayDriver.DriverId = DelayDriver.DriverId;
+                    delayDriver.DelayId = delay.Id;
+                    delay.DelayDrivers.Add(delayDriver);
+                }
+
+            }
+
+            // remove deleted drivers
+            var updatedDriverIds = delayDto.DelayDrivers.Select(n => n.Id).ToList();
+            var driversToRemove = delay.DelayDrivers.Where(n => !updatedDriverIds.Contains(n.Id)).ToList();
+            foreach (var driver in driversToRemove)
+            {
+                delay.DelayDrivers.Remove(driver);
+            }   
+
+
+        }
+        public async Task<Response<DelayDto>> DelayPostPut(DelayDto delay, int userId)
+        {
+            Response<DelayDto> response = new Response<DelayDto>();
+            try
+            {
+                if (delay.Id == 0)
+                {
+                    Delay newDelay = _mapper.Map<Delay>(delay);
+                    newDelay.CreatedDate = DateTime.Now;
+                    newDelay.CreatedById = userId;
+                    var res = await _repositoryDelay.AddAsync(newDelay);
+                 
+                   var res2 = await _repositoryDelay.GetWithNestedIncludesAsync(res.Id, "AssigneeNavigation",
+                                                                  "StatusNavigation", "DelayDrivers"
+                                                                  );
+                   // HandleDrivers(delay, res2);
+                    response.Object = _mapper.Map<DelayDto>(res2);
+                    response.Success = true;
+                }
+                else
+                {
+                    var existingDelay = await _repositoryDelay.GetWithNestedIncludesAsync(delay.Id, "DelayDrivers"
+                                                                  );
+                    if (existingDelay == null)
+                    {
+                        response.Success = false;
+                        response.ErrorType = ErrorCode.NotFound;
+                        response.ErrorMessage = ErrorMessages.NotFound;
+                    }
+                    else
+                    {
+                        ObjectUpdater<DelayDto, Delay> updater = new ObjectUpdater<DelayDto, Delay>();
+                        var res = updater.Map(delay, existingDelay);
+                        res.CreatedDate = existingDelay.CreatedDate;
+                        res.CreatedById = existingDelay.CreatedById;
+                        res.LastModifiedDate = DateTime.Now;
+                        res.UpdatedById = userId;
+                        HandleDrivers(delay, existingDelay);
+                        var updatedDelay = await _repositoryDelay.UpdateAsync(res);
+                        var res2 = await _repositoryDelay.GetWithNestedIncludesAsync(res.Id, "AssigneeNavigation",
+                                                                  "StatusNavigation", "DelayDrivers"
+                                                                  );
+
+                        
+                        response.Success = true;
+                        response.Object = _mapper.Map<DelayDto>(res2);
+                    }
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+        }
+
+        public async Task<Response> DelayDeleteAsync(int id)
+        {
+            Response response = new Response();
+            try
+            {
+                var delay = await _repositoryDelay.GetAsync(id);
+
+                if (delay == null)
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.NotFound;
+                    response.ErrorType = ErrorCode.NotFound;
+                }
+                else
+                {
+
+                    await _repositoryDelay.DeleteAsync(id);
+                    response.Success = true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+
+            }
+            return response;
+        }
+        #endregion
         #region MyTasks
         //get all tasks for a user
 

@@ -962,17 +962,15 @@ namespace TruckMove.API.DAL.Models
                 modelBuilder.Entity<Delay>(entity =>
                 {
                     entity.Property(e => e.EndTime).HasColumnType("datetime");
-
                     entity.Property(e => e.StartTime).HasColumnType("datetime");
 
                     entity.Property(e => e.IsActive)
-                      .IsRequired()
-                      .HasDefaultValueSql("(CONVERT([bit],(1)))");
+                        .IsRequired()
+                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
+
                     entity.HasOne(d => d.CreatedBy)
-                       .WithMany(p => p.DelayCreatedBies)
-                       .HasForeignKey(d => d.CreatedById);
-
-
+                        .WithMany(p => p.DelayCreatedBies)
+                        .HasForeignKey(d => d.CreatedById);
 
                     entity.HasOne(d => d.UpdatedBy)
                         .WithMany(p => p.DelayUpdatedBies)
@@ -986,14 +984,20 @@ namespace TruckMove.API.DAL.Models
                     entity.HasOne(d => d.Job)
                         .WithMany(p => p.Delays)
                         .HasForeignKey(d => d.JobId)
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.ClientSetNull) // No change
                         .HasConstraintName("FK_Delays_Jobs");
 
                     entity.HasOne(d => d.StatusNavigation)
                         .WithMany(p => p.Delays)
                         .HasForeignKey(d => d.Status)
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.ClientSetNull) // No change
                         .HasConstraintName("FK_Delays_TaskStatus");
+
+                    // Ensure that when a Delay is deleted, its associated DelayDrivers are deleted as well.
+                    entity.HasMany(d => d.DelayDrivers)
+                        .WithOne(dd => dd.Delay)
+                        .HasForeignKey(dd => dd.DelayId)
+                        .OnDelete(DeleteBehavior.Cascade); // Cascading delete
                 });
 
                 modelBuilder.Entity<DelayDriver>(entity =>
@@ -1001,13 +1005,13 @@ namespace TruckMove.API.DAL.Models
                     entity.HasOne(d => d.Delay)
                         .WithMany(p => p.DelayDrivers)
                         .HasForeignKey(d => d.DelayId)
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.Cascade) // Cascading delete
                         .HasConstraintName("FK_DelayDrivers_Delays");
 
                     entity.HasOne(d => d.Driver)
                         .WithMany(p => p.DelayDrivers)
                         .HasForeignKey(d => d.DriverId)
-                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .OnDelete(DeleteBehavior.ClientSetNull) // No change
                         .HasConstraintName("FK_DelayDrivers_Users");
                 });
             });
