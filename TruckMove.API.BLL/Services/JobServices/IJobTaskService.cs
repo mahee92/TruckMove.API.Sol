@@ -26,5 +26,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<bool> IsDriverValidForJob(int jobId, int driverId);
 
         Task<Response<MyTaskDto>> GetMyTasks(int userId);
+
+        Task<Response<GraphData>> GetGraphData();
     }
 }

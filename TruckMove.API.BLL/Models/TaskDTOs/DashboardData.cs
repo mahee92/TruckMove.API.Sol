@@ -26,6 +26,17 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
 
         public virtual List<Job>? MyJobs { get; set; }
         
+       
+    }
+
+
+    public class GraphData
+    {
         public Dictionary<DateTime, int>? UpcommingJobsByPickupDate { get; internal set; }
+
+        public Dictionary<string, int>? UpcomingJobsByCompany { get; internal set; }
+        public Dictionary<string, int>? UpcomingJobsByDriver { get; internal set; }
+        public Dictionary<string, int>? UpcomingJobsByDriverOverTime { get; internal set; }
+
     }
 }

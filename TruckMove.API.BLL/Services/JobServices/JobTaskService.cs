@@ -461,6 +461,65 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         #region MyTasks
         //get all tasks for a user
+
+
+
+        public async Task<Response<GraphData>> GetGraphData()
+        {
+            var response = new Response<GraphData>();
+            try
+            {
+                var UpcommingJobsByPickupDate = _taskRepository.GetUpcommingJobsByPickupDate();
+                var UpcomingJobsByCompany = _taskRepository.GetUpcomingJobsByCompany();
+                var UpcomingJobsByDriver = _taskRepository.GetUpcomingJobsByDriver();
+                var UpcomingJobsByDriverOverTime = _taskRepository.GetUpcomingJobsByDriverOverTime();
+                await Task.WhenAll( UpcommingJobsByPickupDate, UpcomingJobsByCompany, UpcomingJobsByDriver, UpcomingJobsByDriverOverTime);
+
+                var UpcommingJobsByPickupDateResult = await UpcommingJobsByPickupDate;
+                var UpcomingJobsByCompanyResult = await UpcomingJobsByCompany;
+                var UpcomingJobsByDriverResult = await UpcomingJobsByDriver;
+                var UpcomingJobsByDriverOverTimeResult = await UpcomingJobsByDriverOverTime;
+
+                response.Object = new GraphData();
+                response.Object.UpcommingJobsByPickupDate = new Dictionary<DateTime, int>();
+                if (UpcommingJobsByPickupDateResult != null && UpcommingJobsByPickupDateResult.Count > 0)
+                {
+
+                    response.Object.UpcommingJobsByPickupDate = UpcommingJobsByPickupDateResult;
+                }
+                response.Object.UpcomingJobsByCompany = new Dictionary<string, int>();
+                if (UpcomingJobsByCompanyResult != null && UpcomingJobsByCompanyResult.Count > 0)
+                {
+                    response.Object.UpcomingJobsByCompany = UpcomingJobsByCompanyResult;
+                }
+                response.Object.UpcomingJobsByDriver = new Dictionary<string, int>();
+
+                if (UpcomingJobsByDriverResult != null && UpcomingJobsByDriverResult.Count > 0)
+                {
+                    response.Object.UpcomingJobsByDriver = UpcomingJobsByDriverResult;
+                }
+                //
+                response.Object.UpcomingJobsByDriverOverTime = new Dictionary<string, int>();
+                if (UpcomingJobsByDriverOverTimeResult != null && UpcomingJobsByDriverOverTimeResult.Count > 0)
+                {
+                    response.Object.UpcomingJobsByDriverOverTime = UpcomingJobsByDriverOverTimeResult;
+                }
+                response.Success = true;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+
+        }
+
+
+
+
         public async Task<Response<MyTaskDto>> GetMyTasks(int userId)
         {
             var response = new Response<MyTaskDto>();
@@ -475,10 +534,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                 
                 var myJobs = _taskRepository.GetJobsByUserId(userId);
 
-                var UpcommingJobsByPickupDate = _taskRepository.GetUpcommingJobsByPickupDate();
+               
 
 
-                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks, myJobs, UpcommingJobsByPickupDate);
+
+                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks, myJobs);
 
                
                 var permitsResult = await permitTasks;
@@ -487,8 +547,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var purchasesResult = await purchaseTasks;
                 var drivingResult = await drivingTasks;
                 var myJobsResult = await myJobs;
-                var UpcommingJobsByPickupDateResult = await UpcommingJobsByPickupDate;
-               
+              
                 response.Object = new MyTaskDto();
                 if(permitsResult != null && permitsResult.Count>0)
                 {
@@ -520,12 +579,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                     response.Object.MyJobs = new List<Job>();
                     AddMappedTasksToResponse(response.Object.MyJobs, myJobsResult);
                 }
-                response.Object.UpcommingJobsByPickupDate = new Dictionary<DateTime, int>();
-                if (UpcommingJobsByPickupDateResult != null && UpcommingJobsByPickupDateResult.Count > 0)
-                {
+               
 
-                    response.Object.UpcommingJobsByPickupDate = UpcommingJobsByPickupDateResult;
-                }
+               
 
 
 

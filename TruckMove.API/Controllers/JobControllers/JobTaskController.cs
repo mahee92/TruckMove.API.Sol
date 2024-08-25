@@ -210,6 +210,23 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+
+        [HttpGet("GetGraphData")]
+        public async Task<IActionResult> GetGraphData()
+        {
+            Response<GraphData> response = await _jobTaskService.GetGraphData();
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
         #endregion
 
     }

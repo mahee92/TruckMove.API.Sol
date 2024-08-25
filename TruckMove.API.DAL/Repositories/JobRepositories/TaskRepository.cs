@@ -132,8 +132,9 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                 // Fetch the relevant data from the database first
                 var upcomingJobDates = await context.Set<Job>()
                     .Where(job => job.IsActive &&
-                           job.PickupDate.HasValue && 
-                           job.PickupDate.Value > DateTime.Now)
+                           job.PickupDate.HasValue &&
+                           job.PickupDate != null
+                           /*&& job.PickupDate.Value > DateTime.Now */)
                     .Select(job => job.PickupDate.Value.Date)
                     .ToListAsync();
 
@@ -146,5 +147,87 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                 return groupedJobVolumes;
             }
         }
+
+        public async Task<Dictionary<string, int>> GetUpcomingJobsByCompany()
+        {
+            using (var context = new TrukMoveContext(_options))
+            {
+                // Fetch the relevant data from the database first
+                var upcomingJobs = await context.Set<Job>()
+                    .Where(job => job.IsActive &&
+                           job.PickupDate.HasValue &&
+                            job.PickupDate != null
+                           /*&& job.PickupDate.Value > DateTime.Now */)
+                    .Select(job => new { job.CompanyId, job.Company.CompanyName })
+                    .ToListAsync();
+
+                // Group by CompanyId and include CompanyName
+                var groupedJobVolumes = upcomingJobs
+                    .GroupBy(job => new { job.CompanyId, job.CompanyName })
+                    .OrderBy(group => group.Key.CompanyName)
+                    .ToDictionary(
+                        group => group.Key.CompanyName, // Use CompanyName as the key
+                        group => group.Count()           // Use the count of jobs as the value
+                    );
+
+                return groupedJobVolumes;
+            }
+        }
+        public async Task<Dictionary<string, int>> GetUpcomingJobsByDriver()
+        {
+            using (var context = new TrukMoveContext(_options))
+            {
+                // Fetch the relevant data from the database first
+                var upcomingJobs = await context.Set<Job>()
+                    .Where(job => job.IsActive &&
+                           job.PickupDate.HasValue &&
+                           //job.PickupDate.Value > DateTime.Now &&
+                           job.DriverNavigation !=null)
+                    .Select(job => new { job.Driver, job.DriverNavigation.FirstName, job.DriverNavigation.LastName })
+                    .ToListAsync();
+
+                // Group by DriverId and include Driver's Full Name
+                var groupedJobVolumes = upcomingJobs
+                    .GroupBy(job => new { job.Driver, FullName = job.FirstName + " " + job.LastName })
+                    .OrderBy(group => group.Key.FullName)
+                    .ToDictionary(
+                        group => group.Key.FullName, // Use FullName as the key
+                        group => group.Count()       // Use the count of jobs as the value
+                    );
+
+                return groupedJobVolumes;
+            }
+        }
+        public async Task<Dictionary<string, int>> GetUpcomingJobsByDriverOverTime()
+        {
+            using (var context = new TrukMoveContext(_options))
+            {
+                var upcomingJobs = await context.Set<Job>()
+                    .Where(job => job.IsActive &&
+                                  job.PickupDate.HasValue &&
+                                  job.PickupDate != null &&
+                                  job.DriverNavigation != null)
+                    .Select(job => new
+                    {
+                        job.DriverNavigation.FirstName,
+                        job.DriverNavigation.LastName,
+                        Date = job.PickupDate.Value.Date
+                    })
+                    .ToListAsync();
+
+                // Group by Driver (FirstName + LastName) and Date, then count the number of jobs for each group
+                var groupedJobVolumes = upcomingJobs
+                    .GroupBy(job => (DriverName: $"{job.FirstName} {job.LastName}", job.Date))
+                    .OrderBy(group => group.Key.Date)
+                    .ThenBy(group => group.Key.DriverName)
+                    .ToDictionary(
+                        group => $"{group.Key.DriverName}_{group.Key.Date:yyyy-MM-dd}", // Convert tuple to string key
+                        group => group.Count());
+
+                return groupedJobVolumes;
+            }
+        }
+
+
     }
 }
