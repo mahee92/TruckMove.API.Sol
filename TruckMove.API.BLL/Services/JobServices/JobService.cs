@@ -125,7 +125,24 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public bool validateUpdateStatus(int perviosStatus,int newStatus)
         {
-            if (newStatus - 1 == perviosStatus)
+
+            if(newStatus == (int)JobStatusEnum.Delayed)
+            {
+                if (perviosStatus == (int)JobStatusEnum.InProgress)
+                {
+                    return true;
+                }
+                
+
+            }
+            else if(newStatus == (int)JobStatusEnum.InProgress)
+            {
+                if (perviosStatus == (int)JobStatusEnum.Stopped || perviosStatus == (int)JobStatusEnum.Delayed || perviosStatus == (int)JobStatusEnum.PreDepartureChecked)
+                {
+                    return true;
+                }
+            }
+            else if (newStatus - 1 == perviosStatus)
             {
                 return true;
             }
@@ -142,21 +159,26 @@ namespace TruckMove.API.BLL.Services.JobServices
                 response.ErrorMessage = ErrorMessages.NotFound;
                 response.ErrorType = ErrorCode.NotFound;
             }
-            //check permition
-            if (validateUpdateStatus(job.Status ?? 1, (int)status))
-            {
+            else {
 
-                job.Status = (int)status;
-                var updatedJob = await _repository.UpdateAsync(job);
-                response.Success = true;
+                //check permition
+                if (validateUpdateStatus(job.Status ?? 1, (int)status))
+                {
+
+                    job.Status = (int)status;
+                    var updatedJob = await _repository.UpdateAsync(job);
+                    response.Success = true;
+
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.JobStatusError;
+                    response.ErrorType = ErrorCode.statusError;
+                }
 
             }
-            else
-            {
-                response.Success = false;
-                response.ErrorMessage = ErrorMessages.JobStatusError;
-                response.ErrorType = ErrorCode.statusError;
-            }
+           
 
             return response;
 
