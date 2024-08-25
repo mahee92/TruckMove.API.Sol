@@ -71,9 +71,9 @@ namespace TruckMove.API.DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-               optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
+                optionsBuilder.UseSqlServer("Server=10.111.111.23;Database=TruckMove-DevDB;User Id=dev1;Password=hfjdhfkjkdsfd787*Fg;");
                 //optionsBuilder.UseSqlServer("Server=(localdb)\\localdbtest;Database=TrukMove-18;Trusted_Connection=True;");
-                
+
             }
         }
 
@@ -87,7 +87,7 @@ namespace TruckMove.API.DAL.Models
           new Role { Id = (int)RoleEnum.Driver, RoleName = RoleEnum.Driver.ToString() }
           );
             modelBuilder.Entity<JobStatus>().HasData(
-                   new JobStatus { Id = (int)JobStatusEnum.Planned, Status = JobStatusEnum.Planned.ToString(), Description = "A job that has been created in the system but does not have the minimum required information to complete the booking",LightColour= "#E0E0E0", DarkColour= "#C0C0C0" },
+                   new JobStatus { Id = (int)JobStatusEnum.Planned, Status = JobStatusEnum.Planned.ToString(), Description = "A job that has been created in the system but does not have the minimum required information to complete the booking", LightColour = "#E0E0E0", DarkColour = "#C0C0C0" },
                    new JobStatus { Id = (int)JobStatusEnum.Booked, Status = JobStatusEnum.Booked.ToString(), Description = "A job that has the minimum required information (pickup location, dropoff location, vehicle information, assigned driver)", LightColour = "#FFFFFF", DarkColour = "#FFFFFF" },
                    new JobStatus { Id = (int)JobStatusEnum.ReadyForPickup, Status = JobStatusEnum.ReadyForPickup.ToString(), Description = "A booked job that is on or passed the pickup date.", LightColour = "#CCE5FF", DarkColour = "#99CCFF" },
                    new JobStatus { Id = (int)JobStatusEnum.PreDepartureChecked, Status = JobStatusEnum.PreDepartureChecked.ToString(), Description = "Status once the driver has arrived to pick up the truck and is done the pre departure check", LightColour = "#E5FFCC", DarkColour = "#CCFF99" },
@@ -149,7 +149,7 @@ namespace TruckMove.API.DAL.Models
                    .WithMany(p => p.AccommodationCreatedBies)
                    .HasForeignKey(d => d.CreatedById);
 
-                
+
 
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.AccommodationUpdatedBies)
@@ -478,6 +478,11 @@ namespace TruckMove.API.DAL.Models
                  .HasForeignKey(d => d.PublicTransportId)
                  .HasConstraintName("FK_Notes_PublicTransport");
 
+                entity.HasOne(d => d.Delay)
+                   .WithMany(p => p.Notes)
+                   .HasForeignKey(d => d.DelayId)
+                   .HasConstraintName("FK_Notes_Delays");
+
             });
             modelBuilder.Entity<PermitsAndPlate>(entity =>
             {
@@ -718,7 +723,7 @@ namespace TruckMove.API.DAL.Models
                  .WithMany(p => p.LegCreatedBies)
                  .HasForeignKey(d => d.CreatedById);
 
-               
+
 
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.LegUpdatedBies)
@@ -907,7 +912,7 @@ namespace TruckMove.API.DAL.Models
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
 
-               
+
 
                 entity.Property(e => e.Vendor).HasMaxLength(200);
 

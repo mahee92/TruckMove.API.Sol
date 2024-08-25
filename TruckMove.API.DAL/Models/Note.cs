@@ -24,6 +24,8 @@ namespace TruckMove.API.DAL.Models
 
         public int? ChecklistId { get; set; }
 
+        public int? DelayId { get; set; }
+
         public virtual Accommodation? Accommodation { get; set; }
         public virtual Job? Job { get; set; } = null!;
         public virtual PermitsAndPlate? PermitAndPlates { get; set; }
@@ -32,6 +34,8 @@ namespace TruckMove.API.DAL.Models
         public virtual PublicTransport? PublicTransport { get; set; }
 
         public virtual Checklist? Checklist { get; set; }
+
+        public virtual Delay? Delay { get; set; }
 
         public bool ShouldUpdateJob => true;
         

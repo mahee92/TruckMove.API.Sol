@@ -8,6 +8,7 @@ namespace TruckMove.API.DAL.dbFirst
         public Delay()
         {
             DelayDrivers = new HashSet<DelayDriver>();
+            Notes = new HashSet<Note>();
         }
 
         public int Id { get; set; }
@@ -22,5 +23,6 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
         public virtual ICollection<DelayDriver> DelayDrivers { get; set; }
+        public virtual ICollection<Note> Notes { get; set; }
     }
 }
