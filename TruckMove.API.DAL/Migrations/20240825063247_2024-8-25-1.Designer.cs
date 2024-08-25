@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20240825063247_2024-8-25-1")]
+    partial class _20248251
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -474,25 +476,11 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int?>("Assignee")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CreatedById")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime");
 
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
                     b.Property<int>("JobId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool?>("OrganizeNow")
                         .HasColumnType("bit");
@@ -503,20 +491,13 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UpdatedById")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Assignee");
 
-                    b.HasIndex("CreatedById");
-
                     b.HasIndex("JobId");
 
                     b.HasIndex("Status");
-
-                    b.HasIndex("UpdatedById");
 
                     b.ToTable("Delays");
                 });
@@ -1980,10 +1961,6 @@ namespace TruckMove.API.DAL.Migrations
                         .HasForeignKey("Assignee")
                         .HasConstraintName("FK_Delays_Users");
 
-                    b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
-                        .WithMany("DelayCreatedBies")
-                        .HasForeignKey("CreatedById");
-
                     b.HasOne("TruckMove.API.DAL.Models.Job", "Job")
                         .WithMany("Delays")
                         .HasForeignKey("JobId")
@@ -1996,19 +1973,11 @@ namespace TruckMove.API.DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Delays_TaskStatus");
 
-                    b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
-                        .WithMany("DelayUpdatedBies")
-                        .HasForeignKey("UpdatedById");
-
                     b.Navigation("AssigneeNavigation");
-
-                    b.Navigation("CreatedBy");
 
                     b.Navigation("Job");
 
                     b.Navigation("StatusNavigation");
-
-                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.DelayDriver", b =>
@@ -2653,11 +2622,7 @@ namespace TruckMove.API.DAL.Migrations
 
                     b.Navigation("ContactUpdatedBies");
 
-                    b.Navigation("DelayCreatedBies");
-
                     b.Navigation("DelayDrivers");
-
-                    b.Navigation("DelayUpdatedBies");
 
                     b.Navigation("Delays");
 

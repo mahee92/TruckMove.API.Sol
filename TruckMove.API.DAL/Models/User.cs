@@ -37,6 +37,8 @@ namespace TruckMove.API.DAL.Models
             LegCreatedBies = new HashSet<Leg>();
 
             LegUpdatedBies = new HashSet<Leg>();
+            DelayDrivers = new HashSet<DelayDriver>();
+            Delays = new HashSet<Delay>();
         }
 
         public int Id { get; set; }
@@ -88,5 +90,11 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Leg> Legs { get; set; }
         public virtual ICollection<Leg> LegCreatedBies { get; internal set; }
         public virtual ICollection<Leg> LegUpdatedBies { get; internal set; }
+
+        public virtual ICollection<DelayDriver> DelayDrivers { get; set; }
+        public virtual ICollection<Delay> Delays { get; set; }
+
+        public virtual ICollection<Delay> DelayUpdatedBies { get; set; }
+        public virtual ICollection<Delay> DelayCreatedBies { get; set; }
     }
 }

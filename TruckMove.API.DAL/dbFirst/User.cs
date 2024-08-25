@@ -13,6 +13,8 @@ namespace TruckMove.API.DAL.dbFirst
             CompanyUpdatedBies = new HashSet<Company>();
             ContactCreatedBies = new HashSet<Contact>();
             ContactUpdatedBies = new HashSet<Contact>();
+            DelayDrivers = new HashSet<DelayDriver>();
+            Delays = new HashSet<Delay>();
             InverseCreatedBy = new HashSet<User>();
             InverseUpdatedBy = new HashSet<User>();
             JobControllerNavigations = new HashSet<Job>();
@@ -50,6 +52,8 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual ICollection<Company> CompanyUpdatedBies { get; set; }
         public virtual ICollection<Contact> ContactCreatedBies { get; set; }
         public virtual ICollection<Contact> ContactUpdatedBies { get; set; }
+        public virtual ICollection<DelayDriver> DelayDrivers { get; set; }
+        public virtual ICollection<Delay> Delays { get; set; }
         public virtual ICollection<User> InverseCreatedBy { get; set; }
         public virtual ICollection<User> InverseUpdatedBy { get; set; }
         public virtual ICollection<Job> JobControllerNavigations { get; set; }

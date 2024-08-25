@@ -63,6 +63,9 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<CheckListImage> CheckListImages { get; set; } = null!;
 
+        public virtual DbSet<Delay> Delays { get; set; } = null!;
+        public virtual DbSet<DelayDriver> DelayDrivers { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -949,6 +952,58 @@ namespace TruckMove.API.DAL.Models
                         .HasForeignKey(d => d.ChecklistId)
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_CheckListPhotos_Checklist");
+                });
+
+                modelBuilder.Entity<Delay>(entity =>
+                {
+                    entity.Property(e => e.EndTime).HasColumnType("datetime");
+
+                    entity.Property(e => e.StartTime).HasColumnType("datetime");
+
+                    entity.Property(e => e.IsActive)
+                      .IsRequired()
+                      .HasDefaultValueSql("(CONVERT([bit],(1)))");
+                    entity.HasOne(d => d.CreatedBy)
+                       .WithMany(p => p.DelayCreatedBies)
+                       .HasForeignKey(d => d.CreatedById);
+
+
+
+                    entity.HasOne(d => d.UpdatedBy)
+                        .WithMany(p => p.DelayUpdatedBies)
+                        .HasForeignKey(d => d.UpdatedById);
+
+                    entity.HasOne(d => d.AssigneeNavigation)
+                        .WithMany(p => p.Delays)
+                        .HasForeignKey(d => d.Assignee)
+                        .HasConstraintName("FK_Delays_Users");
+
+                    entity.HasOne(d => d.Job)
+                        .WithMany(p => p.Delays)
+                        .HasForeignKey(d => d.JobId)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_Delays_Jobs");
+
+                    entity.HasOne(d => d.StatusNavigation)
+                        .WithMany(p => p.Delays)
+                        .HasForeignKey(d => d.Status)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_Delays_TaskStatus");
+                });
+
+                modelBuilder.Entity<DelayDriver>(entity =>
+                {
+                    entity.HasOne(d => d.Delay)
+                        .WithMany(p => p.DelayDrivers)
+                        .HasForeignKey(d => d.DelayId)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_DelayDrivers_Delays");
+
+                    entity.HasOne(d => d.Driver)
+                        .WithMany(p => p.DelayDrivers)
+                        .HasForeignKey(d => d.DriverId)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_DelayDrivers_Users");
                 });
             });
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);

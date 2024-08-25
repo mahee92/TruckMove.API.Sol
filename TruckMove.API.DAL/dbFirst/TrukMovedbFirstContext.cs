@@ -23,6 +23,8 @@ namespace TruckMove.API.DAL.dbFirst
         public virtual DbSet<Checklist> Checklists { get; set; } = null!;
         public virtual DbSet<Company> Companies { get; set; } = null!;
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
+        public virtual DbSet<Delay> Delays { get; set; } = null!;
+        public virtual DbSet<DelayDriver> DelayDrivers { get; set; } = null!;
         public virtual DbSet<HookupType> HookupTypes { get; set; } = null!;
         public virtual DbSet<Image> Images { get; set; } = null!;
         public virtual DbSet<Job> Jobs { get; set; } = null!;
@@ -246,6 +248,45 @@ namespace TruckMove.API.DAL.dbFirst
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.ContactUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
+            });
+
+            modelBuilder.Entity<Delay>(entity =>
+            {
+                entity.Property(e => e.EndTime).HasColumnType("datetime");
+
+                entity.Property(e => e.StartTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.AssigneeNavigation)
+                    .WithMany(p => p.Delays)
+                    .HasForeignKey(d => d.Assignee)
+                    .HasConstraintName("FK_Delays_Users");
+
+                entity.HasOne(d => d.Job)
+                    .WithMany(p => p.Delays)
+                    .HasForeignKey(d => d.JobId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Delays_Jobs");
+
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.Delays)
+                    .HasForeignKey(d => d.Status)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Delays_TaskStatus");
+            });
+
+            modelBuilder.Entity<DelayDriver>(entity =>
+            {
+                entity.HasOne(d => d.Delay)
+                    .WithMany(p => p.DelayDrivers)
+                    .HasForeignKey(d => d.DelayId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DelayDrivers_Delays");
+
+                entity.HasOne(d => d.Driver)
+                    .WithMany(p => p.DelayDrivers)
+                    .HasForeignKey(d => d.DriverId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DelayDrivers_Users");
             });
 
             modelBuilder.Entity<HookupType>(entity =>

@@ -22,6 +22,7 @@ namespace TruckMove.API.DAL.Models
             PublicTransports = new HashSet<PublicTransport>();
             Purchases = new HashSet<Purchase>();
             Checklists = new HashSet<Checklist>();
+            Delays = new HashSet<Delay>();
 
 
         }
@@ -77,6 +78,8 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<PublicTransport> PublicTransports { get; set; }
 
         public virtual ICollection<Purchase> Purchases { get; set; }
+
+        public virtual ICollection<Delay> Delays { get; set; }
 
 
         [NotMapped]
