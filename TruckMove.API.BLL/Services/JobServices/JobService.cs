@@ -772,27 +772,37 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public void HandleNotes(ChecklistDto checkListdto, Checklist checkList)
         {
-
-            foreach (var noteDto in checkListdto.Notes)
+            var notesToRemove = new List<Note>();
+            if (checkListdto.Notes != null)
             {
-                var note = _mapper.Map<Note>(noteDto);
-                if (note.Id == 0)
+                foreach (var noteDto in checkListdto.Notes)
                 {
-                    checkList.Notes.Add(note); // New note
-                }
-                else
-                {
-                    var existingNote = checkList.Notes.FirstOrDefault(n => n.Id == note.Id);
-                    if (existingNote != null)
+                    var note = _mapper.Map<Note>(noteDto);
+                    if (note.Id == 0)
                     {
-                        _mapper.Map(noteDto, existingNote); // Update existing note
+                        checkList.Notes.Add(note); // New note
+                    }
+                    else
+                    {
+                        var existingNote = checkList.Notes.FirstOrDefault(n => n.Id == note.Id);
+                        if (existingNote != null)
+                        {
+                            _mapper.Map(noteDto, existingNote); // Update existing note
+                        }
                     }
                 }
+                var updatedNoteIds = checkListdto.Notes.Select(n => n.Id).ToList();
+                notesToRemove = checkList.Notes.Where(n => !updatedNoteIds.Contains(n.Id)).ToList();
             }
+            else
+            {
+                notesToRemove= checkList.Notes.ToList();
+            }
+        
+         
 
             // Remove deleted notes
-            var updatedNoteIds = checkListdto.Notes.Select(n => n.Id).ToList();
-            var notesToRemove = checkList.Notes.Where(n => !updatedNoteIds.Contains(n.Id)).ToList();
+            
             foreach (var note in notesToRemove)
             {
                 checkList.Notes.Remove(note);
@@ -801,16 +811,19 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public void HandleImages(ChecklistDto checkListdto, Checklist checkList)
         {
-
-            foreach (var imagedto in checkListdto.CheckListImages)
+            if(checkListdto.CheckListImages != null)
             {
-                var image = _mapper.Map<CheckListImage>(imagedto);
-                if (image.Id == 0)
+                foreach (var imagedto in checkListdto.CheckListImages)
                 {
-                    checkList.CheckListImages.Add(image); 
+                    var image = _mapper.Map<CheckListImage>(imagedto);
+                    if (image.Id == 0)
+                    {
+                        checkList.CheckListImages.Add(image);
+                    }
+
                 }
-               
             }
+          
 
             
         }
