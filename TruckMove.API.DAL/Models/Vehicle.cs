@@ -5,12 +5,13 @@ using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
 {
-    public partial class Vehicle : AuditableEntity, IActiveEntity
+    public partial class Vehicle : AuditableEntity, IActiveEntity, IJobUpdatable
     {
         public Vehicle()
         {
-           
-           
+
+            Notes = new HashSet<Note>();
+            Images = new HashSet<Image>();
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -29,5 +30,7 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Note> Notes { get; set; }
 
         public virtual ICollection<Image> Images { get; set; }
+
+        public bool ShouldUpdateJob => true;
     }
 }

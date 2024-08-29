@@ -54,6 +54,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryTrailer = repositoryTrailer;
             _masterDataRepository = masterDataRepository;
             _repositoryLeg = repositoryLeg;
+           
         }
         #region Job
         public JobStatusEnum DetermineJobStatus(JobDto job, Job? existingJob = null)
@@ -78,6 +79,113 @@ namespace TruckMove.API.BLL.Services.JobServices
 
             return JobStatusEnum.Planned;
         }
+
+        public bool IsPossibleToAdd(JobDto job)
+        {
+            if (job.Id < 1 || job.CompanyId < 1 || job.Controller == null || job.Controller < 1)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<Response> IsDriverChangeAllowed(int jobId)
+        {
+            Response response = new Response();
+            try
+            {
+                var job = await _repository.GetAsync(jobId);
+                if (job.Status == (int)JobStatusEnum.Planned ||
+                   job.Status == (int)JobStatusEnum.Booked ||
+                   job.Status == (int)JobStatusEnum.ReadyForPickup ||
+                   job.Status == (int)JobStatusEnum.PreDepartureChecked ||
+                   job.Status == (int)JobStatusEnum.Acknowledged ||
+                   job.Status == (int)JobStatusEnum.Stopped)
+                {
+                    response.Success = true;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorType = ErrorCode.statusError;
+                    response.ErrorMessage = ErrorMessages.JobStatusError;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = ex.Message;
+                response.ErrorType = ErrorCode.dbError;
+
+            }
+            return response;
+
+        }
+
+        public bool validateUpdateStatus(int perviosStatus,int newStatus)
+        {
+
+            if(newStatus == (int)JobStatusEnum.Delayed)
+            {
+                if (perviosStatus == (int)JobStatusEnum.InProgress)
+                {
+                    return true;
+                }
+                
+
+            }
+            else if(newStatus == (int)JobStatusEnum.InProgress)
+            {
+                if (perviosStatus == (int)JobStatusEnum.Stopped || perviosStatus == (int)JobStatusEnum.Delayed || perviosStatus == (int)JobStatusEnum.PreDepartureChecked)
+                {
+                    return true;
+                }
+            }
+            else if (newStatus - 1 == perviosStatus)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<Response> UpdateStatus(int jobId, JobStatusEnum status)
+        {
+            Response response = new Response();
+            var job = await _repository.GetAsync(jobId);
+            if (job == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ErrorMessages.NotFound;
+                response.ErrorType = ErrorCode.NotFound;
+            }
+            else {
+
+                //check permition
+                if (validateUpdateStatus(job.Status ?? 1, (int)status))
+                {
+
+                    job.Status = (int)status;
+                    var updatedJob = await _repository.UpdateAsync(job);
+                    response.Success = true;
+
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.JobStatusError;
+                    response.ErrorType = ErrorCode.statusError;
+                }
+
+            }
+           
+
+            return response;
+
+
+        }
+
+
         public async Task<Response<JobDto>> PostPutAsync(JobDto job, int userId)
         {
             Response<JobDto> response = new Response<JobDto>();
@@ -153,14 +261,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-        public bool IsPossibleToAdd(JobDto job)
-        {
-            if (job.Id < 1 || job.CompanyId < 1 || job.Controller== null ||job.Controller < 1)
-            {
-                return false;
-            }
-            return true;
-        }
+        
 
         public async Task<Response> GetNextJobId()
         {
@@ -245,39 +346,13 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         }
 
-        public async Task<Response> IsDriverChangeAllowed(int jobId)
+        public IQueryable<JobOutPutDTO> GetAllAsync()
         {
-            Response response = new Response();
-            try
-            {
-              var job = await _repository.GetAsync(jobId);
-              if(job.Status == (int)JobStatusEnum.Planned ||
-                 job.Status == (int)JobStatusEnum.Booked ||
-                 job.Status == (int)JobStatusEnum.ReadyForPickup ||
-                 job.Status == (int)JobStatusEnum.PreDepartureChecked ||
-                 job.Status == (int)JobStatusEnum.Acknowledged ||
-                 job.Status == (int)JobStatusEnum.Stopped)
-                {
-                    response.Success = true;
-                }
-                else
-                {
-                    response.Success = false;
-                    response.ErrorType = ErrorCode.statusError;
-                    response.ErrorMessage = ErrorMessages.JobStatusError;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.ErrorMessage = ex.Message;
-                response.ErrorType = ErrorCode.dbError;
-
-            }
-            return response;
-
+            var jobs = _jobRepository.GetAllAsync();
+            return jobs.ProjectTo<JobOutPutDTO>(_mapper.ConfigurationProvider);
         }
+
+        
 
         public async Task<Response<LegHistoryDto>> GetLegHistory(int jobId)
         {
@@ -596,6 +671,16 @@ namespace TruckMove.API.BLL.Services.JobServices
             var jobs = _jobRepository.GetAllAsync(driverId);
             return jobs.ProjectTo<MobileJobDto>(_mapper.ConfigurationProvider);
         }
+
+        public List<CheckListImage> CreateImageList(int checkListId, List<string> Urls)
+        {
+            List<CheckListImage> checkListImages = new List<CheckListImage>();
+            foreach (var url in Urls)
+            {
+                checkListImages.Add(new CheckListImage { ChecklistId = checkListId, Url = url });
+            }
+            return checkListImages;
+        }
         public async Task<Response<ChecklistDto>> ChecklistPutAsync(ChecklistDto checkList, int userId)
         {
             Response<ChecklistDto> response = new Response<ChecklistDto>();
@@ -612,7 +697,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                     newChecklist.Notes = new List<Note>();
                     HandleNotes(checkList, newChecklist);
                     var res = await _repositorypreChecklist.AddAsync(newChecklist);
-
+                   
+                    HandleImages(checkList, newChecklist);
                     response.Object = _mapper.Map<ChecklistDto>(res);
 
 
@@ -643,9 +729,20 @@ namespace TruckMove.API.BLL.Services.JobServices
                         res.LastModifiedDate = DateTime.Now;
                         res.UpdatedById = userId;
                         HandleNotes(checkList, existingCheckList);
-                        var updatedVehicle = await _repositorypreChecklist.UpdateAsync(res);
+                        await _jobRepository.DeleteCheckListIagesByCheckListId(checkList.Id);
+                        HandleImages(checkList, existingCheckList);
+
+                        var updatedcheckList = await _repositorypreChecklist.UpdateAsync(res);
+
+                       
+                        
+                        //if (checkList.CheckListImages != null && checkList.CheckListImages.Count > 0)
+                        //{
+                        //    var checkListimagses = CreateImageList(res.Id, checkList.CheckListImages.Select(x => x.Url).ToList());
+                        //    await _jobRepository.AddCheckListImages(checkListimagses);
+                        //}
                         response.Success = true;
-                        response.Object = _mapper.Map<ChecklistDto>(updatedVehicle);
+                        response.Object = _mapper.Map<ChecklistDto>(updatedcheckList);
 
 
                     }
@@ -675,31 +772,60 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public void HandleNotes(ChecklistDto checkListdto, Checklist checkList)
         {
-
-            foreach (var noteDto in checkListdto.Notes)
+            var notesToRemove = new List<Note>();
+            if (checkListdto.Notes != null)
             {
-                var note = _mapper.Map<Note>(noteDto);
-                if (note.Id == 0)
+                foreach (var noteDto in checkListdto.Notes)
                 {
-                    checkList.Notes.Add(note); // New note
-                }
-                else
-                {
-                    var existingNote = checkList.Notes.FirstOrDefault(n => n.Id == note.Id);
-                    if (existingNote != null)
+                    var note = _mapper.Map<Note>(noteDto);
+                    if (note.Id == 0)
                     {
-                        _mapper.Map(noteDto, existingNote); // Update existing note
+                        checkList.Notes.Add(note); // New note
+                    }
+                    else
+                    {
+                        var existingNote = checkList.Notes.FirstOrDefault(n => n.Id == note.Id);
+                        if (existingNote != null)
+                        {
+                            _mapper.Map(noteDto, existingNote); // Update existing note
+                        }
                     }
                 }
+                var updatedNoteIds = checkListdto.Notes.Select(n => n.Id).ToList();
+                notesToRemove = checkList.Notes.Where(n => !updatedNoteIds.Contains(n.Id)).ToList();
             }
+            else
+            {
+                notesToRemove= checkList.Notes.ToList();
+            }
+        
+         
 
             // Remove deleted notes
-            var updatedNoteIds = checkListdto.Notes.Select(n => n.Id).ToList();
-            var notesToRemove = checkList.Notes.Where(n => !updatedNoteIds.Contains(n.Id)).ToList();
+            
             foreach (var note in notesToRemove)
             {
                 checkList.Notes.Remove(note);
             }
+        }
+
+        public void HandleImages(ChecklistDto checkListdto, Checklist checkList)
+        {
+            if(checkListdto.CheckListImages != null)
+            {
+                foreach (var imagedto in checkListdto.CheckListImages)
+                {
+                    var image = _mapper.Map<CheckListImage>(imagedto);
+                    if (image.Id == 0)
+                    {
+                        checkList.CheckListImages.Add(image);
+                    }
+
+                }
+            }
+          
+
+            
         }
 
         public async void ChangeJobStatus(int jobId, int status)

@@ -11,8 +11,7 @@ using TruckMove.API.DAL.Repositories;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.VehicleDtos;
-
-
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -26,7 +25,8 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<Accommodation> _repositoryAccommodation;
         private readonly IRepository<PublicTransport> _repositoryPublicTransport;
         private readonly IRepository<Purchase> _repositoryPurchase;
-        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation, IRepository<PublicTransport> repositoryPublicTransport, IRepository<Purchase> repositoryPurchase)
+        private readonly ITaskRepository _taskRepository;
+        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation, IRepository<PublicTransport> repositoryPublicTransport, IRepository<Purchase> repositoryPurchase, ITaskRepository taskRepository)
         {
             _mapper = mapper;
             _repository = repository;
@@ -36,6 +36,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryAccommodation = repositoryAccomadation;
             _repositoryPublicTransport = repositoryPublicTransport;
             _repositoryPurchase = repositoryPurchase;
+            _taskRepository = taskRepository;
 
 
         }
@@ -454,9 +455,160 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         }
 
-       
+
         #endregion
 
+
+        #region MyTasks
+        //get all tasks for a user
+
+
+
+        public async Task<Response<GraphData>> GetGraphData()
+        {
+            var response = new Response<GraphData>();
+            try
+            {
+                var UpcommingJobsByPickupDate = _taskRepository.GetUpcommingJobsByPickupDate();
+                var UpcomingJobsByCompany = _taskRepository.GetUpcomingJobsByCompany();
+                var UpcomingJobsByDriver = _taskRepository.GetUpcomingJobsByDriver();
+                var UpcomingJobsByDriverOverTime = _taskRepository.GetUpcomingJobsByDriverOverTime();
+                await Task.WhenAll( UpcommingJobsByPickupDate, UpcomingJobsByCompany, UpcomingJobsByDriver, UpcomingJobsByDriverOverTime);
+
+                var UpcommingJobsByPickupDateResult = await UpcommingJobsByPickupDate;
+                var UpcomingJobsByCompanyResult = await UpcomingJobsByCompany;
+                var UpcomingJobsByDriverResult = await UpcomingJobsByDriver;
+                var UpcomingJobsByDriverOverTimeResult = await UpcomingJobsByDriverOverTime;
+
+                response.Object = new GraphData();
+                response.Object.UpcommingJobsByPickupDate = new Dictionary<DateTime, int>();
+                if (UpcommingJobsByPickupDateResult != null && UpcommingJobsByPickupDateResult.Count > 0)
+                {
+
+                    response.Object.UpcommingJobsByPickupDate = UpcommingJobsByPickupDateResult;
+                }
+                response.Object.UpcomingJobsByCompany = new Dictionary<string, int>();
+                if (UpcomingJobsByCompanyResult != null && UpcomingJobsByCompanyResult.Count > 0)
+                {
+                    response.Object.UpcomingJobsByCompany = UpcomingJobsByCompanyResult;
+                }
+                response.Object.UpcomingJobsByDriver = new Dictionary<string, int>();
+
+                if (UpcomingJobsByDriverResult != null && UpcomingJobsByDriverResult.Count > 0)
+                {
+                    response.Object.UpcomingJobsByDriver = UpcomingJobsByDriverResult;
+                }
+                //
+                response.Object.UpcomingJobsByDriverOverTime = new Dictionary<string, int>();
+                if (UpcomingJobsByDriverOverTimeResult != null && UpcomingJobsByDriverOverTimeResult.Count > 0)
+                {
+                    response.Object.UpcomingJobsByDriverOverTime = UpcomingJobsByDriverOverTimeResult;
+                }
+                response.Success = true;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+
+        }
+
+
+
+
+        public async Task<Response<MyTaskDto>> GetMyTasks(int userId)
+        {
+            var response = new Response<MyTaskDto>();
+
+            try
+            {
+                var permitTasks = _taskRepository.GetPermitsAndPlateTasksByUserId(userId);
+                var accommodationTasks = _taskRepository.GetAccommodationTasksByUserId(userId);
+                var publicTransportTasks = _taskRepository.GetPublicTransportTasksByUserId(userId);
+                var purchaseTasks = _taskRepository.GetPurchaseTasksByUserId(userId);
+                var drivingTasks = _taskRepository.GetDrivingTasksByUserId(userId);
+                
+                var myJobs = _taskRepository.GetJobsByUserId(userId);
+
+               
+
+
+
+                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks, myJobs);
+
+               
+                var permitsResult = await permitTasks;
+                var accommodationsResult = await accommodationTasks;
+                var publicTransportsResult = await publicTransportTasks;
+                var purchasesResult = await purchaseTasks;
+                var drivingResult = await drivingTasks;
+                var myJobsResult = await myJobs;
+              
+                response.Object = new MyTaskDto();
+                if(permitsResult != null && permitsResult.Count>0)
+                {
+                    response.Object.PermitsAndPlates = new List<PermitsAndPlateOutputDto>();
+                    AddMappedTasksToResponse(response.Object.PermitsAndPlates, permitsResult);
+                }
+                if (accommodationsResult != null && accommodationsResult.Count > 0)
+                {
+                    response.Object.Accommodations = new List<AccommodationOutputDto>();
+                    AddMappedTasksToResponse(response.Object.Accommodations, accommodationsResult);
+                }
+                if (publicTransportsResult != null && publicTransportsResult.Count > 0)
+                {
+                    response.Object.PublicTransports = new List<PublicTransportOutputDto>();
+                    AddMappedTasksToResponse(response.Object.PublicTransports, publicTransportsResult);
+                }
+                if (purchasesResult != null && purchasesResult.Count > 0)
+                {
+                    response.Object.Purchases = new List<PurchaseOutputDto>();
+                    AddMappedTasksToResponse(response.Object.Purchases, purchasesResult);
+                }
+                if (drivingResult != null && drivingResult.Count > 0)
+                {
+                    response.Object.DrivingTasks = new List<Job>();
+                    AddMappedTasksToResponse(response.Object.DrivingTasks, drivingResult);
+                }
+                if (myJobsResult != null && myJobsResult.Count > 0)
+                {
+                    response.Object.MyJobs = new List<Job>();
+                    AddMappedTasksToResponse(response.Object.MyJobs, myJobsResult);
+                }
+               
+
+               
+
+
+
+                //AddMappedTasksToResponse(response.Object.Jobs, jobsResult);
+
+
+
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+
+            return response;
+        }
+
+        private void AddMappedTasksToResponse<TInput, TOutput>(List<TOutput> destinationList, List<TInput> sourceList)
+        {
+            if (sourceList != null && sourceList.Any())
+            {
+                destinationList.AddRange(_mapper.Map<List<TOutput>>(sourceList));
+            }
+        }
+        #endregion
     }
 
 }

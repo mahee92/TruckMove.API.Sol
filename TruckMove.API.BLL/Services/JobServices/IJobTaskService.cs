@@ -24,5 +24,9 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response<PurchaseOutputDto>> PurchasePostPut(PurchaseDto purchase, int v);
         Task<Response> PurchaseDeleteAsync(int id);
         Task<bool> IsDriverValidForJob(int jobId, int driverId);
+
+        Task<Response<MyTaskDto>> GetMyTasks(int userId);
+
+        Task<Response<GraphData>> GetGraphData();
     }
 }

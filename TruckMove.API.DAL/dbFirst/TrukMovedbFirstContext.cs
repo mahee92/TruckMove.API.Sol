@@ -19,6 +19,7 @@
 //        public virtual DbSet<Accommodation> Accommodations { get; set; } = null!;
 //        public virtual DbSet<Acknowledgement> Acknowledgements { get; set; } = null!;
 //        public virtual DbSet<Attachment> Attachments { get; set; } = null!;
+//        public virtual DbSet<CheckListImage> CheckListImages { get; set; } = null!;
 //        public virtual DbSet<Checklist> Checklists { get; set; } = null!;
 //        public virtual DbSet<Company> Companies { get; set; } = null!;
 //        public virtual DbSet<Contact> Contacts { get; set; } = null!;
@@ -127,6 +128,17 @@
 //                    .WithMany(p => p.Attachments)
 //                    .HasForeignKey(d => d.PublicTransportId)
 //                    .HasConstraintName("FK_Attachments_PublicTransport");
+//            });
+
+//            modelBuilder.Entity<CheckListImage>(entity =>
+//            {
+//                entity.Property(e => e.Url).HasColumnName("url");
+
+//                entity.HasOne(d => d.Checklist)
+//                    .WithMany(p => p.CheckListImages)
+//                    .HasForeignKey(d => d.ChecklistId)
+//                    .OnDelete(DeleteBehavior.ClientSetNull)
+//                    .HasConstraintName("FK_CheckListPhotos_Checklist");
 //            });
 
 //            modelBuilder.Entity<Checklist>(entity =>
@@ -351,7 +363,11 @@
 
 //                entity.Property(e => e.Id).ValueGeneratedNever();
 
+//                entity.Property(e => e.DarkColour).HasMaxLength(20);
+
 //                entity.Property(e => e.Description).HasMaxLength(200);
+
+//                entity.Property(e => e.LightColour).HasMaxLength(20);
 
 //                entity.Property(e => e.Status).HasMaxLength(50);
 //            });

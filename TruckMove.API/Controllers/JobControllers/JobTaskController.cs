@@ -9,6 +9,7 @@ using TruckMove.API.BLL.Services.JobServices;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.Controllers.JobControllers
 {
@@ -63,6 +64,7 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+
         #endregion
 
         #region shared
@@ -190,6 +192,41 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+        #endregion
+
+        #region MyTask
+        [HttpGet("MyTask")]
+        public async Task<IActionResult> GetMyTasks()
+        {
+            Response<MyTaskDto> response = await _jobTaskService.GetMyTasks(Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+        [HttpGet("GetGraphData")]
+        public async Task<IActionResult> GetGraphData()
+        {
+            Response<GraphData> response = await _jobTaskService.GetGraphData();
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
         #endregion
 
     }

@@ -26,11 +26,51 @@ namespace TruckMove.API.DAL.Repositories
         {
             await _dbSet.AddAsync(entity);
             await _context.SaveChangesAsync();
+
+            await updateJob(entity);
+
+
+
             return entity;
 
         }
 
-       
+        public async Task updateJob(TEntity entity)
+        {
+            try
+            {
+                if (entity is IJobUpdatable jobUpdatable && jobUpdatable.ShouldUpdateJob)
+                {
+                    // Retrieve the job entity using the JobId from the updatable entity
+                    var job = await _context.Set<Job>().FindAsync(jobUpdatable.JobId);
+                    if (job != null)
+                    {
+                        if (entity is AuditableEntity auditableEntity)
+                        {
+
+                            job.UpdatedById = auditableEntity.UpdatedById; // Set this to the actual user
+                            job.LastModifiedDate = DateTime.UtcNow;
+                        }
+
+
+                        // Call any additional update logic if needed
+                        //jobUpdatable.UpdateJob(job);
+
+                        // Save changes to the Job table
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                // do nothing 
+            }
+
+
+        }
+
+
         public async Task<TEntity> GetAsync(int id)
         {
           
@@ -41,6 +81,8 @@ namespace TruckMove.API.DAL.Repositories
         {
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
+            await updateJob(entity);
             return entity;
         }
 

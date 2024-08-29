@@ -63,7 +63,7 @@ namespace TruckMove.API.Controllers
                     filepath = Meta.TRANSPORT_ATTACHMENT_PATH;
                 }
 
-                var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, fileUpload, filepath, Request.Scheme, Request.Host);
+                var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, fileUpload.file, filepath, Request.Scheme, Request.Host);
                 return Ok(fileUrl);
 
             }
@@ -73,6 +73,36 @@ namespace TruckMove.API.Controllers
 
             }
 
+        }
+
+        [HttpPost("ImageAndAttachments/UploadMutiple")]
+        public async Task<IActionResult> UploadMutiple([FromForm] MultipleFileUpload fileUpload, bool? IsCheckList)
+        {
+            if (fileUpload == null || fileUpload.files == null || !fileUpload.files.Any())
+            {
+                return StatusCode((int)ErrorCode.fileNotFound, ErrorMessages.FileNotFound);
+            }
+            try
+            {
+                var fileUrls = new List<string>();
+                string filepath = "";
+                if (IsCheckList == true)
+                {
+                    filepath = Meta.CHECKLIST_IMG_PATH;
+                }
+
+                foreach (var file in fileUpload.files)
+                {
+                    var fileUrl = await FileUploderUtil.UploadImage(_mySettings.FileLocation, file, filepath, Request.Scheme, Request.Host);
+                    fileUrls.Add(fileUrl);
+                }
+
+                return Ok(fileUrls);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)ErrorCode.InternalServerError, ex.InnerException?.Message ?? ex.Message);
+            }
         }
     }
 }

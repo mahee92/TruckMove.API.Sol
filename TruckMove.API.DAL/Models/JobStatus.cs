@@ -14,6 +14,9 @@ namespace TruckMove.API.DAL.Models
         public string Status { get; set; } = null!;
         public string? Description { get; set; }
 
+        public string? LightColour { get; set; }
+        public string? DarkColour { get; set; }
+
         public virtual ICollection<Job> Jobs { get; set; }
     }
 }

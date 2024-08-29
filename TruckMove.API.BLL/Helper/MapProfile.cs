@@ -9,6 +9,7 @@ using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.TaskDTOs;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Models.VehicleDtos;
+using TruckMove.API.BLL.Models.VehicleDTOs;
 using TruckMove.API.DAL.Models;
 using TaskStatus = TruckMove.API.DAL.Models.TaskStatus;
 
@@ -27,14 +28,21 @@ namespace TruckMove.API.BLL.Helper
              );
             CreateMap<Checklist, ChecklistDto>();
             CreateMap<ChecklistDto, Checklist>()
-             .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes)
+             .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+             .ForMember(dest => dest.CheckListImages, opt => opt.MapFrom(src => src.CheckListImages)
              );
             CreateMap<Vehicle, VehicleDto>();
+            CreateMap<VehicleOutputDto, Vehicle>();
+            CreateMap<Vehicle, VehicleOutputDto>()
+                .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Images)
+            );
+
 
             CreateMap<TaskStatus, TaskStatusDto>();
             CreateMap<TaskStatusDto, TaskStatus>();
             CreateMap<User, UserDto>();
-            //
+
             CreateMap<PermitsAndPlate, PermitsAndPlateOutputDto>()
             .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes))
             .ForMember(dest => dest.Attachments, opt => opt.MapFrom(src => src.Attachments))
@@ -70,7 +78,11 @@ namespace TruckMove.API.BLL.Helper
                 .ForMember(dest => dest.StatusNavigation, opt => opt.MapFrom(src => src.StatusNavigation))
                 .ForMember(dest => dest.Driver, opt => opt.MapFrom(src => src.Driver)
             );
-          
+            CreateMap<JobContact, JobContactDto>();
+            CreateMap<JobContactDto, JobContact>()
+                .ForMember(dest => dest.Contact, opt => opt.MapFrom(src => src.Contact)
+                
+            );
 
         }
 

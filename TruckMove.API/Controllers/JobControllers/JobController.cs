@@ -14,6 +14,7 @@ using TruckMove.API.Controllers.Primary;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.Controllers.JobControllers
 {
@@ -91,6 +92,19 @@ namespace TruckMove.API.Controllers.JobControllers
             }
         }
 
+        [HttpGet("/Odata/Job/GetAll")]
+        [EnableQuery]
+        public async Task<IActionResult> GetAll()
+        {
+            //string jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZHJpdmVyQGV4YW1wbGUuY29tIiwibmFtZWlkIjoiMjEiLCJyb2xlIjoiRHJpdmVyIiwibmJmIjoxNzE5MzM0NTIyLCJleHAiOjE3MTkzMzgxMjIsImlhdCI6MTcxOTMzNDUyMiwiaXNzIjoiaHR0cHM6Ly92dG10cnVja21vdmUuYXBpLmRldi5yaXZlcmluYS5kaWdpdGFsLyIsImF1ZCI6Imh0dHBzOi8vdnRtdHJ1Y2ttb3ZlLmFwaS5kZXYucml2ZXJpbmEuZGlnaXRhbC8ifQ.qMI46lgenS0kKwDsYf8HIew_R-IzgSIrT713Dl1m60";
+            //await JobApiClient.SetJwtToken();
+            //string result = await JobApiClient.ApiCallAsync();
+
+            var query = _jobService.GetAllAsync();
+            var count = query.Count();
+            return Ok(query);
+        }
+
         [HttpGet("IsDriverChangeAllowed")]
         public async Task<IActionResult> IsDriverChangeAllowed(int jobId)
         {
@@ -103,6 +117,34 @@ namespace TruckMove.API.Controllers.JobControllers
             else
             {
 
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
+
+
+        [HttpPost("UpdateStatus")]
+        public async Task<IActionResult> UpdateStatus(int jobId,bool QA_Done=false,bool delayOccurred=false,bool Inprogarass=false)
+        {
+            Response response = new Response();
+            if (QA_Done)
+            {
+               response = await _jobService.UpdateStatus(jobId,JobStatusEnum.QADone);
+            }
+            else if(delayOccurred)
+            {
+                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.Delayed);
+            }
+            else if (Inprogarass)
+            {
+                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.InProgress);
+            }
+            if (response.Success)
+            {
+                return Ok();
+            }
+            else
+            {
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }

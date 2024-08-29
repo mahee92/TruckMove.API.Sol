@@ -17,6 +17,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         Task<List<Job>> GetAllJobsByDriverAsync(int driverid, params string[] includeProperties);
 
         IQueryable<Job> GetAllAsync(int driverId);
+        IQueryable<Job> GetAllAsync();
         Task<List<WayPoint>> GetWayPointsByJobId(int jobId);
 
         Task DeleteWaypointsByIdsAsync(IEnumerable<int> ids);
@@ -30,5 +31,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         Task<bool> CheckDriverHasOngoingLegs(int jobId, int driverId);
         Task<List<Leg>> GetLegsByJobId(int jobId);
+
+        Task DeleteCheckListIagesByCheckListId(int checkListId);
+        Task AddCheckListImages(List<CheckListImage> checkListimagses);
     }
 }

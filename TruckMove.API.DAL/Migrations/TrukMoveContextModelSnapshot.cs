@@ -314,6 +314,28 @@ namespace TruckMove.API.DAL.Migrations
                     b.ToTable("Checklist", (string)null);
                 });
 
+            modelBuilder.Entity("TruckMove.API.DAL.Models.CheckListImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ChecklistId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("url");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChecklistId");
+
+                    b.ToTable("CheckListImages");
+                });
+
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
                 {
                     b.Property<int>("Id")
@@ -677,9 +699,16 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<string>("DarkColour")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("LightColour")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -694,85 +723,113 @@ namespace TruckMove.API.DAL.Migrations
                         new
                         {
                             Id = 1,
+                            DarkColour = "#C0C0C0",
                             Description = "A job that has been created in the system but does not have the minimum required information to complete the booking",
+                            LightColour = "#E0E0E0",
                             Status = "Planned"
                         },
                         new
                         {
                             Id = 2,
+                            DarkColour = "#FFFFFF",
                             Description = "A job that has the minimum required information (pickup location, dropoff location, vehicle information, assigned driver)",
+                            LightColour = "#FFFFFF",
                             Status = "Booked"
                         },
                         new
                         {
                             Id = 3,
+                            DarkColour = "#99CCFF",
                             Description = "A booked job that is on or passed the pickup date.",
+                            LightColour = "#CCE5FF",
                             Status = "ReadyForPickup"
                         },
                         new
                         {
                             Id = 4,
+                            DarkColour = "#CCFF99",
                             Description = "Status once the driver has arrived to pick up the truck and is done the pre departure check",
+                            LightColour = "#E5FFCC",
                             Status = "PreDepartureChecked"
                         },
                         new
                         {
                             Id = 5,
+                            DarkColour = "blue",
                             Description = "Driver has completed the acknowledgement ",
+                            LightColour = "red",
                             Status = "Acknowledged"
                         },
                         new
                         {
                             Id = 6,
+                            DarkColour = "#00FF00",
                             Description = "A job that is currently in progress",
+                            LightColour = "#00CC00",
                             Status = "InProgress"
                         },
                         new
                         {
                             Id = 7,
+                            DarkColour = "#006600",
                             Description = "status when driver stops for the night",
+                            LightColour = "#009900",
                             Status = "Stopped"
                         },
                         new
                         {
                             Id = 8,
+                            DarkColour = "#FF9933",
                             Description = "status when driver stops for the night",
+                            LightColour = "#FFB266",
                             Status = "Delayed"
                         },
                         new
                         {
                             Id = 9,
+                            DarkColour = "#0080FF",
                             Description = "A job that has arrived at the destination",
+                            LightColour = "#3399FF",
                             Status = "Arrived"
                         },
                         new
                         {
                             Id = 10,
+                            DarkColour = "#0080FF",
                             Description = "status when driver is competed arrival checklist",
+                            LightColour = "#3399FF",
                             Status = "ArrivalChecked"
                         },
                         new
                         {
                             Id = 11,
+                            DarkColour = "blue",
                             Description = "QA completed",
+                            LightColour = "red",
                             Status = "QADone"
                         },
                         new
                         {
                             Id = 12,
+                            DarkColour = "blue",
                             Description = "Payment Done",
+                            LightColour = "red",
                             Status = "PaymentDone"
                         },
                         new
                         {
                             Id = 13,
+                            DarkColour = "blue",
                             Description = "Billing Done",
+                            LightColour = "red",
                             Status = "BillingDone"
                         },
                         new
                         {
                             Id = 14,
+                            DarkColour = "blue",
                             Description = "A job that has been completed successfully",
+                            LightColour = "red",
                             Status = "Completed"
                         });
                 });
@@ -1786,6 +1843,17 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
+            modelBuilder.Entity("TruckMove.API.DAL.Models.CheckListImage", b =>
+                {
+                    b.HasOne("TruckMove.API.DAL.Models.Checklist", "Checklist")
+                        .WithMany("CheckListImages")
+                        .HasForeignKey("ChecklistId")
+                        .IsRequired()
+                        .HasConstraintName("FK_CheckListPhotos_Checklist");
+
+                    b.Navigation("Checklist");
+                });
+
             modelBuilder.Entity("TruckMove.API.DAL.Models.Company", b =>
                 {
                     b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
@@ -2228,11 +2296,11 @@ namespace TruckMove.API.DAL.Migrations
             modelBuilder.Entity("TruckMove.API.DAL.Models.User", b =>
                 {
                     b.HasOne("TruckMove.API.DAL.Models.User", "CreatedBy")
-                        .WithMany("InverseCreatedBy")
+                        .WithMany()
                         .HasForeignKey("CreatedById");
 
                     b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
-                        .WithMany("InverseUpdatedBy")
+                        .WithMany()
                         .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
@@ -2312,6 +2380,8 @@ namespace TruckMove.API.DAL.Migrations
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.Checklist", b =>
                 {
+                    b.Navigation("CheckListImages");
+
                     b.Navigation("Notes");
                 });
 
@@ -2435,10 +2505,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("ContactCreatedBies");
 
                     b.Navigation("ContactUpdatedBies");
-
-                    b.Navigation("InverseCreatedBy");
-
-                    b.Navigation("InverseUpdatedBy");
 
                     b.Navigation("JobControllerNavigations");
 
