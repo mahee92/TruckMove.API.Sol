@@ -371,7 +371,7 @@ internal class Program
 
         // Custom middleware
         app.UseMiddleware<GlobalExceptionMiddleware>();
-        // app.UseMiddleware<RequestResponseLoggingMiddleware>();
+        app.UseMiddleware<RequestResponseLoggingMiddleware>();
         app.UseMiddleware<BlacklistMiddleware>();
         app.UseMiddleware<UserInfoMiddleware>();
         // Configure OData
