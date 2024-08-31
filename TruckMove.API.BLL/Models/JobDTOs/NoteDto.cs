@@ -19,6 +19,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         public int? PermitAndPlatesId { get; set; }
         public int? AccommodationId { get; set; }
         public int? PublicTransportId { get; set; }
+
+        public int? DelayId { get; set; }
         public string? NoteText { get; set; }
 
 

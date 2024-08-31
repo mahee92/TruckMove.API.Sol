@@ -463,13 +463,13 @@ namespace TruckMove.API.BLL.Services.JobServices
 
 
         #region Delay
-        
+
         public void HandleDrivers(DelayDto delayDto, Delay delay)
         {
 
             foreach (var DelayDriver in delayDto.DelayDrivers)
             {
-               
+
                 if (DelayDriver.Id == 0)
                 {
                     var delayDriver = new DelayDriver();
@@ -486,7 +486,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             foreach (var driver in driversToRemove)
             {
                 delay.DelayDrivers.Remove(driver);
-            }   
+            }
 
 
         }

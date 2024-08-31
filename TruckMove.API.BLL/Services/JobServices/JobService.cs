@@ -18,8 +18,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 using static TruckMove.API.DAL.MasterData.MasterData;
-
-
+using TruckMove.API.BLL.Models.TaskDTOs;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -315,7 +314,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                                                                             "Purchases.AssigneeNavigation",
                                                                             "Purchases.StatusNavigation",
                                                                             "Purchases.DriverNavigation",
-                                                                            "Notes"
+                                                                            "Notes",
+                                                                            "Delays.AssigneeNavigation",
+                                                                            "Delays.StatusNavigation",
+                                                                            "Delays.DelayDrivers",
+                                                                            "Delays.Notes"
                                                                             );
 
                 if (job == null)
