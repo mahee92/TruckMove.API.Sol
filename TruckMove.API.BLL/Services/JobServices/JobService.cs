@@ -125,7 +125,24 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public bool validateUpdateStatus(int perviosStatus,int newStatus)
         {
-            if (newStatus - 1 == perviosStatus)
+
+            if(newStatus == (int)JobStatusEnum.Delayed)
+            {
+                if (perviosStatus == (int)JobStatusEnum.InProgress)
+                {
+                    return true;
+                }
+                
+
+            }
+            else if(newStatus == (int)JobStatusEnum.InProgress)
+            {
+                if (perviosStatus == (int)JobStatusEnum.Stopped || perviosStatus == (int)JobStatusEnum.Delayed || perviosStatus == (int)JobStatusEnum.PreDepartureChecked)
+                {
+                    return true;
+                }
+            }
+            else if (newStatus - 1 == perviosStatus)
             {
                 return true;
             }
@@ -142,21 +159,26 @@ namespace TruckMove.API.BLL.Services.JobServices
                 response.ErrorMessage = ErrorMessages.NotFound;
                 response.ErrorType = ErrorCode.NotFound;
             }
-            //check permition
-            if (validateUpdateStatus(job.Status ?? 1, (int)status))
-            {
+            else {
 
-                job.Status = (int)status;
-                var updatedJob = await _repository.UpdateAsync(job);
-                response.Success = true;
+                //check permition
+                if (validateUpdateStatus(job.Status ?? 1, (int)status))
+                {
+
+                    job.Status = (int)status;
+                    var updatedJob = await _repository.UpdateAsync(job);
+                    response.Success = true;
+
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.JobStatusError;
+                    response.ErrorType = ErrorCode.statusError;
+                }
 
             }
-            else
-            {
-                response.Success = false;
-                response.ErrorMessage = ErrorMessages.JobStatusError;
-                response.ErrorType = ErrorCode.statusError;
-            }
+           
 
             return response;
 
@@ -750,27 +772,37 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public void HandleNotes(ChecklistDto checkListdto, Checklist checkList)
         {
-
-            foreach (var noteDto in checkListdto.Notes)
+            var notesToRemove = new List<Note>();
+            if (checkListdto.Notes != null)
             {
-                var note = _mapper.Map<Note>(noteDto);
-                if (note.Id == 0)
+                foreach (var noteDto in checkListdto.Notes)
                 {
-                    checkList.Notes.Add(note); // New note
-                }
-                else
-                {
-                    var existingNote = checkList.Notes.FirstOrDefault(n => n.Id == note.Id);
-                    if (existingNote != null)
+                    var note = _mapper.Map<Note>(noteDto);
+                    if (note.Id == 0)
                     {
-                        _mapper.Map(noteDto, existingNote); // Update existing note
+                        checkList.Notes.Add(note); // New note
+                    }
+                    else
+                    {
+                        var existingNote = checkList.Notes.FirstOrDefault(n => n.Id == note.Id);
+                        if (existingNote != null)
+                        {
+                            _mapper.Map(noteDto, existingNote); // Update existing note
+                        }
                     }
                 }
+                var updatedNoteIds = checkListdto.Notes.Select(n => n.Id).ToList();
+                notesToRemove = checkList.Notes.Where(n => !updatedNoteIds.Contains(n.Id)).ToList();
             }
+            else
+            {
+                notesToRemove= checkList.Notes.ToList();
+            }
+        
+         
 
             // Remove deleted notes
-            var updatedNoteIds = checkListdto.Notes.Select(n => n.Id).ToList();
-            var notesToRemove = checkList.Notes.Where(n => !updatedNoteIds.Contains(n.Id)).ToList();
+            
             foreach (var note in notesToRemove)
             {
                 checkList.Notes.Remove(note);
@@ -779,16 +811,19 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public void HandleImages(ChecklistDto checkListdto, Checklist checkList)
         {
-
-            foreach (var imagedto in checkListdto.CheckListImages)
+            if(checkListdto.CheckListImages != null)
             {
-                var image = _mapper.Map<CheckListImage>(imagedto);
-                if (image.Id == 0)
+                foreach (var imagedto in checkListdto.CheckListImages)
                 {
-                    checkList.CheckListImages.Add(image); 
+                    var image = _mapper.Map<CheckListImage>(imagedto);
+                    if (image.Id == 0)
+                    {
+                        checkList.CheckListImages.Add(image);
+                    }
+
                 }
-               
             }
+          
 
             
         }

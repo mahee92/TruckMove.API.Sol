@@ -14,6 +14,6 @@
         public const string PURCHASE_ATTACHMENT_PATH = "Purchase//Attachments";
         public const string TRANSPORT_ATTACHMENT_PATH = "Transport//Attachments";
 
-        public const string CHECKLIST_IMG_PATH = "Vehicle//Images";
+        public const string CHECKLIST_IMG_PATH = "CheckList//Images";
     }
 }
