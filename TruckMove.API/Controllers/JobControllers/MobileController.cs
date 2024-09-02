@@ -131,20 +131,13 @@ namespace TruckMove.API.Controllers.JobControllers
         }
        
         [HttpPost("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatus(int jobId, bool QA_Done = false, bool delayOccurred = false, bool InProgress = false, bool Stoped = false)
+        public async Task<IActionResult> UpdateStatus(int jobId, bool delayOccurred = false, bool Stoped = false)
         {
             Response response = new Response();
-            if (QA_Done)
-            {
-                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.QADone);
-            }
-            else if (delayOccurred)
+           
+            if (delayOccurred)
             {
                 response = await _jobService.UpdateStatus(jobId, JobStatusEnum.Delayed);
-            }
-            else if (InProgress)
-            {
-                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.InProgress);
             }
             else if (Stoped)
             {
