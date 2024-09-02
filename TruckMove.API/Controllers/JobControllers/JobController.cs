@@ -141,7 +141,7 @@ namespace TruckMove.API.Controllers.JobControllers
             }
             if (response.Success)
             {
-                return Ok();
+                return Ok(response.data);
             }
             else
             {

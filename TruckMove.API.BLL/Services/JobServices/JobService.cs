@@ -127,7 +127,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
             if(newStatus == (int)JobStatusEnum.Delayed)
             {
-                if (perviosStatus == (int)JobStatusEnum.InProgress)
+                if (perviosStatus == (int)JobStatusEnum.Stopped)
                 {
                     return true;
                 }
@@ -167,6 +167,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     job.Status = (int)status;
                     var updatedJob = await _repository.UpdateAsync(job);
                     response.Success = true;
+                    response.data = updatedJob.Status.ToString();
 
                 }
                 else
