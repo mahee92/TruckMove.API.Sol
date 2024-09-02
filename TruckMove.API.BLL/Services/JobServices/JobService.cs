@@ -141,6 +141,13 @@ namespace TruckMove.API.BLL.Services.JobServices
                     return true;
                 }
             }
+            else if (newStatus == (int)JobStatusEnum.Stopped)
+            {
+                if (perviosStatus == (int)JobStatusEnum.InProgress || perviosStatus == (int)JobStatusEnum.Delayed)
+                {
+                    return true;
+                }
+            }
             else if (newStatus - 1 == perviosStatus)
             {
                 return true;
