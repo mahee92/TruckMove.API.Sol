@@ -18,6 +18,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         public async Task<List<Accommodation>> GetAccommodationTasksByUserId(int userId)
         {
+            
             using (var context = new TrukMoveContext(_options))
             {
                 return await context.Set<Accommodation>().Where(x => x.Job.IsActive == true &&
