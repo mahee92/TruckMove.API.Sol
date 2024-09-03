@@ -14,6 +14,7 @@ using TruckMove.API.BLL.Models.VehicleDtos;
 using static TruckMove.API.DAL.MasterData.MasterData;
 
 
+
 namespace TruckMove.API.BLL.Services.JobServices
 {
     public class JobTaskService : IJobTaskService
@@ -639,6 +640,32 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         }
 
+        // create a method to getjobsbyuserid   
+
+
+        public async Task<Response<JobDto>> GetMyJobs(int userId)
+        {
+            var response = new Response<JobDto>();
+            try
+            {
+                var myJobs = await  _taskRepository.GetJobsByUserId(userId);
+                
+                response.Objects = new List<JobDto>();
+                response.Objects = myJobs.Select(jc => _mapper.Map<JobDto>(jc)).ToList();
+                
+                response.Success = true;
+
+            }
+            catch(Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+
 
 
 
@@ -653,14 +680,10 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var publicTransportTasks = _taskRepository.GetPublicTransportTasksByUserId(userId);
                 var purchaseTasks = _taskRepository.GetPurchaseTasksByUserId(userId);
                 var drivingTasks = _taskRepository.GetDrivingTasksByUserId(userId);
-                
-                var myJobs = _taskRepository.GetJobsByUserId(userId);
-
+                var GetJobsEligibleForPaymentQA = _taskRepository.GetJobsEligibleForPaymentQA(userId);
                
 
-
-
-                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks, myJobs);
+                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks, GetJobsEligibleForPaymentQA);
 
                
                 var permitsResult = await permitTasks;
@@ -668,10 +691,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var publicTransportsResult = await publicTransportTasks;
                 var purchasesResult = await purchaseTasks;
                 var drivingResult = await drivingTasks;
-                var myJobsResult = await myJobs;
-              
+                
+                var GetJobsEligibleForPaymentQAResult = await GetJobsEligibleForPaymentQA;
+
                 response.Object = new MyTaskDto();
-                if(permitsResult != null && permitsResult.Count>0)
+                if (permitsResult != null && permitsResult.Count > 0)
                 {
                     response.Object.PermitsAndPlates = new List<PermitsAndPlateOutputDto>();
                     AddMappedTasksToResponse(response.Object.PermitsAndPlates, permitsResult);
@@ -696,19 +720,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                     response.Object.DrivingTasks = new List<Job>();
                     AddMappedTasksToResponse(response.Object.DrivingTasks, drivingResult);
                 }
-                if (myJobsResult != null && myJobsResult.Count > 0)
+                if (GetJobsEligibleForPaymentQAResult != null && GetJobsEligibleForPaymentQAResult.Count > 0)
                 {
-                    response.Object.MyJobs = new List<Job>();
-                    AddMappedTasksToResponse(response.Object.MyJobs, myJobsResult);
+                    response.Object.JobsEligibleForPaymentQA = new List<int>();
+                    response.Object.JobsEligibleForPaymentQA.AddRange(GetJobsEligibleForPaymentQAResult);
                 }
-               
-
-               
-
-
-
-                //AddMappedTasksToResponse(response.Object.Jobs, jobsResult);
-
 
 
                 response.Success = true;

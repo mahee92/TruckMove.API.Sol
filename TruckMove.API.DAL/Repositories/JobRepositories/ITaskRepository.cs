@@ -16,6 +16,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         Task<List<Job>> GetJobsByUserId(int userId);
         Task<List<Job>> GetDrivingTasksByUserId(int userId);
 
+        Task<List<int>> GetJobsEligibleForPaymentQA(int userId);
+
         Task<Dictionary<DateTime, int>> GetUpcommingJobsByPickupDate();
         Task<Dictionary<string, int>> GetUpcomingJobsByCompany();
 

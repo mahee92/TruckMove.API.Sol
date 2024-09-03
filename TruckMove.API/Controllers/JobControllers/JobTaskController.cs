@@ -227,7 +227,7 @@ namespace TruckMove.API.Controllers.JobControllers
         #endregion
 
         #region MyTask
-        [HttpGet("MyTask")]
+        [HttpGet("MyTasks")]
         public async Task<IActionResult> GetMyTasks()
         {
             Response<MyTaskDto> response = await _jobTaskService.GetMyTasks(Convert.ToInt32(_authUserService.GetUserId()));
@@ -242,6 +242,23 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+
+        [HttpGet("MyJobs")]
+        public async Task<IActionResult> GetMyJobs()
+        {
+            Response<JobDto> response = await _jobTaskService.GetMyJobs(Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+
 
         [HttpGet("GetGraphData")]
         public async Task<IActionResult> GetGraphData()

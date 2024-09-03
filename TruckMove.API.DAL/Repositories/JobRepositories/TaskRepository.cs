@@ -119,7 +119,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                                      StatusNavigation = x.StatusNavigation,
                                      DriverNavigation = x.DriverNavigation
                                      // QALegCount = x.Legs.Count(y => y.Status == (int)TaskStatusEnum.Completed),
-                                 })/*.OrderByDescending(x => x.LastModifiedDate)*/
+                                 }).OrderByDescending(x => x.LastModifiedDate)
                                  .ToListAsync();
 
             }
@@ -226,6 +226,55 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
                 return groupedJobVolumes;
             }
+        }
+
+        public async Task<List<int>> GetJobsEligibleForPaymentQA(int userId)
+        {
+            var filteredJobs = await _context.Set<Job>()
+                                         .Include(j => j.Purchases) // Include related Purchases
+                                         .Include(j => j.Delays)    // Include related Delays
+                                         .Where(j => j.Status == (int)JobStatusEnum.ArrivalChecked &&
+                                                     j.Controller == userId &&
+                                                     j.IsActive == true)
+                                         .ToListAsync();
+
+            var res = filteredJobs
+                                              .Where(j =>
+                                                  // All delays must be completed and unpaid, if there are any delays
+                                                  (!j.Delays.Any() || j.Delays.All(d => d.Status == (int)TaskStatusEnum.Completed /*&& d.IsPaid == false && .QAdone == false*/)) &&
+
+                                                  // All purchases must be completed and unpaid, if there are any purchases
+                                                  (!j.Purchases.Any() ||j.Purchases.All(p => p.Status == (int)TaskStatusEnum.Completed /*&& d.IsPaid == false */)
+
+                                                 // At least one purchase should not be QA verified
+                                                 ////&& j.Purchases.Any(p => p.QADone == false)
+                                              ))
+                                              .Select(j => j.Id)
+                                              .ToList();
+
+             return res;
+        }
+        public async Task<List<int>> GetJobsEligiblePayment(int userId)
+        {
+            // Apply initial restrictive filters first
+            var filteredJobs = await _context.Set<Job>()
+                                             .Where(j => j.Status == (int)JobStatusEnum.ArrivalChecked /*|| p.Instore == false*/ &&
+                                                         j.Controller == userId &&
+                                                         j.IsActive == true)
+                                             .ToListAsync();
+
+            var res = filteredJobs
+                                              .Where(j =>
+                                                  // All delays must be completed and unpaid, if there are any delays
+                                                  (!j.Delays.Any() || j.Delays.All(d => d.Status == (int)TaskStatusEnum.Completed /*&& d.QAdone == true*/)) &&
+
+                                                  // All purchases must be completed and unpaid, if there are any purchases
+                                                  (!j.Purchases.Any() || j.Purchases.All(p => p.Status == (int)TaskStatusEnum.Completed /*&& d.QAdone == true*/))
+                                              )
+                                              .Select(j => j.Id)
+                                              .ToList();
+
+            return res;
         }
 
 
