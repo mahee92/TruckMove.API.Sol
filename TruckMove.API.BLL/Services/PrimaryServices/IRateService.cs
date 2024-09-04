@@ -10,7 +10,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
 {
     public interface IRateService
     {
-        Task<Response<UpdateRateValueDto>> UpdateRateValueAsync(UpdateRateValueDto updatedRate);
+        Task<Response<UpdateRateValueDto>> UpdateRateValueAsync(UpdateRateValueDto updatedRate, int userId);
 
     }
 }

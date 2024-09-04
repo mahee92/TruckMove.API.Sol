@@ -26,7 +26,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
 
         }
         //update rate value
-        public async Task<Response<UpdateRateValueDto>> UpdateRateValueAsync(UpdateRateValueDto updatedRate)
+        public async Task<Response<UpdateRateValueDto>> UpdateRateValueAsync(UpdateRateValueDto updatedRate, int userId)
         {
             Response<UpdateRateValueDto> response = new Response<UpdateRateValueDto>();
             try
@@ -41,6 +41,7 @@ namespace TruckMove.API.BLL.Services.PrimaryServices
                 else
                 {
                     rate.Value = updatedRate.Value;
+                    rate.UpdatedById = userId;
                     var res = await _rateyRepository.UpdateAsync(rate);
                     response.Success = true;
                     response.Object = _mapper.Map<UpdateRateValueDto>(res);

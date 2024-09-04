@@ -32,7 +32,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] UpdateRateValueDto updateRateValueDto)
         {
-           var response = await _rateService.UpdateRateValueAsync(updateRateValueDto);
+           var response = await _rateService.UpdateRateValueAsync(updateRateValueDto,1);
             if (response.Success)
             {
                 return Ok(response.Object);

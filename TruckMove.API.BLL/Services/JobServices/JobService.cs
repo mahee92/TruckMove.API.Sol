@@ -322,12 +322,14 @@ namespace TruckMove.API.BLL.Services.JobServices
                                                                             "Purchases.AssigneeNavigation",
                                                                             "Purchases.StatusNavigation",
                                                                             "Purchases.DriverNavigation",
-                                                                            "Notes",
-                                                                            "Delays.AssigneeNavigation",
-                                                                            "Delays.StatusNavigation",
-                                                                            "Delays.DelayDrivers",
-                                                                            "Delays.Notes"
+                                                                            "Notes"
                                                                             );
+
+
+                var job2 = await _repository.GetWithNestedIncludesAsync(id, "Delays.AssigneeNavigation", "Delays.StatusNavigation", "Delays.Notes", "Delays.DelayDrivers");
+
+
+                job.Delays = job2.Delays;
 
                 if (job == null)
                 {
