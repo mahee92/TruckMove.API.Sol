@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.BLL.Helper;
+using TruckMove.API.BLL.Models.PrimaryDTOs;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.DAL.Models;
 using static TruckMove.API.DAL.MasterData.MasterData;
@@ -22,5 +23,6 @@ namespace TruckMove.API.BLL.Services
 
         Task<Response<TaskStatus>> GetAllTaskStatus();
         Task<Response<JobStatus>> GetAllJobStatus();
+        Task<Response<UpdateRateValueDto>> GetAllRates();
     }
 }

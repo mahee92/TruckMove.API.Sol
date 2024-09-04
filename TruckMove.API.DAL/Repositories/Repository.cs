@@ -71,10 +71,17 @@ namespace TruckMove.API.DAL.Repositories
         }
 
 
-        public async Task<TEntity> GetAsync(int id)
+        public async Task<TEntity> GetAsync(int id, bool checkActive = true)
         {
+          if(checkActive)
+            {
+                return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
+            }
+            else
+            {
+                return await _dbSet.FirstOrDefaultAsync(e => e.Id == id);
+            }
           
-            return await _dbSet.FirstOrDefaultAsync(e => e.Id == id && e.IsActive);
         }
 
         public async Task<TEntity> UpdateAsync(TEntity entity)

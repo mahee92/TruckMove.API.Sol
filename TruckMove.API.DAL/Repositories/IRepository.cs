@@ -20,7 +20,7 @@ namespace TruckMove.API.DAL.Repositories
         Task DeleteByIdsAsync(IEnumerable<int> ids);
 
         Task<List<TEntity>> GetAllAsync();
-        Task<TEntity> GetAsync(int id);
+        Task<TEntity> GetAsync(int id, bool checkActive = true);
         Task<TEntity> GetWithNestedIncludesAsync(int id, params string[] includeProperties);
 
 

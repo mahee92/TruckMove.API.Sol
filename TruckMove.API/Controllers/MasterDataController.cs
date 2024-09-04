@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
@@ -135,6 +136,21 @@ namespace TruckMove.API.Controllers
         public async Task<IActionResult> JobStatuses()
         {
             var response = await _masterdataService.GetAllJobStatus();
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpGet("/GetRates")]
+      //  [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> GetRates()
+        {
+            var response = await _masterdataService.GetAllRates();
             if (response.Success)
             {
                 return Ok(response.Objects);

@@ -65,5 +65,10 @@ namespace TruckMove.API.DAL.Repositories
         {
             return await _publicTaskStatus.ToListAsync();
         }
+
+        public async Task<List<Rates>> GetAllRates()
+        {
+            return await _context.Set<Rates>().ToListAsync();
+        }
     }
 }

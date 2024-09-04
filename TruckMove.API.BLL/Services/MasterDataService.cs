@@ -10,6 +10,7 @@ using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using static TruckMove.API.DAL.MasterData.MasterData;
 using TaskStatus = TruckMove.API.DAL.Models.TaskStatus;
+using TruckMove.API.BLL.Models.PrimaryDTOs;
 
 namespace TruckMove.API.BLL.Services
 {
@@ -27,11 +28,7 @@ namespace TruckMove.API.BLL.Services
 
         }
 
-        public Task<List<DAL.dbFirst.HookupType>> GetAllRolesHookupTypes()
-        {
-            throw new NotImplementedException();
-        }
-
+   
         public async Task<Response<RoleDto>> GetRolesAsync()
         {
             Response<RoleDto> response = new Response<RoleDto>();
@@ -155,6 +152,33 @@ namespace TruckMove.API.BLL.Services
                 {
                     response.Objects = new List<JobStatus>();
                     response.Objects = types;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+        }
+
+        // write a method to get all rates
+        public async Task<Response<UpdateRateValueDto>> GetAllRates()
+        {
+            Response<UpdateRateValueDto> response = new Response<UpdateRateValueDto>();
+            try
+            {
+                var rates = await _repository.GetAllRates();
+                
+                if (rates.Count > 0)
+                {
+
+                    // map rates to updateratevaluedto
+                    response.Objects = new List<UpdateRateValueDto>();
+                    response.Objects = _mapper.Map<List<UpdateRateValueDto>>(rates);
+
+                    response.Success = true;
                 }
             }
             catch (Exception ex)
