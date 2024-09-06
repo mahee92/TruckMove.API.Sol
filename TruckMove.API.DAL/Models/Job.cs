@@ -79,8 +79,7 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Purchase> Purchases { get; set; }
 
         public virtual ICollection<Delay> Delays { get; set; }
-
-
+       
         [NotMapped]
         public int QALegCount;
 

@@ -155,7 +155,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             return false;
         }
 
-        public async Task<Response> UpdateStatus(int jobId, JobStatusEnum status)
+        public async Task<Response> UpdateStatus(int jobId, JobStatusEnum status,int userId)
         {
             Response response = new Response();
             var job = await _repository.GetAsync(jobId);
@@ -172,6 +172,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                 {
 
                     job.Status = (int)status;
+                    job.LastModifiedDate = DateTime.Now;
+                    job.UpdatedById = userId;
                     var updatedJob = await _repository.UpdateAsync(job);
                     response.Success = true;
                     response.data = updatedJob.Status.ToString();
@@ -292,18 +294,23 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public async Task<Response<JobOutPutDTO>> GetAsync(int id)
         {
+
             Response<JobOutPutDTO> response = new Response<JobOutPutDTO>();
             try
             {
 
-
+              
                 var job = await _repository.GetWithNestedIncludesAsync(id, "JobContacts.Contact",
                                                                             "Company",
                                                                             "VehicleNavigation.Notes",
                                                                             "VehicleNavigation.Images",
                                                                             "Trailers.Images",
                                                                             "Trailers.Notes",
-                                                                            "WayPoints",
+                                                                            "WayPoints",                                                                            
+                                                                            "Notes"
+                                                                            );
+
+                var res2 = await _repository.GetWithNestedIncludesAsync(id, 
                                                                             "PermitsAndPlates.Attachments",
                                                                             "PermitsAndPlates.Notes",
                                                                             "PermitsAndPlates.AssigneeNavigation",
@@ -312,24 +319,31 @@ namespace TruckMove.API.BLL.Services.JobServices
                                                                             "Accommodations.Notes",
                                                                             "Accommodations.AssigneeNavigation",
                                                                             "Accommodations.StatusNavigation",
-                                                                            "Accommodations.DriverNavigation",
-                                                                            "Accommodations.Attachments",
-                                                                            "PublicTransports.Notes",
-                                                                            "PublicTransports.AssigneeNavigation",
-                                                                            "PublicTransports.StatusNavigation",
-                                                                            "PublicTransports.DriverNavigation",
-                                                                            "PublicTransports.Attachments",
-                                                                            "Purchases.AssigneeNavigation",
-                                                                            "Purchases.StatusNavigation",
-                                                                            "Purchases.DriverNavigation",
-                                                                            "Notes"
+                                                                            "Accommodations.DriverNavigation",                                                                            "Accommodations.Attachments"
+                                                                           
                                                                             );
+                var res3 = await _repository.GetWithNestedIncludesAsync(id,                                                                           
+                                                                           "PublicTransports.Notes",
+                                                                           "PublicTransports.AssigneeNavigation",
+                                                                           "PublicTransports.StatusNavigation",
+                                                                           "PublicTransports.DriverNavigation",
+                                                                           "PublicTransports.Attachments",
+                                                                           "Purchases.AssigneeNavigation",
+                                                                           "Purchases.StatusNavigation",
+                                                                           "Purchases.DriverNavigation"
+                                                                           
+                                                                           );
 
 
-                var job2 = await _repository.GetWithNestedIncludesAsync(id, "Delays.AssigneeNavigation", "Delays.StatusNavigation", "Delays.Notes", "Delays.DelayDrivers");
-
-
-                job.Delays = job2.Delays;
+                var res4 = await _repository.GetWithNestedIncludesAsync(id, "Delays.AssigneeNavigation",
+                                                                             "Delays.StatusNavigation",
+                                                                             "Delays.Notes", 
+                                                                             "Delays.DelayDrivers");
+                job.Accommodations = res2.Accommodations;
+                job.PermitsAndPlates = res2.PermitsAndPlates;
+                job.PublicTransports = res3.PublicTransports;
+                job.Purchases = res3.Purchases;
+                job.Delays = res4.Delays;
 
                 if (job == null)
                 {
@@ -354,6 +368,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 response.Success = false;
                 response.ErrorMessage = ex.Message;
             }
+
             return response;
 
 
