@@ -467,29 +467,45 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         public void HandleDrivers(DelayDto delayDto, Delay delay)
         {
+            // Get the list of current driver IDs in the delay
+            var existingDriverIds = delay.DelayDrivers.Select(dd => dd.Id).ToList();
 
-            foreach (var DelayDriver in delayDto.DelayDrivers)
+            // Loop through the drivers in delayDto
+            foreach (var delayDriverDto in delayDto.DelayDrivers)
             {
-
-                if (DelayDriver.Id == 0)
+                // If it's a new driver (Id == 0), add it
+                if (delayDriverDto.Id == 0)
                 {
-                    var delayDriver = new DelayDriver();
-                    delayDriver.DriverId = DelayDriver.DriverId;
-                    delayDriver.DelayId = delay.Id;
-                    delay.DelayDrivers.Add(delayDriver);
+                    var newDelayDriver = new DelayDriver
+                    {
+                        DriverId = delayDriverDto.DriverId,
+                        DelayId = delay.Id
+                    };
+                    delay.DelayDrivers.Add(newDelayDriver);
                 }
+                else
+                {
+                    // If an existing driver is being updated (Id != 0)
+                    var existingDriver = delay.DelayDrivers.FirstOrDefault(dd => dd.Id == delayDriverDto.Id);
 
+                    if (existingDriver != null)
+                    {
+                        // Update the DriverId if it has changed
+                        if (existingDriver.DriverId != delayDriverDto.DriverId)
+                        {
+                            existingDriver.DriverId = delayDriverDto.DriverId;
+                        }
+                    }
+                }
             }
 
-            // remove deleted drivers
+            // Remove drivers that are not in the updated list
             var updatedDriverIds = delayDto.DelayDrivers.Select(n => n.Id).ToList();
             var driversToRemove = delay.DelayDrivers.Where(n => !updatedDriverIds.Contains(n.Id)).ToList();
             foreach (var driver in driversToRemove)
             {
                 delay.DelayDrivers.Remove(driver);
             }
-
-
         }
         public async Task<Response<DelayOutputDto>> DelayPostPut(DelayDto delay, int userId)
         {

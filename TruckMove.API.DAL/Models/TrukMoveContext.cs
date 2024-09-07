@@ -1025,6 +1025,11 @@ namespace TruckMove.API.DAL.Models
                         .WithOne(dd => dd.Delay)
                         .HasForeignKey(dd => dd.DelayId)
                         .OnDelete(DeleteBehavior.Cascade); // Cascading delete
+
+                    entity.HasMany(d => d.Notes)
+                        .WithOne(dd => dd.Delay)
+                        .HasForeignKey(dd => dd.DelayId)
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
                 modelBuilder.Entity<DelayDriver>(entity =>
