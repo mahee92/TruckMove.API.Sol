@@ -659,15 +659,15 @@ namespace TruckMove.API.BLL.Services.JobServices
         // create a method to getjobsbyuserid   
 
 
-        public async Task<Response<JobDto>> GetMyJobs(int userId)
+        public async Task<Response<JobOutPutDTO>> GetMyJobs(int userId)
         {
-            var response = new Response<JobDto>();
+            var response = new Response<JobOutPutDTO>();
             try
             {
                 var myJobs = await  _taskRepository.GetJobsByUserId(userId);
                 
-                response.Objects = new List<JobDto>();
-                response.Objects = myJobs.Select(jc => _mapper.Map<JobDto>(jc)).ToList();
+                response.Objects = new List<JobOutPutDTO>();
+                response.Objects = myJobs.Select(jc => _mapper.Map<JobOutPutDTO>(jc)).ToList();
                 
                 response.Success = true;
 

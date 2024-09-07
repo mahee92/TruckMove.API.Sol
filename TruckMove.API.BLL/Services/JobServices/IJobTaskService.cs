@@ -26,7 +26,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<bool> IsDriverValidForJob(int jobId, int driverId);
 
         Task<Response<MyTaskDto>> GetMyTasks(int userId);
-        Task<Response<JobDto>> GetMyJobs(int userId);
+        Task<Response<JobOutPutDTO>> GetMyJobs(int userId);
 
         Task<Response<GraphData>> GetGraphData();
         Task<Response<DelayOutputDto>> DelayPostPut(DelayDto delay, int v);

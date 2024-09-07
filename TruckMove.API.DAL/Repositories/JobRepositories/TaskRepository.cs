@@ -108,21 +108,22 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             using (var context = new TrukMoveContext(_options))
             {
                 return await context.Set<Job>()
-                                 .Where(x => x.IsActive == true &&
-                                             x.Controller == userId &&
-                                             x.Status != (int)JobStatusEnum.Completed)
-                                 .Select(x => new Job
-                                 {
-                                     Id = x.Id,
-                                     PickupLocation = x.PickupLocation,
-                                     DropOfLocation = x.DropOfLocation,
-                                     Vehicle = x.Vehicle,
-                                     StatusNavigation = x.StatusNavigation,
-                                     DriverNavigation = x.DriverNavigation
-                                     // QALegCount = x.Legs.Count(y => y.Status == (int)TaskStatusEnum.Completed),
-                                 }).OrderByDescending(x => x.LastModifiedDate)
-                                 .ToListAsync();
-
+                                     .Where(x => x.IsActive == true &&
+                                                 x.Controller == userId &&
+                                                 x.Status != (int)JobStatusEnum.Completed)
+                                     .Include(x => x.Vehicle) // Eagerly load navigation properties
+                                     .Include(x => x.StatusNavigation)
+                                     .Include(x => x.DriverNavigation)
+                                     // Uncomment if you need the count logic
+                                     //.Select(x => new Job
+                                     //{
+                                     //    Id = x.Id,
+                                     //    PickupLocation = x.PickupLocation,
+                                     //    DropOfLocation = x.DropOfLocation,
+                                     //    QALegCount = x.Legs.Count(y => y.Status == (int)TaskStatusEnum.Completed),
+                                     //})
+                                     .OrderByDescending(x => x.LastModifiedDate)
+                                     .ToListAsync();
             }
         }
 

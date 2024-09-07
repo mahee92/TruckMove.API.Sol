@@ -246,11 +246,11 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpGet("MyJobs")]
         public async Task<IActionResult> GetMyJobs()
         {
-            Response<JobDto> response = await _jobTaskService.GetMyJobs(Convert.ToInt32(_authUserService.GetUserId()));
+            Response<JobOutPutDTO> response = await _jobTaskService.GetMyJobs(Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 
-                return Ok(response.Object);
+                return Ok(response.Objects);
             }
             else
             {
