@@ -137,11 +137,11 @@ namespace TruckMove.API.Controllers.JobControllers
            
             if (delayOccurred)
             {
-                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.Delayed);
+                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.Delayed, Convert.ToInt32(_authUserService.GetUserId()));
             }
             else if (Stoped)
             {
-                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.Stopped);
+                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.Stopped, Convert.ToInt32(_authUserService.GetUserId()));
             }
 
             if (response.Success)

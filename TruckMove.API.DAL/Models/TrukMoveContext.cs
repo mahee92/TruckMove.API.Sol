@@ -66,6 +66,8 @@ namespace TruckMove.API.DAL.Models
         public virtual DbSet<Delay> Delays { get; set; } = null!;
         public virtual DbSet<DelayDriver> DelayDrivers { get; set; } = null!;
 
+        public virtual DbSet<Rates> Rates { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -87,22 +89,21 @@ namespace TruckMove.API.DAL.Models
           new Role { Id = (int)RoleEnum.Driver, RoleName = RoleEnum.Driver.ToString() }
           );
             modelBuilder.Entity<JobStatus>().HasData(
-                   new JobStatus { Id = (int)JobStatusEnum.Planned, Status = JobStatusEnum.Planned.ToString(), Description = "A job that has been created in the system but does not have the minimum required information to complete the booking", LightColour = "#E0E0E0", DarkColour = "#C0C0C0" },
-                   new JobStatus { Id = (int)JobStatusEnum.Booked, Status = JobStatusEnum.Booked.ToString(), Description = "A job that has the minimum required information (pickup location, dropoff location, vehicle information, assigned driver)", LightColour = "#FFFFFF", DarkColour = "#FFFFFF" },
-                   new JobStatus { Id = (int)JobStatusEnum.ReadyForPickup, Status = JobStatusEnum.ReadyForPickup.ToString(), Description = "A booked job that is on or passed the pickup date.", LightColour = "#CCE5FF", DarkColour = "#99CCFF" },
-                   new JobStatus { Id = (int)JobStatusEnum.PreDepartureChecked, Status = JobStatusEnum.PreDepartureChecked.ToString(), Description = "Status once the driver has arrived to pick up the truck and is done the pre departure check", LightColour = "#E5FFCC", DarkColour = "#CCFF99" },
-                   new JobStatus { Id = (int)JobStatusEnum.Acknowledged, Status = JobStatusEnum.Acknowledged.ToString(), Description = "Driver has completed the acknowledgement ", LightColour = "red", DarkColour = "blue" },
-                   new JobStatus { Id = (int)JobStatusEnum.InProgress, Status = JobStatusEnum.InProgress.ToString(), Description = "A job that is currently in progress", LightColour = "#00CC00", DarkColour = "#00FF00" },
-                   new JobStatus { Id = (int)JobStatusEnum.Stopped, Status = JobStatusEnum.Stopped.ToString(), Description = "status when driver stops for the night", LightColour = "#009900", DarkColour = "#006600" },
-                   new JobStatus { Id = (int)JobStatusEnum.Delayed, Status = JobStatusEnum.Delayed.ToString(), Description = "status when driver stops for the night", LightColour = "#FFB266", DarkColour = "#FF9933" },
-                   new JobStatus { Id = (int)JobStatusEnum.Arrived, Status = JobStatusEnum.Arrived.ToString(), Description = "A job that has arrived at the destination", LightColour = "#3399FF", DarkColour = "#0080FF" },
-                   new JobStatus { Id = (int)JobStatusEnum.ArrivalChecked, Status = JobStatusEnum.ArrivalChecked.ToString(), Description = "status when driver is competed arrival checklist", LightColour = "#3399FF", DarkColour = "#0080FF" },
-                   new JobStatus { Id = (int)JobStatusEnum.QADone, Status = JobStatusEnum.QADone.ToString(), Description = "QA completed", LightColour = "red", DarkColour = "blue" },
-                   new JobStatus { Id = (int)JobStatusEnum.PaymentDone, Status = JobStatusEnum.PaymentDone.ToString(), Description = "Payment Done", LightColour = "red", DarkColour = "blue" },
-                   new JobStatus { Id = (int)JobStatusEnum.BillingDone, Status = JobStatusEnum.BillingDone.ToString(), Description = "Billing Done", LightColour = "red", DarkColour = "blue" },
-                   new JobStatus { Id = (int)JobStatusEnum.Completed, Status = JobStatusEnum.Completed.ToString(), Description = "A job that has been completed successfully", LightColour = "red", DarkColour = "blue" }
-               );
-
+                       new JobStatus { Id = (int)JobStatusEnum.Planned, Status = JobStatusEnum.Planned.ToString(), Description = "A job that has been created in the system but does not have the minimum required information to complete the booking", LightColour = "#E0E0E0", DarkColour = "#C0C0C0" },
+                       new JobStatus { Id = (int)JobStatusEnum.Booked, Status = JobStatusEnum.Booked.ToString(), Description = "A job that has the minimum required information (pickup location, dropoff location, vehicle information, assigned driver)", LightColour = "#FFFFFF", DarkColour = "#FFFFFF" },
+                       new JobStatus { Id = (int)JobStatusEnum.ReadyForPickup, Status = JobStatusEnum.ReadyForPickup.ToString(), Description = "A booked job that is on or passed the pickup date.", LightColour = "#CCE5FF", DarkColour = "#99CCFF" },
+                       new JobStatus { Id = (int)JobStatusEnum.PreDepartureChecked, Status = JobStatusEnum.PreDepartureChecked.ToString(), Description = "Status once the driver has arrived to pick up the truck and is done the pre departure check", LightColour = "#E5FFCC", DarkColour = "#CCFF99" },
+                       new JobStatus { Id = (int)JobStatusEnum.Acknowledged, Status = JobStatusEnum.Acknowledged.ToString(), Description = "Driver has completed the acknowledgement ", LightColour = "red", DarkColour = "blue" },
+                       new JobStatus { Id = (int)JobStatusEnum.InProgress, Status = JobStatusEnum.InProgress.ToString(), Description = "A job that is currently in progress", LightColour = "#00CC00", DarkColour = "#00FF00" },
+                       new JobStatus { Id = (int)JobStatusEnum.Stopped, Status = JobStatusEnum.Stopped.ToString(), Description = "status when driver stops for the night", LightColour = "#009900", DarkColour = "#006600" },
+                       new JobStatus { Id = (int)JobStatusEnum.Delayed, Status = JobStatusEnum.Delayed.ToString(), Description = "status when driver stops for the night", LightColour = "#FFB266", DarkColour = "#FF9933" },
+                       new JobStatus { Id = (int)JobStatusEnum.Arrived, Status = JobStatusEnum.Arrived.ToString(), Description = "A job that has arrived at the destination", LightColour = "#3399FF", DarkColour = "#0080FF" },
+                       new JobStatus { Id = (int)JobStatusEnum.ArrivalChecked, Status = JobStatusEnum.ArrivalChecked.ToString(), Description = "status when driver is competed arrival checklist", LightColour = "#3399FF", DarkColour = "#0080FF" },
+                       new JobStatus { Id = (int)JobStatusEnum.QADone, Status = JobStatusEnum.QADone.ToString(), Description = "QA completed", LightColour = "red", DarkColour = "blue" },
+                       new JobStatus { Id = (int)JobStatusEnum.PaymentDone, Status = JobStatusEnum.PaymentDone.ToString(), Description = "Payment Done", LightColour = "red", DarkColour = "blue" },
+                       new JobStatus { Id = (int)JobStatusEnum.BillingDone, Status = JobStatusEnum.BillingDone.ToString(), Description = "Billing Done", LightColour = "red", DarkColour = "blue" },
+                       new JobStatus { Id = (int)JobStatusEnum.Completed, Status = JobStatusEnum.Completed.ToString(), Description = "A job that has been completed successfully", LightColour = "red", DarkColour = "blue" }
+                   );
             modelBuilder.Entity<LegStatus>().HasData(
               new LegStatus { Id = (int)LegStatusEnum.Planned, Status = LegStatusEnum.Planned.ToString() },
               new LegStatus { Id = (int)LegStatusEnum.InProgress, Status = LegStatusEnum.InProgress.ToString() },
@@ -137,6 +138,32 @@ namespace TruckMove.API.DAL.Models
                   new PublicTransportType { Id = (int)PublicTransportTypeEnum.Taxi, Type = PublicTransportTypeEnum.Taxi.ToString() },
                   new PublicTransportType { Id = (int)PublicTransportTypeEnum.Other, Type = PublicTransportTypeEnum.Other.ToString() }
                  );
+            modelBuilder.Entity<Rates>().HasData(
+                   new Rates { Id = 1, Name = "Per_KM_Rate", Description = "Rate paid per km for standard jobs", Value = 0 },
+                   new Rates { Id = 2, Name = "Max_fixed_job_KMs", Description = "Maximum amount of KMs for a fixed cost job", Value = 0 },
+                   new Rates { Id = 3, Name = "Fixed_job_rate", Description = "Standard fixed cost rate (4 hours at grade 4 rate)", Value = 0 },
+                   new Rates { Id = 4, Name = "Commercial_load_KM_rate", Description = "Additional amount per KM paid when towing a commercial load", Value = 0 },
+                   new Rates { Id = 5, Name = "Delay_hourly_rate", Description = "Hourly rate paid in the event of a delay", Value = 0 },
+                   new Rates { Id = 6, Name = "Dangerous_Goods_day_Rate", Description = "Per KM rate paid when towing dangerous goods", Value = 0 },
+                   new Rates { Id = 7, Name = "Public_transport_hourly_Rate", Description = "Hourly rate paid when traveling on public transport", Value = 0 },
+                   new Rates { Id = 8, Name = "Public_holiday_KM_rate", Description = "Rate paid per km when working on a public holiday", Value = 0 },
+                   new Rates { Id = 9, Name = "Saturday_KM_rate", Description = "Rate paid per km when working on a Saturday", Value = 0 },
+                   new Rates { Id = 10, Name = "Sunday_KM_rate", Description = "Rate paid per km when working on a Sunday", Value = 0 },
+                   new Rates { Id = 11, Name = "Public_holiday_fixed_rate", Description = "Public holiday fixed cost rate", Value = 0 },
+                   new Rates { Id = 12, Name = "Saturday_fixed_rate", Description = "Saturday fixed cost rate", Value = 0 },
+                   new Rates { Id = 13, Name = "Sunday_fixed_rate", Description = "Sunday fixed cost rate", Value = 0 },
+                   new Rates { Id = 14, Name = "Hookup_Single", Description = "Rate paid for a Single Hookup", Value = 0 },
+                   new Rates { Id = 15, Name = "Hookup_Double", Description = "Rate paid for a Double Hookup", Value = 0 },
+                   new Rates { Id = 16, Name = "Hookup_4RA", Description = "Rate paid for a 4RA Hookup", Value = 0 },
+                   new Rates { Id = 17, Name = "Grade_4_Hourly_rate", Description = "Anything under 500km", Value = 0 },
+                   new Rates { Id = 18, Name = "Grade_1_Hourly_rate_riding_on_public_transport", Description = "", Value = 0 },
+                   new Rates { Id = 19, Name = "Hookup_Road_Train", Description = "", Value = 0 },
+                   new Rates { Id = 20, Name = "Saturday_Hour_rate", Description = "If between 350 and 500 it becomes a 500 job", Value = 0 },
+                   new Rates { Id = 21, Name = "Sunday_Hour_rate", Description = "When under 350, then goes to hourly, minimum 4 hours", Value = 0 },
+                   new Rates { Id = 22, Name = "Holiday_hour_rate", Description = "Hookup = driving with a trailer", Value = 0 },
+                   new Rates { Id = 23, Name = "Public_Transport_Delay", Description = "", Value = 0 },
+                   new Rates { Id = 24, Name = "Breakdown_Delay", Description = "", Value = 0 }
+          );
 
             modelBuilder.Entity<Accommodation>(entity =>
             {
@@ -1014,6 +1041,20 @@ namespace TruckMove.API.DAL.Models
                         .OnDelete(DeleteBehavior.ClientSetNull) // No change
                         .HasConstraintName("FK_DelayDrivers_Users");
                 });
+
+                modelBuilder.Entity<Rates>(entity =>
+                {
+                    entity.Property(e => e.Id).ValueGeneratedNever();
+
+                    entity.Property(e => e.Name).HasMaxLength(100);
+
+                    entity.Property(e => e.Value)
+                   .IsRequired()
+                   .HasDefaultValueSql("(CONVERT([float],(0)))");
+
+                });
+
+
             });
             modelBuilder.HasSequence<int>("JobSeq").StartsAt(2475);
 

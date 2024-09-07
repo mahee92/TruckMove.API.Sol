@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using TruckMove.API.DAL.dbFirst;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models
@@ -80,8 +79,7 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Purchase> Purchases { get; set; }
 
         public virtual ICollection<Delay> Delays { get; set; }
-
-
+       
         [NotMapped]
         public int QALegCount;
 

@@ -28,6 +28,7 @@ using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OData.Edm; // Added for OData
 using TruckMove.API.BLL.Models.TaskDTOs;
+using TruckMove.API.BLL.Models.PrimaryDTOs;
 //using Microsoft.OpenApi.Any;
 //using static TruckMove.API.DAL.MasterData.MasterData;
 //using Newtonsoft.Json.Serialization;
@@ -189,6 +190,11 @@ internal class Program
 
             profile.CreateGenericMap<DelayDriverDto, DelayDriver>();
             profile.CreateGenericMap<DelayDriver, DelayDriverDto>();
+            profile.CreateGenericMap<UpdateRateValueDto, Rates>();
+            profile.CreateGenericMap<Rates, UpdateRateValueDto>();
+
+
+
 
 
 
@@ -320,6 +326,7 @@ internal class Program
         builder.Services.AddScoped<IJobService, JobService>();
         builder.Services.AddScoped<IMasterDataService, MasterDataService>();
         builder.Services.AddScoped<IJobTaskService, JobTaskService>();
+        builder.Services.AddScoped<IRateService, RateService>();
 
         builder.Services.AddScoped<IRepository<Company>, Repository<Company>>();
         builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
@@ -338,6 +345,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<PublicTransport>, Repository<PublicTransport>>();
         builder.Services.AddScoped<IRepository<Purchase>, Repository<Purchase>>();
         builder.Services.AddScoped<IRepository<Delay>, Repository<Delay>>();
+        builder.Services.AddScoped<IRepository<Rates>, Repository<Rates>>();
 
 
         builder.Services.AddScoped<IContactRepository, CompanyRepository>();

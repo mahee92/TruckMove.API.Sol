@@ -82,5 +82,32 @@ namespace TruckMove.API.DAL.MasterData
             Uber=4,
             Other=5
         }
+        public enum RateEnum
+        {
+            Per_KM_Rate = 1,
+            Max_fixed_job_KMs = 2,
+            Fixed_job_rate = 3,
+            Commercial_load_KM_rate = 4,
+            Delay_hourly_rate = 5,
+            Dangerous_Goods_day_Rate = 6,
+            Public_transport_hourly_Rate = 7,
+            Public_holiday_KM_rate = 8,
+            Saturday_KM_rate = 9,
+            Sunday_KM_rate = 10,
+            Public_holiday_fixed_rate = 11,
+            Saturday_fixed_rate = 12,
+            Sunday_fixed_rate = 13,
+            Hookup_Single = 14,
+            Hookup_Double = 15,
+            Hookup_4RA = 16,
+            Grade_4_Hourly_rate = 17,
+            Grade_1_Hourly_rate_riding_on_public_transport = 18,
+            Hookup_Road_Train = 19,
+            Saturday_Hour_rate = 20,
+            Sunday_Hour_rate = 21,
+            Holiday_hour_rate = 22,
+            Public_Transport_Delay = 23,
+            Breakdown_Delay = 24
+        }
     }
 }

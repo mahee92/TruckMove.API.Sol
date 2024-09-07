@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TruckMove.API.DAL.dbFirst;
 using TruckMove.API.DAL.Repositories;
 
 namespace TruckMove.API.DAL.Models

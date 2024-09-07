@@ -26,9 +26,9 @@ namespace TruckMove.API.DAL.Models
         public virtual User? AssigneeNavigation { get; set; }
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
-        public virtual ICollection<DelayDriver> DelayDrivers { get; set; }
+        public virtual ICollection<DelayDriver>? DelayDrivers { get; set; }
 
-        public virtual ICollection<Note> Notes { get; set; }
+        public virtual ICollection<Note>? Notes { get; set; }
 
         public bool ShouldUpdateJob => true;
     }

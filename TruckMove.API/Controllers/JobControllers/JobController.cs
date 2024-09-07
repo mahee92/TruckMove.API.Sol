@@ -101,7 +101,7 @@ namespace TruckMove.API.Controllers.JobControllers
             //string result = await JobApiClient.ApiCallAsync();
 
             var query = _jobService.GetAllAsync();
-            var count = query.Count();
+            //var count = query.Count();
             return Ok(query);
         }
 
@@ -129,7 +129,7 @@ namespace TruckMove.API.Controllers.JobControllers
             Response response = new Response();
             if (QA_Done)
             {
-               response = await _jobService.UpdateStatus(jobId,JobStatusEnum.QADone);
+               response = await _jobService.UpdateStatus(jobId,JobStatusEnum.QADone, Convert.ToInt32(_authUserService.GetUserId()));
             }
             if (response.Success)
             {
