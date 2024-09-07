@@ -490,9 +490,9 @@ namespace TruckMove.API.BLL.Services.JobServices
 
 
         }
-        public async Task<Response<DelayDto>> DelayPostPut(DelayDto delay, int userId)
+        public async Task<Response<DelayOutputDto>> DelayPostPut(DelayDto delay, int userId)
         {
-            Response<DelayDto> response = new Response<DelayDto>();
+            Response<DelayOutputDto> response = new Response<DelayOutputDto>();
             try
             {
                 if (delay.Id == 0)
@@ -506,7 +506,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                                                                   "StatusNavigation", "DelayDrivers"
                                                                   );
                    // HandleDrivers(delay, res2);
-                    response.Object = _mapper.Map<DelayDto>(res2);
+                    response.Object = _mapper.Map<DelayOutputDto>(res2);
                     response.Success = true;
                 }
                 else
@@ -535,7 +535,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                         
                         response.Success = true;
-                        response.Object = _mapper.Map<DelayDto>(res2);
+                        response.Object = _mapper.Map<DelayOutputDto>(res2);
                     }
                 }
                 return response;

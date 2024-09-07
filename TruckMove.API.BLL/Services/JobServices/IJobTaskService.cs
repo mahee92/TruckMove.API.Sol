@@ -28,7 +28,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response<MyTaskDto>> GetMyTasks(int userId);
 
         Task<Response<GraphData>> GetGraphData();
-        Task<Response<DelayDto>> DelayPostPut(DelayDto delay, int v);
+        Task<Response<DelayOutputDto>> DelayPostPut(DelayDto delay, int v);
 
         Task<Response> DelayDeleteAsync(int id);
     }

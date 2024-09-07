@@ -199,7 +199,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpPost("Delays/PostPut")]
         public async Task<IActionResult> PostPutAsync([FromBody] DelayDto delay)
         {
-            Response<DelayDto> response = await _jobTaskService.DelayPostPut(delay, Convert.ToInt32(_authUserService.GetUserId()));
+            Response<DelayOutputDto> response = await _jobTaskService.DelayPostPut(delay, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 
