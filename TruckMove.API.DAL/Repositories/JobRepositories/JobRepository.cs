@@ -93,7 +93,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         }
         public IQueryable<Job> GetAllAsync()
         {
-            var query = _dbSet.Where(e => e.IsActive /*&& e.Driver == driverId*/).AsQueryable();
+            var queryPre = _dbSet.Where(e => e.IsActive && e.Id== 2475).ToList();
+            var query = _dbSet.Where(e => e.IsActive).AsQueryable();
 
             // string sqlQuery = query.ToQueryString();
             return query;

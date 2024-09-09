@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using TruckMove.API.BLL.Helper;
@@ -13,7 +14,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
     [Route("[controller]")]
 #if DEBUG
 #else
-     [Authorize(Roles = "Administrator)]
+    [Authorize(Roles = "Administrator")]
 #endif
     public class RateController : ControllerBase
     {
@@ -32,7 +33,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] UpdateRateValueDto updateRateValueDto)
         {
-            var response = await _rateService.UpdateRateValueAsync(updateRateValueDto, 1);
+            var response = await _rateService.UpdateRateValueAsync(updateRateValueDto, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
                 return Ok(response.Object);
