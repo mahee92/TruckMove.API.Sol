@@ -61,7 +61,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpPost("PostPut")]
         public async Task<IActionResult> PostPutAsync([FromBody] JobDto job)
         {
-            Response<JobDto> response = await _jobService.PostPutAsync(job, Convert.ToInt32(_authUserService.GetUserId()));
+            Response<JobDto> response = await _jobService.PostPutAsync(job, Convert.ToInt32(_authUserService.GetUserId()), _googleMapSettings.ApiKey);
             if (response.Success)
             {
 

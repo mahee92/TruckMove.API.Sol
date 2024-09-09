@@ -97,8 +97,70 @@ namespace TruckMove.API.BLL.Helper
                
             }
         }
+
+        // New method to get the suburb from an address
+        // Method to get suburb from address using Google Maps Geocoding API
+        public static async Task<string> GetSuburbAsync(string address, string apiKey)
+        {
+            string requestUrl = $"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={apiKey}";
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(requestUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                        JObject jsonResponse = JObject.Parse(responseBody);
+
+                        var addressComponents = jsonResponse["results"]?[0]?["address_components"];
+
+                        if (addressComponents != null)
+                        {
+                            // Try to find the 'locality' type, which is typically the suburb
+                            foreach (var component in addressComponents)
+                            {
+                                var types = component["types"].ToObject<string[]>();
+
+                                if (types.Contains("locality"))
+                                {
+                                    return component["long_name"].ToString();
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // If the API fails, fallback to splitting the address string
+                return ExtractSuburbFromAddressString(address);
+            }
+            catch (Exception ex)
+            {
+
+                return ExtractSuburbFromAddressString(address);
+            }
+
+           
+        }
+
+        // Fallback method to extract suburb by splitting the address string
+        private static string ExtractSuburbFromAddressString(string address)
+        {
+            // Assuming Australian address format: "Street, Suburb, State, Postal Code, Country"
+            string[] addressParts = address.Split(',');
+
+            // The suburb is typically the second part of the address in this format
+            if (addressParts.Length >= 2)
+            {
+                return addressParts[1].Trim();
+            }
+
+            return "";
+        }
     }
-
-
 }
+
+
+
 

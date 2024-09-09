@@ -14,7 +14,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 {
     public interface IJobService
     {
-        Task<Response<JobDto>> PostPutAsync(JobDto job,int userId);
+        Task<Response<JobDto>> PostPutAsync(JobDto job,int userId, string apiKey);
         Task<Response> GetNextJobId();
         Task<Response<JobOutPutDTO>> GetAsync(int id);
 
