@@ -100,7 +100,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                    job.Status == (int)JobStatusEnum.ReadyForPickup ||
                    job.Status == (int)JobStatusEnum.PreDepartureChecked ||
                    job.Status == (int)JobStatusEnum.Acknowledged ||
-                   job.Status == (int)JobStatusEnum.Stopped)
+                   job.Status == (int)JobStatusEnum.Stopped ||
+                   job.Status== (int)JobStatusEnum.InStore)
                 {
                     response.Success = true;
                 }
@@ -123,35 +124,48 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         }
 
-        public bool validateUpdateStatus(int perviosStatus,int newStatus)
+        public bool ValidateUpdateStatus(int previousStatus, int newStatus)
         {
+            switch (newStatus)
+            {
+                case (int)JobStatusEnum.Delayed:
+                    if (previousStatus == (int)JobStatusEnum.Stopped || previousStatus == (int)JobStatusEnum.InStore)
+                    {
+                        return true;
+                    }
+                    break;
 
-            if(newStatus == (int)JobStatusEnum.Delayed)
-            {
-                if (perviosStatus == (int)JobStatusEnum.Stopped)
-                {
-                    return true;
-                }
-                
+                case (int)JobStatusEnum.InProgress:
+                    if (previousStatus == (int)JobStatusEnum.Stopped || 
+                        previousStatus == (int)JobStatusEnum.Delayed ||
+                        previousStatus == (int)JobStatusEnum.PreDepartureChecked || 
+                        previousStatus == (int)JobStatusEnum.InStore)
+                    {
+                        return true;
+                    }
+                    break;
 
-            }
-            else if(newStatus == (int)JobStatusEnum.InProgress)
-            {
-                if (perviosStatus == (int)JobStatusEnum.Stopped || perviosStatus == (int)JobStatusEnum.Delayed || perviosStatus == (int)JobStatusEnum.PreDepartureChecked)
-                {
-                    return true;
-                }
-            }
-            else if (newStatus == (int)JobStatusEnum.Stopped)
-            {
-                if (perviosStatus == (int)JobStatusEnum.InProgress || perviosStatus == (int)JobStatusEnum.Delayed)
-                {
-                    return true;
-                }
-            }
-            else if (newStatus - 1 == perviosStatus)
-            {
-                return true;
+                case (int)JobStatusEnum.Stopped:
+                    if (previousStatus == (int)JobStatusEnum.InProgress)
+                    {
+                        return true;
+                    }
+                    break;
+
+                case (int)JobStatusEnum.InStore:
+                    if (previousStatus == (int)JobStatusEnum.InProgress)
+                    {
+                        return true;
+                    }
+                    break;
+
+                default:
+                    // This handles the case where the newStatus is 1 greater than previousStatus
+                    if (newStatus - 1 == previousStatus)
+                    {
+                        return true;
+                    }
+                    break;
             }
             return false;
         }
@@ -169,7 +183,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             else {
 
                 //check permition
-                if (validateUpdateStatus(job.Status ?? 1, (int)status))
+                if (ValidateUpdateStatus(job.Status ?? 1, (int)status))
                 {
 
                     job.Status = (int)status;
@@ -187,9 +201,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     response.ErrorType = ErrorCode.statusError;
                 }
 
-            }
-           
-
+            }         
             return response;
 
 

@@ -14,9 +14,13 @@ using static TruckMove.API.DAL.MasterData.MasterData;
 
 namespace TruckMove.API.Controllers.JobControllers
 {
+    
     [ApiController]
     [Route("[controller]")]
+#if DEBUG
+#else
     [Authorize(Roles = "Driver")]
+#endif
     public class MobileController : Controller
     {
         private readonly IAuthUserService _authUserService;
@@ -131,7 +135,7 @@ namespace TruckMove.API.Controllers.JobControllers
         }
        
         [HttpPost("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatus(int jobId, bool delayOccurred = false, bool Stoped = false)
+        public async Task<IActionResult> UpdateStatus(int jobId, bool delayOccurred = false, bool Stoped = false, bool InStore=false)
         {
             Response response = new Response();
            
@@ -143,7 +147,10 @@ namespace TruckMove.API.Controllers.JobControllers
             {
                 response = await _jobService.UpdateStatus(jobId, JobStatusEnum.Stopped, Convert.ToInt32(_authUserService.GetUserId()));
             }
-
+            else if (InStore)
+            {
+                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.InStore, Convert.ToInt32(_authUserService.GetUserId()));
+            }
             if (response.Success)
             {
                 return Ok(response.data);

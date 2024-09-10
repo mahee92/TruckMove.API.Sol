@@ -102,7 +102,8 @@ namespace TruckMove.API.DAL.Models
                        new JobStatus { Id = (int)JobStatusEnum.QADone, Status = JobStatusEnum.QADone.ToString(), Description = "QA completed", LightColour = "red", DarkColour = "blue" },
                        new JobStatus { Id = (int)JobStatusEnum.PaymentDone, Status = JobStatusEnum.PaymentDone.ToString(), Description = "Payment Done", LightColour = "red", DarkColour = "blue" },
                        new JobStatus { Id = (int)JobStatusEnum.BillingDone, Status = JobStatusEnum.BillingDone.ToString(), Description = "Billing Done", LightColour = "red", DarkColour = "blue" },
-                       new JobStatus { Id = (int)JobStatusEnum.Completed, Status = JobStatusEnum.Completed.ToString(), Description = "A job that has been completed successfully", LightColour = "red", DarkColour = "blue" }
+                       new JobStatus { Id = (int)JobStatusEnum.Completed, Status = JobStatusEnum.Completed.ToString(), Description = "A job that has been completed successfully", LightColour = "red", DarkColour = "blue" },
+                       new JobStatus { Id = (int)JobStatusEnum.InStore, Status = JobStatusEnum.InStore.ToString(), Description = "A job is In Store", LightColour = "#A0522D", DarkColour = "#8B4513" }
                    );
             modelBuilder.Entity<LegStatus>().HasData(
               new LegStatus { Id = (int)LegStatusEnum.Planned, Status = LegStatusEnum.Planned.ToString() },

@@ -31,7 +31,8 @@ namespace TruckMove.API.DAL.MasterData
             QADone = 11,
             PaymentDone = 12,
             BillingDone = 13,
-            Completed = 14
+            Completed = 14,
+            InStore=15
         }
 
         public enum LegStatusEnum
