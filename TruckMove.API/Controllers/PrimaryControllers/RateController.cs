@@ -23,6 +23,7 @@ namespace TruckMove.API.Controllers.PrimaryControllers
         private readonly MySettings _mySettings;
         private readonly IAuthUserService _authUserService;
 
+
         public RateController(ILogger<RateController> logger, IRateService rateService, IOptions<MySettings> mySettings, IAuthUserService authUserService)
         {
             _logger = logger;
