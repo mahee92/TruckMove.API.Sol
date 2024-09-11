@@ -116,7 +116,7 @@ namespace TruckMove.API.Controllers.JobControllers
         }
 
         #endregion
-
+        #region purchase
         [HttpPost("Purchase/PostPut")]
         [ValidateDriverChange]
         public async Task<IActionResult> PurchasePostPutAsync([FromHeader(Name = "JobId")] int JobId, [FromBody] PurchaseDto purchase)
@@ -133,33 +133,46 @@ namespace TruckMove.API.Controllers.JobControllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
-       
-        [HttpPost("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatus(int jobId, bool delayOccurred = false, bool Stoped = false, bool InStore=false)
+        #endregion
+
+        #region delay
+        [HttpPost("ReportDelay")]
+        [ValidateDriverChange]
+        public async Task<IActionResult> ReportDelay(int jobId, int? legId = null, string? endLocation = null)
         {
-            Response response = new Response();
-           
-            if (delayOccurred)
-            {
-                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.Delayed, Convert.ToInt32(_authUserService.GetUserId()));
-            }
-            else if (Stoped)
-            {
-                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.Stopped, Convert.ToInt32(_authUserService.GetUserId()));
-            }
-            else if (InStore)
-            {
-                response = await _jobService.UpdateStatus(jobId, JobStatusEnum.InStore, Convert.ToInt32(_authUserService.GetUserId()));
-            }
+            var response = await _jobService.ReportDelay(legId ?? -1, jobId, endLocation ?? "", _googleMapSettings.ApiKey, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
+
                 return Ok(response.data);
             }
             else
             {
+
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+        [HttpPost("ResolveDelay")]
+        [ValidateDriverChange]
+        public async Task<IActionResult> ResolveDelay(int jobId)
+        {
+            var response = await _jobService.ResolveDelay(jobId, Convert.ToInt32(_authUserService.GetUserId()));
+            if (response.Success)
+            {
+
+                return Ok(response.data);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
+
+
+
+
 
     }
 }

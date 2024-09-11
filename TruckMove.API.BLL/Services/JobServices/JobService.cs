@@ -21,6 +21,8 @@ using static TruckMove.API.DAL.MasterData.MasterData;
 using TruckMove.API.BLL.Models.TaskDTOs;
 using System.Net;
 
+
+
 namespace TruckMove.API.BLL.Services.JobServices
 {
     public class JobService : IJobService
@@ -129,7 +131,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             switch (newStatus)
             {
                 case (int)JobStatusEnum.Delayed:
-                    if (previousStatus == (int)JobStatusEnum.Stopped || previousStatus == (int)JobStatusEnum.InStore)
+                    if (previousStatus == (int)JobStatusEnum.InProgress || previousStatus == (int)JobStatusEnum.Stopped || previousStatus == (int)JobStatusEnum.InStore)
                     {
                         return true;
                     }
@@ -146,7 +148,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     break;
 
                 case (int)JobStatusEnum.Stopped:
-                    if (previousStatus == (int)JobStatusEnum.InProgress)
+                    if (previousStatus == (int)JobStatusEnum.InProgress || previousStatus == (int)JobStatusEnum.Delayed)
                     {
                         return true;
                     }
@@ -154,6 +156,24 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                 case (int)JobStatusEnum.InStore:
                     if (previousStatus == (int)JobStatusEnum.InProgress)
+                    {
+                        return true;
+                    }
+                    break;
+                case (int)JobStatusEnum.Arrived:
+                    if (previousStatus == (int)JobStatusEnum.InProgress)
+                    {
+                        return true;
+                    }
+                    break;
+                case (int)JobStatusEnum.PreDepartureChecked:
+                    if (previousStatus == (int)JobStatusEnum.ReadyForPickup)
+                    {
+                        return true;
+                    }
+                    break;
+                case (int)JobStatusEnum.ArrivalChecked:
+                    if (previousStatus == (int)JobStatusEnum.Stopped)
                     {
                         return true;
                     }
@@ -170,39 +190,32 @@ namespace TruckMove.API.BLL.Services.JobServices
             return false;
         }
 
-        public async Task<Response> UpdateStatus(int jobId, JobStatusEnum status,int userId)
+        public async Task<int> UpdateStatus(int jobId, int status,int userId)
         {
-            Response response = new Response();
-            var job = await _repository.GetAsync(jobId);
-            if (job == null)
-            {
-                response.Success = false;
-                response.ErrorMessage = ErrorMessages.NotFound;
-                response.ErrorType = ErrorCode.NotFound;
+
+            int response = -1;
+            try {
+
+                var job = await _repository.GetAsync(jobId);
+                if (job != null)
+                {
+                    if (ValidateUpdateStatus(job.Status ?? 1, (int)status))
+                    {
+
+                        job.Status = (int)status;
+                        job.LastModifiedDate = DateTime.Now;
+                        job.UpdatedById = userId;
+                        await _repository.UpdateAsync(job);
+                        response = (int)status;
+                    }
+                }
+                return response;
             }
-            else {
+            catch{ 
 
-                //check permition
-                if (ValidateUpdateStatus(job.Status ?? 1, (int)status))
-                {
-
-                    job.Status = (int)status;
-                    job.LastModifiedDate = DateTime.Now;
-                    job.UpdatedById = userId;
-                    var updatedJob = await _repository.UpdateAsync(job);
-                    response.Success = true;
-                    response.data = updatedJob.Status.ToString();
-
-                }
-                else
-                {
-                    response.Success = false;
-                    response.ErrorMessage = ErrorMessages.JobStatusError;
-                    response.ErrorType = ErrorCode.statusError;
-                }
-
-            }         
-            return response;
+                return response;
+            }
+          
 
 
         }
@@ -813,11 +826,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                 }
                 if (checkList.IsPre)
                 {
-                    ChangeJobStatus(checkList.JobId, (int)JobStatusEnum.PreDepartureChecked);
+                    await UpdateStatus(checkList.JobId, (int)JobStatusEnum.PreDepartureChecked, userId);
                 }
                 else
                 {
-                    ChangeJobStatus(checkList.JobId, (int)JobStatusEnum.ArrivalChecked);
+                    await UpdateStatus(checkList.JobId, (int)JobStatusEnum.ArrivalChecked, userId);
                 }
 
                 return response;
@@ -900,13 +913,68 @@ namespace TruckMove.API.BLL.Services.JobServices
             }
 
         }
+        public async Task<Response> ResolveDelay(int jobId, int userId)
+        {
+            Response response = new Response();
+            try
+            {
+
+                    await UpdateStatus(jobId, (int)JobStatusEnum.Stopped, userId);
+                
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
+
+        }
+
+
+        public async Task<Response> ReportDelay(int legId,int jobId,string endLocation, string apiKey, int userId)
+        {
+            Response response = new Response();
+            if (legId==-1)
+            {
+                await UpdateStatus(jobId, (int)JobStatusEnum.Delayed, userId);
+                response.Success = true;
+               
+            }
+            else
+            {
+               
+                LegDto leg = new LegDto();
+                leg.Id = legId;
+                leg.JobStatus = (int)JobStatusEnum.Delayed;
+                leg.EndLocation = endLocation;
+                leg.JobId = jobId;
+                var res = await LegPostPutAsync(leg, apiKey, userId);
+                if (res.Success)
+                {
+                    response.Success = true;
+                  
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorType = res.ErrorType;
+                    response.ErrorMessage = res.ErrorMessage;
+                }
+                
+
+            }
+            response.data =Convert.ToString((int)JobStatusEnum.Delayed);
+            return response;
+
+        }
+
         public async Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId)
         {
             Response<LegDto> response = new Response<LegDto>();
             try
             {
-
-
                 if (leg.Id == 0)
                 {
                     if (!await _jobRepository.CheckAnyOngoingLegs(leg.JobId))
@@ -938,8 +1006,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                                 await _jobRepository.Acknowledge(response.Object.Id, response.Object.JobId);
                             }
 
-                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.InProgress);
-                            response.Object.JobStatus = (int)JobStatusEnum.InProgress;
+                            response.Object.JobStatus= await UpdateStatus(leg.JobId, (int)JobStatusEnum.InProgress, userId);
+                             
                         }
                         else
                         {
@@ -995,23 +1063,13 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                         var updatedLeg = await _repositoryLeg.UpdateAsync(existingLeg);
                         response.Success = true;
-                        // updatedLeg.Acknowledgement = true;
                         response.Object = _mapper.Map<LegDto>(updatedLeg);
 
                         response.Object.Acknowledged = true;
-                        if (leg.IsCompleted)
-                        {
-                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Arrived);
-                            response.Object.JobStatus = (int)JobStatusEnum.Arrived;
-                            response.Object.IsCompleted= true;
-                        }
-                        else
-                        {
-                            ChangeJobStatus(leg.JobId, (int)JobStatusEnum.Stopped);
-                            response.Object.JobStatus = (int)JobStatusEnum.Stopped;
-                            response.Object.IsCompleted = false;
-                        }
-
+ 
+                        response.Object.JobStatus = await UpdateStatus(leg.JobId, leg.JobStatus, userId);
+                       
+                      
                     }
 
 

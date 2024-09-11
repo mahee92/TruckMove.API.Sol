@@ -18,9 +18,14 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public bool Acknowledged { get; set; }
 
-        public bool IsCompleted { get; set; }
+        
+        //public bool IsCompleted { get; set; } /*arrived to destination*/
 
-        public int? JobStatus { get; set; }
+        //public bool? InStore { get; set; }
+
+        //public bool? Delay { get; set; }
+
+        public int JobStatus { get; set; }
 
 
     }

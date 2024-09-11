@@ -42,8 +42,11 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId);
         Task<Response> IsDriverChangeAllowed(int jobId);
 
-        Task<Response> UpdateStatus(int jobId, JobStatusEnum status,int userId);
+        Task<Response> ReportDelay(int legId, int jobId,string endLocation, string apiKey, int userId);
+
+        Task<Response> ResolveDelay(int jobId, int userId);
 
         Task<Response<LegHistoryDto>> GetLegHistory(int jobId);
+      
     }
 }

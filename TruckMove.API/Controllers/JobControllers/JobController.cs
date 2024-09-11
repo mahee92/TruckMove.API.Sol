@@ -123,23 +123,23 @@ namespace TruckMove.API.Controllers.JobControllers
 
 
 
-        [HttpPost("UpdateStatus")]
-        public async Task<IActionResult> UpdateStatus(int jobId,bool QA_Done=false)
-        {
-            Response response = new Response();
-            if (QA_Done)
-            {
-               response = await _jobService.UpdateStatus(jobId,JobStatusEnum.QADone, Convert.ToInt32(_authUserService.GetUserId()));
-            }
-            if (response.Success)
-            {
-                return Ok(response.data);
-            }
-            else
-            {
-                return StatusCode((int)response.ErrorType, response.ErrorMessage);
-            }
-        }
+        //[HttpPost("UpdateStatus")]
+        //public async Task<IActionResult> UpdateStatus(int jobId,bool QA_Done=false)
+        //{
+        //    Response response = new Response();
+        //    if (QA_Done)
+        //    {
+        //       response = await _jobService.UpdateStatus(jobId,JobStatusEnum.QADone, Convert.ToInt32(_authUserService.GetUserId()));
+        //    }
+        //    if (response.Success)
+        //    {
+        //        return Ok(response.data);
+        //    }
+        //    else
+        //    {
+        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
+        //    }
+        //}
 
 
         [HttpGet("GetLegHistory")]
