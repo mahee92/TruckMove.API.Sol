@@ -173,7 +173,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     }
                     break;
                 case (int)JobStatusEnum.ArrivalChecked:
-                    if (previousStatus == (int)JobStatusEnum.Stopped)
+                    if (previousStatus == (int)JobStatusEnum.Arrived)
                     {
                         return true;
                     }
