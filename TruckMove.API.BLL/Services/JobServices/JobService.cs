@@ -919,7 +919,17 @@ namespace TruckMove.API.BLL.Services.JobServices
             try
             {
 
-                    await UpdateStatus(jobId, (int)JobStatusEnum.Stopped, userId);
+                 var res=   await UpdateStatus(jobId, (int)JobStatusEnum.Stopped, userId);
+
+                if(res!=-1)
+                {
+                    response.Success = true;
+                    response.data = Convert.ToString((int)JobStatusEnum.Stopped);
+                }
+                else
+                {
+                    response.Success = false;
+                }
                 
             }
             catch (Exception ex)
