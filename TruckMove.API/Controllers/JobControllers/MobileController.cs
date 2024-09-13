@@ -138,9 +138,9 @@ namespace TruckMove.API.Controllers.JobControllers
         #region delay
         [HttpPost("ReportDelay")]
         [ValidateDriverChange]
-        public async Task<IActionResult> ReportDelay(int jobId, int? legId = null, string? endLocation = null)
+        public async Task<IActionResult> ReportDelay([FromHeader(Name = "JobId")] int JobId, int? legId = null, string? endLocation = null)
         {
-            var response = await _jobService.ReportDelay(legId ?? -1, jobId, endLocation ?? "", _googleMapSettings.ApiKey, Convert.ToInt32(_authUserService.GetUserId()));
+            var response = await _jobService.ReportDelay(legId ?? -1, JobId, endLocation ?? "", _googleMapSettings.ApiKey, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 
@@ -154,9 +154,9 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         [HttpPost("ResolveDelay")]
         [ValidateDriverChange]
-        public async Task<IActionResult> ResolveDelay(int jobId)
+        public async Task<IActionResult> ResolveDelay([FromHeader(Name = "JobId")] int JobId)
         {
-            var response = await _jobService.ResolveDelay(jobId, Convert.ToInt32(_authUserService.GetUserId()));
+            var response = await _jobService.ResolveDelay(JobId, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 
