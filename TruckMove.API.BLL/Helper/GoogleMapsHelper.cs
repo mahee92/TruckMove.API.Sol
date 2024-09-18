@@ -147,16 +147,25 @@ namespace TruckMove.API.BLL.Helper
         // Fallback method to extract suburb by splitting the address string
         private static string ExtractSuburbFromAddressString(string address)
         {
-            // Assuming Australian address format: "Street, Suburb, State, Postal Code, Country"
-            string[] addressParts = address.Split(',');
-
-            // The suburb is typically the second part of the address in this format
-            if (addressParts.Length >= 2)
+            try
             {
-                return addressParts[1].Trim();
-            }
+                // Assuming Australian address format: "Street, Suburb, State, Postal Code, Country"
+                string[] addressParts = address.Split(',');
 
-            return "";
+                // The suburb is typically the second part of the address in this format
+                if (addressParts.Length >= 2)
+                {
+                    return addressParts[1].Trim();
+                }
+
+                return "";
+            }
+            catch(Exception ex)
+            {
+
+                return "";
+            }
+            
         }
     }
 }

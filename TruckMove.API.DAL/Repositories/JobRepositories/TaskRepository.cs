@@ -136,7 +136,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                     .Where(job => job.IsActive &&
                            job.PickupDate.HasValue &&
                            job.PickupDate != null
-                           /*&& job.PickupDate.Value > DateTime.Now */)
+                          /* && job.PickupDate.Value > DateTime.Now*/ )
                     .Select(job => job.PickupDate.Value.Date)
                     .ToListAsync();
 
@@ -159,7 +159,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                     .Where(job => job.IsActive &&
                            job.PickupDate.HasValue &&
                             job.PickupDate != null
-                           /*&& job.PickupDate.Value > DateTime.Now */)
+                          /* && job.PickupDate.Value > DateTime.Now*/ )
                     .Select(job => new { job.CompanyId, job.Company.CompanyName })
                     .ToListAsync();
 
@@ -182,8 +182,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                 // Fetch the relevant data from the database first
                 var upcomingJobs = await context.Set<Job>()
                     .Where(job => job.IsActive &&
-                           job.PickupDate.HasValue &&
-                           //job.PickupDate.Value > DateTime.Now &&
+                           job.PickupDate.HasValue /*&&*/
+                          /* job.PickupDate.Value > DateTime.Now*/ &&
                            job.DriverNavigation !=null)
                     .Select(job => new { job.Driver, job.DriverNavigation.FirstName, job.DriverNavigation.LastName })
                     .ToListAsync();
@@ -208,7 +208,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                     .Where(job => job.IsActive &&
                                   job.PickupDate.HasValue &&
                                   job.PickupDate != null &&
-                                  job.DriverNavigation != null)
+                                  job.DriverNavigation != null /*&&*/
+                                  /*job.PickupDate.Value > DateTime.Now */)
                     .Select(job => new
                     {
                         job.DriverNavigation.FirstName,

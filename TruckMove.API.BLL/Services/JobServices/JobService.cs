@@ -258,7 +258,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     JobStatusEnum status = DetermineJobStatus(job);
                     Job.Status = (int)status;
 
-                    if(!string.IsNullOrWhiteSpace(job.PickupLocation))
+                    if (!string.IsNullOrWhiteSpace(job.PickupLocation))
                     {
                         Job.PickSuburb = await GoogleMapsHelper.GetSuburbAsync(job.PickupLocation.Replace("+", string.Empty), apiKey);
                     }
@@ -280,6 +280,15 @@ namespace TruckMove.API.BLL.Services.JobServices
                 {
                     ObjectUpdater<JobDto, Job> updater = new ObjectUpdater<JobDto, Job>();
                     job.VehicleId = existingJob.VehicleId;
+                    if (existingJob.PickupLocation != job.PickupLocation)
+                    {
+                        job.PickSuburb = await GoogleMapsHelper.GetSuburbAsync(job.PickupLocation.Replace("+", string.Empty), apiKey);
+                    }
+                    if (existingJob.DropOfLocation != job.DropOfLocation)
+                    {
+                        job.DropSuburb = await GoogleMapsHelper.GetSuburbAsync(job.DropOfLocation.Replace("+", string.Empty), apiKey);
+                    }
+
                     var res = updater.Map(job, existingJob);
                     res.CreatedDate = existingJob.CreatedDate;
                     res.CreatedById = existingJob.CreatedById;
@@ -289,14 +298,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     JobStatusEnum status = DetermineJobStatus(job, existingJob);
                     res.Status = (int)status;
 
-                    if (existingJob.PickupLocation!=job.PickupLocation)
-                    {
-                        res.PickSuburb = await GoogleMapsHelper.GetSuburbAsync(job.PickupLocation.Replace("+", string.Empty), apiKey);
-                    }
-                    if (existingJob.DropOfLocation != job.DropOfLocation)
-                    {
-                        res.DropSuburb = await GoogleMapsHelper.GetSuburbAsync(job.DropOfLocation.Replace("+", string.Empty), apiKey);
-                    }
+                    
 
 
                     var updatedJob = await _repository.UpdateAsync(res);

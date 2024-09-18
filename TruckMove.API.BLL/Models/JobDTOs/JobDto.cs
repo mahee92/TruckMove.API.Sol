@@ -36,8 +36,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         public int? Status { get; set; }
 
 
-        public string PickSuburb { get; set; } = "SamplePickSuburb";
-        public string? DropSuburb { get; set; } = "SampleDropSuburb";
+        public string? PickSuburb { get; set; } 
+        public string? DropSuburb { get; set; } 
 
 
 
