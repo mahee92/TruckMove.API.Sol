@@ -20,8 +20,7 @@ using System.Runtime.InteropServices;
 using static TruckMove.API.DAL.MasterData.MasterData;
 using TruckMove.API.BLL.Models.TaskDTOs;
 using System.Net;
-
-
+using Microsoft.Extensions.Logging;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -43,7 +42,9 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IMasterDataRepository _masterDataRepository;
 
         private readonly IRepository<Leg> _repositoryLeg;
-        public JobService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<Checklist> checklist, IRepository<Trailer> repositoryTrailer, IRepository<Leg> repositoryLeg, IMasterDataRepository masterDataRepository)
+
+        private readonly ILogger<JobService> _logger;
+        public JobService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<JobContact> repositoryJobContact, IRepository<Vehicle> repositoryVehicle, IRepository<Note> repositoryNote, IRepository<Image> repositoryImage, IRepository<Checklist> checklist, IRepository<Trailer> repositoryTrailer, IRepository<Leg> repositoryLeg, IMasterDataRepository masterDataRepository, ILogger<JobService> logger)
         {
             _mapper = mapper;
             _repository = repository;
@@ -56,7 +57,8 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryTrailer = repositoryTrailer;
             _masterDataRepository = masterDataRepository;
             _repositoryLeg = repositoryLeg;
-           
+            _logger = logger;
+
         }
         #region Job
         public JobStatusEnum DetermineJobStatus(JobDto job, Job? existingJob = null)
@@ -267,7 +269,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                     {
                         Job.DropSuburb = await GoogleMapsHelper.GetSuburbAsync(job.DropOfLocation.Replace("+", string.Empty), apiKey);
                     }
-
+                    _logger.LogInformation("Pickup Suburb: " + Job.PickSuburb);
+                    _logger.LogInformation("Drop Suburb: " + Job.DropSuburb);
 
                     var res = await _repository.AddAsync(Job);
                     response.Success = true;
@@ -288,7 +291,9 @@ namespace TruckMove.API.BLL.Services.JobServices
                     {
                         job.DropSuburb = await GoogleMapsHelper.GetSuburbAsync(job.DropOfLocation.Replace("+", string.Empty), apiKey);
                     }
-
+                    _logger.LogInformation("Pickup Suburb: " + job.PickSuburb);
+                    _logger.LogInformation("Drop Suburb: " + job.DropSuburb);
+                   
                     var res = updater.Map(job, existingJob);
                     res.CreatedDate = existingJob.CreatedDate;
                     res.CreatedById = existingJob.CreatedById;
