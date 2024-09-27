@@ -20,9 +20,11 @@ namespace TruckMove.API.DAL.dbFirst
         public string? Type { get; set; }
         public string? HookupCoordinate { get; set; }
         public string? DropoffCoordinate { get; set; }
+        public int? Status { get; set; }
 
         public virtual HookupType HookupTypeNavigation { get; set; } = null!;
         public virtual Job Job { get; set; } = null!;
+        public virtual TrailerStatus? StatusNavigation { get; set; }
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<Note> Notes { get; set; }
     }
