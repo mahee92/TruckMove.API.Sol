@@ -696,10 +696,12 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var publicTransportTasks = _taskRepository.GetPublicTransportTasksByUserId(userId);
                 var purchaseTasks = _taskRepository.GetPurchaseTasksByUserId(userId);
                 var drivingTasks = _taskRepository.GetDrivingTasksByUserId(userId);
+                var delayTasks = _taskRepository.GetDelayTasksByUserId(userId);
                 var GetJobsEligibleForPaymentQA = _taskRepository.GetJobsEligibleForPaymentQA(userId);
+                
                
 
-                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks, GetJobsEligibleForPaymentQA);
+                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks,delayTasks, GetJobsEligibleForPaymentQA);
 
                
                 var permitsResult = await permitTasks;
@@ -707,7 +709,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var publicTransportsResult = await publicTransportTasks;
                 var purchasesResult = await purchaseTasks;
                 var drivingResult = await drivingTasks;
-                
+                var delayResult = await delayTasks;
+
                 var GetJobsEligibleForPaymentQAResult = await GetJobsEligibleForPaymentQA;
 
                 response.Object = new MyTaskDto();
@@ -735,6 +738,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                 {
                     response.Object.DrivingTasks = new List<Job>();
                     AddMappedTasksToResponse(response.Object.DrivingTasks, drivingResult);
+                }
+                if (delayResult != null && delayResult.Count > 0)
+                {
+                    response.Object.Delays = new List<DelayDto>();
+                    AddMappedTasksToResponse(response.Object.Delays, delayResult);
                 }
                 if (GetJobsEligibleForPaymentQAResult != null && GetJobsEligibleForPaymentQAResult.Count > 0)
                 {

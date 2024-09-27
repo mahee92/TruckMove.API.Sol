@@ -24,6 +24,8 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
 
         public virtual List<Job>? DrivingTasks { get; set; }
 
+        public virtual List<DelayDto>? Delays { get; set; }
+
         public virtual List<int>? JobsEligibleForPaymentQA { get; set; }
 
 

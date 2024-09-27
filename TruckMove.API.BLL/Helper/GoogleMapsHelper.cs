@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,11 +121,11 @@ namespace TruckMove.API.BLL.Helper
                         {
                             // Try to find the 'locality' type, which is typically the suburb
                             foreach (var component in addressComponents)
-                            {
+                            {                              
                                 var types = component["types"].ToObject<string[]>();
 
                                 if (types.Contains("locality"))
-                                {
+                                {                                  
                                     return component["long_name"].ToString();
                                 }
                             }
@@ -137,7 +138,7 @@ namespace TruckMove.API.BLL.Helper
             }
             catch (Exception ex)
             {
-
+              
                 return ExtractSuburbFromAddressString(address);
             }
 
@@ -157,12 +158,12 @@ namespace TruckMove.API.BLL.Helper
                 {
                     return addressParts[1].Trim();
                 }
-
+                Log.Information("here 3.");
                 return "";
             }
             catch(Exception ex)
             {
-
+                Log.Information("here 4.");
                 return "";
             }
             

@@ -22,7 +22,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             using (var context = new TrukMoveContext(_options))
             {
                 return await context.Set<Accommodation>().Where(x => x.Job.IsActive == true &&
-                                                                  x.Job.Status < (int)JobStatusEnum.QADone &&
+                                                                  //x.Job.Status < (int)JobStatusEnum.QADone &&-- should be accomodation QA done
                                                                   x.OrganizeNow == false &&
                                                                   x.Assignee == userId &&
                                                                   x.Status != (int)TaskStatusEnum.Completed &&
@@ -42,7 +42,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             using (var context = new TrukMoveContext(_options))
             {
                 return await context.Set<PermitsAndPlate>().Where(x => x.Job.IsActive == true &&
-                                                                   x.Job.Status < (int)JobStatusEnum.QADone &&
+                                                                   //x.Job.Status < (int)JobStatusEnum.QADone &&
                                                                    x.OrganizeNow == false &&
                                                                    x.Assignee == userId &&
                                                                    x.Status != (int)TaskStatusEnum.Completed &&
@@ -59,7 +59,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             using (var context = new TrukMoveContext(_options))
             {
                 return await context.Set<PublicTransport>().Where(x => x.Job.IsActive == true &&
-                                                                   x.Job.Status < (int)JobStatusEnum.QADone &&
+                                                                   //x.Job.Status < (int)JobStatusEnum.QADone &&
                                                                    x.OrganizeNow == false &&
                                                                    x.Assignee == userId &&
                                                                    x.Status != (int)TaskStatusEnum.Completed &&
@@ -77,7 +77,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             using (var context = new TrukMoveContext(_options))
             {
                 return await context.Set<Purchase>().Where(x => x.Job.IsActive == true &&
-                                                                   x.Job.Status < (int)JobStatusEnum.QADone &&
+                                                                   //x.Job.Status < (int)JobStatusEnum.QADone &&
                                                                    x.OrganizeNow == false &&
                                                                    x.Assignee == userId &&
                                                                    x.Status != (int)TaskStatusEnum.Completed &&
@@ -86,6 +86,23 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                                                                        JobId = x.JobId,
                                                                        Id = x.Id,
                                                                        DriverNavigation = x.DriverNavigation
+                                                                   }).ToListAsync();
+            }
+        }
+
+        public async Task<List<Delay>> GetDelayTasksByUserId(int userId)
+        {
+            using (var context = new TrukMoveContext(_options))
+            {
+                return await context.Set<Delay>().Where(x => x.Job.IsActive == true &&
+                                                                   //x.Job.Status < (int)JobStatusEnum.QADone &&
+                                                                   x.OrganizeNow == false &&
+                                                                   x.Assignee == userId &&
+                                                                   x.Status != (int)TaskStatusEnum.Completed &&
+                                                                   x.IsActive == true).Select(x => new Delay
+                                                                   {
+                                                                       JobId = x.JobId,
+                                                                       Id = x.Id                                                       
                                                                    }).ToListAsync();
             }
         }
@@ -136,7 +153,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                     .Where(job => job.IsActive &&
                            job.PickupDate.HasValue &&
                            job.PickupDate != null
-                          /* && job.PickupDate.Value > DateTime.Now*/ )
+                          && job.PickupDate.Value > DateTime.Now)
                     .Select(job => job.PickupDate.Value.Date)
                     .ToListAsync();
 
@@ -159,7 +176,7 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                     .Where(job => job.IsActive &&
                            job.PickupDate.HasValue &&
                             job.PickupDate != null
-                          /* && job.PickupDate.Value > DateTime.Now*/ )
+                           && job.PickupDate.Value > DateTime.Now)
                     .Select(job => new { job.CompanyId, job.Company.CompanyName })
                     .ToListAsync();
 
@@ -182,8 +199,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                 // Fetch the relevant data from the database first
                 var upcomingJobs = await context.Set<Job>()
                     .Where(job => job.IsActive &&
-                           job.PickupDate.HasValue /*&&*/
-                          /* job.PickupDate.Value > DateTime.Now*/ &&
+                           job.PickupDate.HasValue &&
+                           job.PickupDate.Value > DateTime.Now &&
                            job.DriverNavigation !=null)
                     .Select(job => new { job.Driver, job.DriverNavigation.FirstName, job.DriverNavigation.LastName })
                     .ToListAsync();
@@ -208,8 +225,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
                     .Where(job => job.IsActive &&
                                   job.PickupDate.HasValue &&
                                   job.PickupDate != null &&
-                                  job.DriverNavigation != null /*&&*/
-                                  /*job.PickupDate.Value > DateTime.Now */)
+                                  job.DriverNavigation != null && 
+                                  job.PickupDate.Value > DateTime.Now )
                     .Select(job => new
                     {
                         job.DriverNavigation.FirstName,

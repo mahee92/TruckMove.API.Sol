@@ -228,16 +228,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             Response<JobDto> response = new Response<JobDto>();
             try
             {
-                //    if(job.PickupDate!=null)
-                //    {
-
-                //        job.PickupDate= job.PickupDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
-                //    }
-                //    if (job.EstimatedDeliveryDate != null)
-                //    {
-
-                //        job.EstimatedDeliveryDate = job.EstimatedDeliveryDate?.AddDays(1) ?? DateTime.Now.AddDays(1);
-                //    }
+               
                 if (!IsPossibleToAdd(job))
                 {
                     response.Success = false;
@@ -262,6 +253,8 @@ namespace TruckMove.API.BLL.Services.JobServices
 
                     if (!string.IsNullOrWhiteSpace(job.PickupLocation))
                     {
+                        _logger.LogInformation("Pickup Location: " + job.PickupLocation);
+
                         Job.PickSuburb = await GoogleMapsHelper.GetSuburbAsync(job.PickupLocation.Replace("+", string.Empty), apiKey);
                     }
 
@@ -283,6 +276,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                 {
                     ObjectUpdater<JobDto, Job> updater = new ObjectUpdater<JobDto, Job>();
                     job.VehicleId = existingJob.VehicleId;
+                    job.PickSuburb = existingJob.PickSuburb;
+                    job.DropSuburb = existingJob.DropSuburb;
                     if (existingJob.PickupLocation != job.PickupLocation)
                     {
                         job.PickSuburb = await GoogleMapsHelper.GetSuburbAsync(job.PickupLocation.Replace("+", string.Empty), apiKey);
@@ -291,8 +286,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     {
                         job.DropSuburb = await GoogleMapsHelper.GetSuburbAsync(job.DropOfLocation.Replace("+", string.Empty), apiKey);
                     }
-                    _logger.LogInformation("Pickup Suburb: " + job.PickSuburb);
-                    _logger.LogInformation("Drop Suburb: " + job.DropSuburb);
+                  
                    
                     var res = updater.Map(job, existingJob);
                     res.CreatedDate = existingJob.CreatedDate;
@@ -303,8 +297,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                     JobStatusEnum status = DetermineJobStatus(job, existingJob);
                     res.Status = (int)status;
 
-                    
 
+                    
 
                     var updatedJob = await _repository.UpdateAsync(res);
                     response.Object = _mapper.Map<JobDto>(updatedJob);
