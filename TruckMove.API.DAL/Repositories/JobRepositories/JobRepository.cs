@@ -169,5 +169,10 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
         {
              await _context.Set<CheckListImage>().AddRangeAsync(checkListimagses);
         }
+        public async Task<List<Trailer>> GetTrailersByJobId(int jobId)
+        {
+             return await _context.Set<Trailer>().Where(x => x.JobId == jobId).Include(x => x.StatusNavigation).Include(x => x.HookupTypeNavigation).ToListAsync();
+           // return await _context.Set<Trailer>().Where(x => x.JobId == jobId).ToListAsync();
+        }
     }
 }

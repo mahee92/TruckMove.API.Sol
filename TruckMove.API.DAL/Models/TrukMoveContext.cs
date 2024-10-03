@@ -68,6 +68,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<Rates> Rates { get; set; } = null!;
 
+        public virtual DbSet<TrailerStatus> TrailerStatuses { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -165,6 +167,12 @@ namespace TruckMove.API.DAL.Models
                    new Rates { Id = 23, Name = "Public_Transport_Delay", Description = "", Value = 0 },
                    new Rates { Id = 24, Name = "Breakdown_Delay", Description = "", Value = 0 }
           );
+
+            modelBuilder.Entity<TrailerStatus>().HasData(
+                  new TrailerStatus { Id = (int)TrailerStatusEnum.NotPicked, Status = TrailerStatusEnum.NotPicked.ToString() },
+                  new TrailerStatus { Id = (int)TrailerStatusEnum.Picked, Status = TrailerStatusEnum.Picked.ToString() },
+                  new TrailerStatus { Id = (int)TrailerStatusEnum.Droppped, Status = TrailerStatusEnum.Droppped.ToString() }
+                 );
 
             modelBuilder.Entity<Accommodation>(entity =>
             {
@@ -792,6 +800,8 @@ namespace TruckMove.API.DAL.Models
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
+                entity.Property(e => e.Status).HasDefaultValueSql("((0))");
+
 
                 entity.Property(e => e.Rego).HasMaxLength(200);
 
@@ -818,6 +828,21 @@ namespace TruckMove.API.DAL.Models
                     .WithOne(p => p.Trailer)
                     .HasForeignKey(p => p.TrailerId)
                     .OnDelete(DeleteBehavior.Cascade);
+             
+                
+                entity.HasOne(d => d.StatusNavigation)
+                    .WithMany(p => p.Trailers)
+                    .HasForeignKey(d => d.Status)
+                    .HasConstraintName("FK_Trailers_TrailerStatus");
+            });
+
+            modelBuilder.Entity<TrailerStatus>(entity =>
+            {
+                entity.ToTable("TrailerStatus");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Status).HasMaxLength(50);
             });
 
             modelBuilder.Entity<HookupType>(entity =>

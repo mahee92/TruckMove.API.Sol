@@ -110,5 +110,13 @@ namespace TruckMove.API.DAL.MasterData
             Public_Transport_Delay = 23,
             Breakdown_Delay = 24
         }
+
+        public enum TrailerStatusEnum
+        {
+            NotPicked=0,
+            Picked=1,
+            Droppped = 2
+
+        }
     }
 }

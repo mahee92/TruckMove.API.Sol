@@ -170,6 +170,59 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         #endregion
 
+        #region Trailer
+        //[HttpGet("GetTrailers")]
+        //[ValidateDriverChange]
+        //public async Task<IActionResult> GetTrailers([FromHeader(Name = "JobId")] int JobId)
+        //{
+
+        //    Response<TrailerOutPutDto> response = await _jobService.GetTrailersByJobId(JobId);
+        //    if (response.Success)
+        //    {
+
+        //        return Ok(response.Objects);
+        //    }
+        //    else
+        //    {
+
+        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
+        //    }
+        //}
+
+        [HttpPost("HookupTrailer")]
+        [ValidateDriverChange]
+        public async Task<IActionResult> HookupTrailer(int trailerId)
+        {
+            var response = await _jobService.HookTrailer(trailerId);
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        [HttpPost("DropTrailer")]
+        [ValidateDriverChange]
+        public async Task<IActionResult> DropTrailer(int trailerId)
+        {
+            var response = await _jobService.DropTrailer(trailerId);
+            if (response.Success)
+            {
+
+                return Ok(response.Object);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
+        #endregion
+
 
 
 

@@ -84,6 +84,12 @@ namespace TruckMove.API.BLL.Helper
                 
             );
 
+            //CreateMap<TrailerOutPutDto, Trailer>();
+            CreateMap<Trailer, TrailerOutPutDto>()
+                .ForMember(dest => dest.StatusNavigation, opt => opt.MapFrom(src => src.StatusNavigation)
+
+            );
+
         }
 
         public void CreateGenericMap<TSource, TDestination>()

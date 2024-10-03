@@ -1201,7 +1201,94 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-        
+        public async Task<Response<TrailerOutPutDto>> GetTrailersByJobId(int jobId)
+        {
+            Response<TrailerOutPutDto> response = new Response<TrailerOutPutDto>();
+            try
+            {
+                var trailers = await _jobRepository.GetTrailersByJobId(jobId);
+                if (trailers.Count > 0)
+                {
+                    response.Success = true;
+                    response.Objects = trailers.Select(t => _mapper.Map<TrailerOutPutDto>(t)).ToList();
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorMessage = ErrorMessages.NotFound;
+                    response.ErrorType = ErrorCode.NotFound;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = ex.Message;
+                response.ErrorType = ErrorCode.dbError;
+            }
+            return response;
+        }
+
+        public async Task<Response<TrailerOutPutDto>> HookTrailer(int trailerId)
+        {
+            Response<TrailerOutPutDto> response = new Response<TrailerOutPutDto>();
+            var trailer = await _repositoryTrailer.GetAsync(trailerId);
+            if(trailer == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ErrorMessages.NotFound;
+                response.ErrorType = ErrorCode.NotFound;
+            }
+            else if(trailer.Status != (int)TrailerStatusEnum.NotPicked)
+            {
+                response.Success = false;
+                response.ErrorMessage = ErrorMessages.TrailerStatusError;
+                response.ErrorType = ErrorCode.statusError;
+            }
+            else
+            {
+                trailer.Status = (int)TrailerStatusEnum.Picked;
+                await _repositoryTrailer.UpdateAsync(trailer);
+
+                var res = await _repositoryTrailer.GetWithNestedIncludesAsync(trailerId, "HookupTypeNavigation", "StatusNavigation");
+                // convert res to trailerDto
+                response.Object = _mapper.Map<TrailerOutPutDto>(res);
+                response.Success = true;
+
+
+               
+            }
+            return response;
+        }
+
+        public async Task<Response<TrailerOutPutDto>> DropTrailer(int trailerId)
+        {
+            Response<TrailerOutPutDto> response = new Response<TrailerOutPutDto>();
+            var trailer = await _repositoryTrailer.GetAsync(trailerId);
+            if (trailer == null)
+            {
+                response.Success = false;
+                response.ErrorMessage = ErrorMessages.NotFound;
+                response.ErrorType = ErrorCode.NotFound;
+            }
+            else if (trailer.Status != (int)TrailerStatusEnum.Picked)
+            {
+                response.Success = false;
+                response.ErrorMessage = ErrorMessages.TrailerStatusError;
+                response.ErrorType = ErrorCode.statusError;
+            }
+            else
+            {
+                trailer.Status = (int)TrailerStatusEnum.Droppped;
+                await _repositoryTrailer.UpdateAsync(trailer);
+                var res = await _repositoryTrailer.GetWithNestedIncludesAsync(trailerId, "HookupTypeNavigation", "StatusNavigation");
+                response.Object = _mapper.Map<TrailerOutPutDto>(res);
+                response.Success = true;
+
+            }
+            return response;
+        }
+
+
 
 
         #endregion

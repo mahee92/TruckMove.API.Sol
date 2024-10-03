@@ -15,6 +15,8 @@ namespace TruckMove.API.DAL.Models
         public string? Rego { get; set; }
         public string? Type { get; set; }
 
+        public int? Status { get; set; }
+
         public string? HookupCoordinate { get; set; }
         public string? DropoffCoordinate { get; set; }
 
@@ -27,5 +29,7 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Note> Notes { get; set; }
 
         public bool ShouldUpdateJob => true;
+
+        public virtual TrailerStatus? StatusNavigation { get; set; }
     }
 }

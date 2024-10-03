@@ -47,6 +47,10 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response> ResolveDelay(int jobId, int userId);
 
         Task<Response<LegHistoryDto>> GetLegHistory(int jobId);
-      
+        Task<Response<TrailerOutPutDto>> GetTrailersByJobId(int jobId);
+
+        Task<Response<TrailerOutPutDto>> HookTrailer(int trailerId);
+        Task<Response<TrailerOutPutDto>> DropTrailer(int trailerId);
+
     }
 }

@@ -34,5 +34,6 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         Task DeleteCheckListIagesByCheckListId(int checkListId);
         Task AddCheckListImages(List<CheckListImage> checkListimagses);
+        Task<List<Trailer>> GetTrailersByJobId(int jobId);
     }
 }

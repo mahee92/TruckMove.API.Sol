@@ -155,8 +155,15 @@ internal class Program
             profile.CreateGenericMap<Image, ImageDto>();
             profile.CreateGenericMap<TrailerDto, Trailer>();
             profile.CreateGenericMap<Trailer, TrailerDto>();
-            profile.CreateGenericMap<TrailerOutPutDto, Trailer>();
+             profile.CreateGenericMap<TrailerOutPutDto, Trailer>();
             profile.CreateGenericMap<Trailer, TrailerOutPutDto>();
+
+            profile.CreateGenericMap<TrailerStatus, TrailerStatusDto>();
+            profile.CreateGenericMap<TrailerStatusDto, TrailerStatus>();
+
+            profile.CreateGenericMap<HookupTypeDto, HookupType>();
+            profile.CreateGenericMap<HookupType, HookupTypeDto>();
+
             profile.CreateGenericMap<JobStatus, JobStatusDto>();
             profile.CreateGenericMap<Leg, LegDto>();
             profile.CreateGenericMap<LegDto, Leg>();
