@@ -191,7 +191,7 @@ namespace TruckMove.API.Controllers.JobControllers
 
         [HttpPost("HookupTrailer")]
         [ValidateDriverChange]
-        public async Task<IActionResult> HookupTrailer(int trailerId)
+        public async Task<IActionResult> HookupTrailer([FromHeader(Name = "JobId")] int JobId,int trailerId)
         {
             var response = await _jobService.HookTrailer(trailerId);
             if (response.Success)
@@ -207,7 +207,7 @@ namespace TruckMove.API.Controllers.JobControllers
         }
         [HttpPost("DropTrailer")]
         [ValidateDriverChange]
-        public async Task<IActionResult> DropTrailer(int trailerId)
+        public async Task<IActionResult> DropTrailer([FromHeader(Name = "JobId")] int JobId,int trailerId)
         {
             var response = await _jobService.DropTrailer(trailerId);
             if (response.Success)
