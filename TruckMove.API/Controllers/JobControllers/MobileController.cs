@@ -191,9 +191,9 @@ namespace TruckMove.API.Controllers.JobControllers
 
         [HttpPost("HookupTrailer")]
         [ValidateDriverChange]
-        public async Task<IActionResult> HookupTrailer([FromHeader(Name = "JobId")] int JobId,int trailerId)
+        public async Task<IActionResult> HookupTrailer([FromHeader(Name = "JobId")] int JobId,int trailerId,int legId)
         {
-            var response = await _jobService.HookTrailer(trailerId);
+            var response = await _jobService.HookTrailer(trailerId, legId);
             if (response.Success)
             {
 

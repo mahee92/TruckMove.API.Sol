@@ -28,6 +28,9 @@ namespace TruckMove.API.BLL.Models.JobDTOs
         public string? PickupCoordinates { get; set; }
         public string? DropOfCoordinates { get; set; }
 
+        public bool IsCommercialLoad { get; set; }
+        public bool IsDangerousGoods { get; set; }
+
         public int? VehicleId { get; set; }
 
         public DateTime? EstimatedDeliveryDate { get; set; }

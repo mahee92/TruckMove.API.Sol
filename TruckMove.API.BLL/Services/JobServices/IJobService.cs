@@ -49,7 +49,7 @@ namespace TruckMove.API.BLL.Services.JobServices
         Task<Response<LegHistoryDto>> GetLegHistory(int jobId);
         Task<Response<TrailerOutPutDto>> GetTrailersByJobId(int jobId);
 
-        Task<Response<TrailerOutPutDto>> HookTrailer(int trailerId);
+        Task<Response<TrailerOutPutDto>> HookTrailer(int trailerId,int legId);
         Task<Response<TrailerOutPutDto>> DropTrailer(int trailerId);
 
     }

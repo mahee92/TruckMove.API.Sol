@@ -1228,7 +1228,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
         }
 
-        public async Task<Response<TrailerOutPutDto>> HookTrailer(int trailerId)
+        public async Task<Response<TrailerOutPutDto>> HookTrailer(int trailerId,int legId)
         {
             Response<TrailerOutPutDto> response = new Response<TrailerOutPutDto>();
             var trailer = await _repositoryTrailer.GetAsync(trailerId);
@@ -1247,6 +1247,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             else
             {
                 trailer.Status = (int)TrailerStatusEnum.Picked;
+                trailer.HookupLeg = legId;
                 await _repositoryTrailer.UpdateAsync(trailer);
 
                 var res = await _repositoryTrailer.GetWithNestedIncludesAsync(trailerId, "HookupTypeNavigation", "StatusNavigation");
