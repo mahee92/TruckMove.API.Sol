@@ -29,6 +29,7 @@ namespace TruckMove.API.DAL.dbFirst
         public double? TransportCost { get; set; }
         public string? RequiredFromsuburb { get; set; }
         public string? Name { get; set; }
+        public bool IsPaid { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? DriverNavigation { get; set; }

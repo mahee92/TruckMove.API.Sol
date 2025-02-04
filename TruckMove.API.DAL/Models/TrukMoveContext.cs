@@ -70,6 +70,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<TrailerStatus> TrailerStatuses { get; set; } = null!;
 
+        public virtual DbSet<PaymentStatus> PaymentStatuses { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -173,6 +175,11 @@ namespace TruckMove.API.DAL.Models
                   new TrailerStatus { Id = (int)TrailerStatusEnum.Picked, Status = TrailerStatusEnum.Picked.ToString() },
                   new TrailerStatus { Id = (int)TrailerStatusEnum.Droppped, Status = TrailerStatusEnum.Droppped.ToString() }
                  );
+            modelBuilder.Entity<PaymentStatus>().HasData(
+                                new PaymentStatus { Id = (int)PaymentStatusEnum.QAPending, Status = PaymentStatusEnum.QAPending.ToString() },
+                                new PaymentStatus { Id = (int)PaymentStatusEnum.QADone, Status = PaymentStatusEnum.QADone.ToString() },
+                                new PaymentStatus { Id = (int)PaymentStatusEnum.Verified, Status = PaymentStatusEnum.Verified.ToString() },
+                                new PaymentStatus { Id = (int)PaymentStatusEnum.PaymentDone, Status = PaymentStatusEnum.PaymentDone.ToString() });
 
             modelBuilder.Entity<Accommodation>(entity =>
             {
@@ -1089,6 +1096,15 @@ namespace TruckMove.API.DAL.Models
                    .IsRequired()
                    .HasDefaultValueSql("(CONVERT([float],(0)))");
 
+                });
+
+                modelBuilder.Entity<PaymentStatus>(entity =>
+                {
+                    entity.ToTable("PaymentStatus");
+
+                    entity.Property(e => e.Id).ValueGeneratedNever();
+
+                    entity.Property(e => e.Status).HasMaxLength(50);
                 });
 
 

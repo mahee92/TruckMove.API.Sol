@@ -21,6 +21,8 @@ namespace TruckMove.API.DAL.Models
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
 
+        public bool IsPaid { get; set; }
+
         public bool IsActive { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }

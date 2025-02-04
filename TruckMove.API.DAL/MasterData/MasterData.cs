@@ -118,5 +118,13 @@ namespace TruckMove.API.DAL.MasterData
             Droppped = 2
 
         }
+        public enum PaymentStatusEnum
+        {
+            QAPending = 0,
+            QADone = 1,
+            Verified = 2,
+            PaymentDone = 3
+
+        }
     }
 }

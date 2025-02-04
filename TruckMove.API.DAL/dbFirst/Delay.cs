@@ -18,6 +18,7 @@ namespace TruckMove.API.DAL.dbFirst
         public bool? OrganizeNow { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+        public bool IsPaid { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual Job Job { get; set; } = null!;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20250204135620_jobnNewClm_isPaid")]
+    partial class jobnNewClm_isPaid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1129,43 +1131,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasIndex("VehicleId");
 
                     b.ToTable("Notes");
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.PaymentStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PaymentStatus", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 0,
-                            Status = "QAPending"
-                        },
-                        new
-                        {
-                            Id = 1,
-                            Status = "QADone"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Status = "Verified"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Status = "PaymentDone"
-                        });
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.PermitsAndPlate", b =>

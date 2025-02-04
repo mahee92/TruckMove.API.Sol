@@ -29,7 +29,7 @@ namespace TruckMove.API.DAL.Models
         public string? ReferenceNumber { get; set; }
         public double? TransportCost { get; set; }
         public string? RequiredFromsuburb { get; set; }
-
+        public bool IsPaid { get; set; }
         public string? Name { get; set; }
 
         public bool IsActive { get; set; }
