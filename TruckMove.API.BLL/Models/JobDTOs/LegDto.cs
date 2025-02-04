@@ -27,6 +27,8 @@ namespace TruckMove.API.BLL.Models.JobDTOs
 
         public int JobStatus { get; set; }
 
+        public bool IsPaid { get; set; }
+
 
     }
 }

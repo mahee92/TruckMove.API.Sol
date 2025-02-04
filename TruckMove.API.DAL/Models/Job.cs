@@ -50,6 +50,9 @@ namespace TruckMove.API.DAL.Models
         public string? PickSuburb { get; set; }
         public string? DropSuburb { get; set; }
 
+        public bool IsCommercialLoad { get; set; }
+        public bool IsDangerousGoods { get; set; }
+
 
 
         public virtual Company Company { get; set; } = null!;

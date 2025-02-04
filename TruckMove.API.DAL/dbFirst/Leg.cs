@@ -5,6 +5,11 @@ namespace TruckMove.API.DAL.dbFirst
 {
     public partial class Leg
     {
+        public Leg()
+        {
+            Trailers = new HashSet<Trailer>();
+        }
+
         public int Id { get; set; }
         public int JobId { get; set; }
         public int DriverId { get; set; }
@@ -16,11 +21,13 @@ namespace TruckMove.API.DAL.dbFirst
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public double? TotalDistance { get; set; }
+        public bool IsPaid { get; set; }
 
         public virtual User Driver { get; set; } = null!;
         public virtual Job Job { get; set; } = null!;
         public virtual LegStatus StatusNavigation { get; set; } = null!;
         public virtual Variance VarianceNavigation { get; set; } = null!;
         public virtual Acknowledgement? Acknowledgement { get; set; }
+        public virtual ICollection<Trailer> Trailers { get; set; }
     }
 }

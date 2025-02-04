@@ -6,6 +6,11 @@ namespace TruckMove.API.DAL.Models
 {
     public partial class Leg : AuditableEntity, IActiveEntity, IJobUpdatable
     {
+        public Leg()
+        {
+            Trailers = new HashSet<Trailer>();
+        }
+
         public int Id { get; set; }
         public int JobId { get; set; }
         public int DriverId { get; set; }
@@ -20,6 +25,8 @@ namespace TruckMove.API.DAL.Models
         public double? TotalDistance { get; set; }
         public bool IsActive { get; set; }
 
+        public bool IsPaid { get; set; }
+
         public virtual Job Job { get; set; } = null!;
         public virtual LegStatus StatusNavigation { get; set; } = null!;
         public virtual Variance VarianceNavigation { get; set; } = null!;
@@ -28,5 +35,7 @@ namespace TruckMove.API.DAL.Models
         public virtual User Driver { get; set; } = null!;
 
         public bool ShouldUpdateJob => true;
+
+        public virtual ICollection<Trailer> Trailers { get; set; }
     }
 }

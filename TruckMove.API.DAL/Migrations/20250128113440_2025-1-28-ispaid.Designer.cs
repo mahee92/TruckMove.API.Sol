@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20250128113440_2025-1-28-ispaid")]
+    partial class _2025128ispaid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -677,12 +679,6 @@ namespace TruckMove.API.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValueSql("(CONVERT([bit],(1)))");
-
-                    b.Property<bool>("IsCommercialLoad")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDangerousGoods")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
@@ -1726,9 +1722,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<string>("HookupCoordinate")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("HookupLeg")
-                        .HasColumnType("int");
-
                     b.Property<string>("HookupLocation")
                         .HasColumnType("nvarchar(max)");
 
@@ -1765,8 +1758,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("HookupLeg");
 
                     b.HasIndex("HookupType");
 
@@ -2711,11 +2702,6 @@ namespace TruckMove.API.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
-                    b.HasOne("TruckMove.API.DAL.Models.Leg", "HookupLegNavigation")
-                        .WithMany("Trailers")
-                        .HasForeignKey("HookupLeg")
-                        .HasConstraintName("FK_Trailers_Legs");
-
                     b.HasOne("TruckMove.API.DAL.Models.HookupType", "HookupTypeNavigation")
                         .WithMany("Trailers")
                         .HasForeignKey("HookupType")
@@ -2738,8 +2724,6 @@ namespace TruckMove.API.DAL.Migrations
                         .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("HookupLegNavigation");
 
                     b.Navigation("HookupTypeNavigation");
 
@@ -2905,8 +2889,6 @@ namespace TruckMove.API.DAL.Migrations
             modelBuilder.Entity("TruckMove.API.DAL.Models.Leg", b =>
                 {
                     b.Navigation("Acknowledgement");
-
-                    b.Navigation("Trailers");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.LegStatus", b =>

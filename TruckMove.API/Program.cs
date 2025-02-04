@@ -29,9 +29,10 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.OData.Edm; // Added for OData
 using TruckMove.API.BLL.Models.TaskDTOs;
 using TruckMove.API.BLL.Models.PrimaryDTOs;
-//using Microsoft.OpenApi.Any;
-//using static TruckMove.API.DAL.MasterData.MasterData;
-//using Newtonsoft.Json.Serialization;
+using Microsoft.OData.UriParser;
+using TruckMove.API.DAL.Repositories.PaymentRepositories;
+using TruckMove.API.BLL.Services.PaymentServices;
+
 
 internal class Program
 {
@@ -75,9 +76,9 @@ internal class Program
         {
             options.Filters.Add<ODataExceptionFilter>();
         }).AddOData(
-            options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(
-                "odata",
-                modelBuilder.GetEdmModel()));
+           options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(
+               "odata",
+               modelBuilder.GetEdmModel()));
 
 
         // Configure CORS
@@ -146,7 +147,9 @@ internal class Program
             profile.CreateGenericMap<Job, JobOutPutDTO>();
             profile.CreateGenericMap<Job, JobDto>();
             profile.CreateGenericMap<VehicleDto, Vehicle>();
-            
+
+           
+
             profile.CreateGenericMap<WayPoint, WayPointDto>();
            
             profile.CreateGenericMap<Note, NoteDto>();
@@ -167,7 +170,8 @@ internal class Program
             profile.CreateGenericMap<JobStatus, JobStatusDto>();
             profile.CreateGenericMap<Leg, LegDto>();
             profile.CreateGenericMap<LegDto, Leg>();
-           
+            profile.CreateGenericMap<Leg, LegOutPutDto>();
+
             profile.CreateGenericMap<PermitsAndPlate, PermitsAndPlateDto>();
             profile.CreateGenericMap<PermitsAndPlateDto, PermitsAndPlate>();
             profile.CreateGenericMap<PermitsAndPlateOutputDto, PermitsAndPlate>();
@@ -334,6 +338,7 @@ internal class Program
         builder.Services.AddScoped<IMasterDataService, MasterDataService>();
         builder.Services.AddScoped<IJobTaskService, JobTaskService>();
         builder.Services.AddScoped<IRateService, RateService>();
+        builder.Services.AddScoped<IPaymentService, PaymentService>();
 
         builder.Services.AddScoped<IRepository<Company>, Repository<Company>>();
         builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
@@ -360,6 +365,7 @@ internal class Program
         builder.Services.AddScoped<IJobRepository, JobRepository>();
         builder.Services.AddScoped<IMasterDataRepository, MasterDataRepository>();
         builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+        builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 
         builder.Services.AddScoped<ValidateDriverChangeAttributeFilter>();
         builder.Services.AddScoped<ODataExceptionFilter>();
