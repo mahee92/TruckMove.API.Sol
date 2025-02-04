@@ -730,6 +730,8 @@ namespace TruckMove.API.DAL.Models
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
+                entity.Property(e => e.PaymentStatus).HasDefaultValueSql("((1))");
+
                 //  entity.Property(e => e.EndLocation).HasMaxLength(500);
 
                 entity.Property(e => e.EndTime).HasColumnType("datetime");
@@ -771,6 +773,12 @@ namespace TruckMove.API.DAL.Models
                 entity.HasOne(d => d.UpdatedBy)
                     .WithMany(p => p.LegUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
+
+                entity.HasOne(d => d.PaymentStatusNavigation)
+                   .WithMany(p => p.Legs)
+                   .HasForeignKey(d => d.PaymentStatus)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_Legs_PaymentStatus");
             });
 
             modelBuilder.Entity<LegStatus>(entity =>
@@ -895,6 +903,8 @@ namespace TruckMove.API.DAL.Models
                 .IsRequired()
                 .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
+                entity.Property(e => e.PaymentStatus).HasDefaultValueSql("((1))");
+
                 entity.ToTable("PublicTransport");
 
                 entity.Property(e => e.ArrivalDateTime).HasColumnType("datetime");
@@ -957,6 +967,12 @@ namespace TruckMove.API.DAL.Models
                      .WithOne(p => p.PublicTransport)
                     .HasForeignKey(p => p.PublicTransportId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(d => d.PaymentStatusNavigation)
+                    .WithMany(p => p.PublicTransports)
+                    .HasForeignKey(d => d.PaymentStatus)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PublicTransport_PaymentStatus");
             });
 
             modelBuilder.Entity<PublicTransportType>(entity =>
@@ -969,6 +985,7 @@ namespace TruckMove.API.DAL.Models
             modelBuilder.Entity<Purchase>(entity =>
             {
                 entity.ToTable("Purchase");
+                entity.Property(e => e.PaymentStatus).HasDefaultValueSql("((1))");
 
                 entity.Property(e => e.IsActive)
                    .IsRequired()
@@ -1014,6 +1031,12 @@ namespace TruckMove.API.DAL.Models
                     .WithMany(p => p.PurchaseUpdatedBies)
                     .HasForeignKey(d => d.UpdatedById);
 
+                entity.HasOne(d => d.PaymentStatusNavigation)
+                    .WithMany(p => p.Purchases)
+                    .HasForeignKey(d => d.PaymentStatus)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Purchase_PaymentStatus");
+
                 modelBuilder.Entity<CheckListImage>(entity =>
                 {
                     entity.Property(e => e.Url).HasColumnName("url");
@@ -1022,7 +1045,7 @@ namespace TruckMove.API.DAL.Models
                         .WithMany(p => p.CheckListImages)
                         .HasForeignKey(d => d.ChecklistId)
                         .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK_CheckListPhotos_Checklist");
+                        .HasConstraintName("FK_CheckListPhotos_Checklist");     
                 });
 
                 modelBuilder.Entity<Delay>(entity =>
@@ -1073,6 +1096,8 @@ namespace TruckMove.API.DAL.Models
 
                 modelBuilder.Entity<DelayDriver>(entity =>
                 {
+                    entity.Property(e => e.PaymentStatus).HasDefaultValueSql("((1))");
+            
                     entity.HasOne(d => d.Delay)
                         .WithMany(p => p.DelayDrivers)
                         .HasForeignKey(d => d.DelayId)
@@ -1084,6 +1109,16 @@ namespace TruckMove.API.DAL.Models
                         .HasForeignKey(d => d.DriverId)
                         .OnDelete(DeleteBehavior.ClientSetNull) // No change
                         .HasConstraintName("FK_DelayDrivers_Users");
+
+                    entity.HasOne(d => d.PaymentStatusNavigation)
+                    .WithMany(p => p.DelayDrivers)
+                    .HasForeignKey(d => d.PaymentStatus)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DelayDrivers_PaymentStatus");
+
+
+
+
                 });
 
                 modelBuilder.Entity<Rates>(entity =>

@@ -30,10 +30,12 @@ namespace TruckMove.API.DAL.dbFirst
         public string? RequiredFromsuburb { get; set; }
         public string? Name { get; set; }
         public bool IsPaid { get; set; }
+        public int PaymentStatus { get; set; }
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? DriverNavigation { get; set; }
         public virtual Job Job { get; set; } = null!;
+        public virtual PaymentStatus PaymentStatusNavigation { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
         public virtual PublicTransportType? TransportTypeNavigation { get; set; }
         public virtual ICollection<Attachment> Attachments { get; set; }

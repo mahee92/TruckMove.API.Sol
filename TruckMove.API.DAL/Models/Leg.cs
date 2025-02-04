@@ -27,6 +27,10 @@ namespace TruckMove.API.DAL.Models
 
         public bool IsPaid { get; set; }
 
+        public int PaymentStatus { get; set; }
+
+        public virtual PaymentStatus PaymentStatusNavigation { get; set; } = null!;
+
         public virtual Job Job { get; set; } = null!;
         public virtual LegStatus StatusNavigation { get; set; } = null!;
         public virtual Variance VarianceNavigation { get; set; } = null!;

@@ -22,6 +22,8 @@ namespace TruckMove.API.DAL.Models
 
         public bool IsActive { get; set; }
         public bool IsPaid { get; set; }
+        public int PaymentStatus { get; set; }
+        public virtual PaymentStatus PaymentStatusNavigation { get; set; } = null!;
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? DriverNavigation { get; set; }
