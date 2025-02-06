@@ -120,10 +120,10 @@ namespace TruckMove.API.DAL.MasterData
         }
         public enum PaymentStatusEnum
         {
-            QAPending = 0,
-            QADone = 1,
-            Verified = 2,
-            PaymentDone = 3
+            QAPending = 1,
+            QADone = 2,
+            Verified = 3,
+            PaymentDone = 4
 
         }
     }

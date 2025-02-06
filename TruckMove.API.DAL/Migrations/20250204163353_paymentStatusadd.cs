@@ -25,10 +25,10 @@ namespace TruckMove.API.DAL.Migrations
                 columns: new[] { "Id", "Status" },
                 values: new object[,]
                 {
-                    { 0, "QAPending" },
-                    { 1, "QADone" },
-                    { 2, "Verified" },
-                    { 3, "PaymentDone" }
+                    { 1, "QAPending" },
+                    { 2, "QADone" },
+                    { 3, "Verified" },
+                    { 4, "PaymentDone" }
                 });
         }
 

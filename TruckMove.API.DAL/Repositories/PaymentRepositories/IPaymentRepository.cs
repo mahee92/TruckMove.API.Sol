@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TruckMove.API.DAL.Models;
+using TruckMove.API.DAL.VMmodels;
 
 namespace TruckMove.API.DAL.Repositories.PaymentRepositories
 {
     public interface IPaymentRepository
     {
-        IQueryable<Leg> GetAllUnpaidLegsByDrivers();
+        public IQueryable<DriverJobPaymentVM> GetAllUnpaidPaymentsForDrivers();
+
+        Task<List<Leg>> GetUnpaidLegDataForDriver(int jobId, int driverId);
     }
 }

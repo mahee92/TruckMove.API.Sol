@@ -43,14 +43,18 @@ namespace TruckMove.API.Controllers.JobControllers
            
 
         }
-        [HttpGet("/Odata/Payemnt/PayemntQAList")]
+        [HttpGet("/Odata/PayemntQAList")]
         [EnableQuery]
 
         public async Task<IActionResult> PayemntQAList()
         {
-            //  var query = _jobService.GetAll<JobOutPutPaymentDTO>();
-            var query = _PaymentService.GetAllUnpaidLegsByDrivers();
-            //var count = query.Count();
+            var query = _PaymentService.GetAllUnpaidPaymentsForDrivers();
+            return Ok(query);
+        }
+        [HttpGet("/GetCalculatedLegPaymentsAsync")]
+        public async Task<IActionResult> GetCalculatedLegPaymentsAsync(int jobId, int driverId)
+        {
+            var query = await _PaymentService.GetCalculatedLegPaymentsAsync(jobId, driverId);
             return Ok(query);
         }
 
