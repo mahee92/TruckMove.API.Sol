@@ -32,15 +32,21 @@ namespace TruckMove.API.Controllers.JobControllers
         private readonly IAuthUserService _authUserService;
         private readonly IPaymentService _PaymentService;
         private readonly MySettings _mySettings;
-       
+        private readonly IJobService _jobService;
 
-        public PaymentController(IAuthUserService authUserService, IPaymentService PaymentService, IOptions<MySettings> mySettings, IOptions<GoogleMapSettings> googleMapSettings)
+
+
+        public PaymentController(IAuthUserService authUserService, IPaymentService PaymentService, IOptions<MySettings> mySettings, IOptions<GoogleMapSettings> googleMapSettings, IJobService jobService)
         {
 
             _authUserService = authUserService;
             _PaymentService = PaymentService;
             _mySettings = mySettings.Value;
-           
+            _jobService = jobService;
+
+
+
+
 
         }
         [HttpGet("/Odata/PayemntQAList")]
@@ -58,5 +64,40 @@ namespace TruckMove.API.Controllers.JobControllers
             return Ok(query);
         }
 
+        //[HttpPost("/ChangePaymentStatus")]
+        //public async Task<IActionResult> ChangePaymentStatus(bool QADone,bool Verified,bool PaymentDone, bool isLeg,bool isDelay, bool purchase,bool isPublicTransport, int id)
+        //{
+        //    PaymentStatusEnum status = PaymentStatusEnum.QAPending;
+        //    if (QADone)
+        //    {
+        //        status = PaymentStatusEnum.QADone;
+        //    }
+        //    else if (Verified)
+        //    {
+        //        status = PaymentStatusEnum.Verified;
+        //    }
+        //    else if (PaymentDone)
+        //    {
+        //        status = PaymentStatusEnum.PaymentDone;
+        //    }
+
+
+
+        //    if (isLeg)
+        //    {
+
+        //    }
+        //    var response = await _jobService.ChangeLegPaymentStatus(id, status,)
+        //    if (response.Success)
+        //    {
+
+        //        return Ok(response.Object);
+        //    }
+        //    else
+        //    {
+
+        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
+        //    }
+        //}
     }
 }

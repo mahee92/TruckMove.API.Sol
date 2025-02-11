@@ -10,6 +10,7 @@ namespace TruckMove.API.BLL.Services.PaymentServices
 {
     public interface IPaymentService
     {
+        Task ChangeVerification(bool verify, int id, bool isLeg, bool isDelay, bool purchase, bool isPublicTransport);
         IQueryable<DriverJobPaymentVM> GetAllUnpaidPaymentsForDrivers();
         Task<object> GetCalculatedLegPaymentsAsync(int jobId, int driverId);
     }

@@ -87,6 +87,7 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
             return await _legdbSet
                 .Where(l => l.JobId == jobId && l.DriverId == driverId && l.PaymentStatus == (int)PaymentStatusEnum.QAPending)
                 .Include(l => l.Job) // Include the Job entity
+                .Include(l=>l.Trailers) // Include the Trailers entity
                 .ToListAsync();
         }
 
