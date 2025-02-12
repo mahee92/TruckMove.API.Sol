@@ -64,40 +64,34 @@ namespace TruckMove.API.Controllers.JobControllers
             return Ok(query);
         }
 
-        //[HttpPost("/ChangePaymentStatus")]
-        //public async Task<IActionResult> ChangePaymentStatus(bool QADone,bool Verified,bool PaymentDone, bool isLeg,bool isDelay, bool purchase,bool isPublicTransport, int id)
-        //{
-        //    PaymentStatusEnum status = PaymentStatusEnum.QAPending;
-        //    if (QADone)
-        //    {
-        //        status = PaymentStatusEnum.QADone;
-        //    }
-        //    else if (Verified)
-        //    {
-        //        status = PaymentStatusEnum.Verified;
-        //    }
-        //    else if (PaymentDone)
-        //    {
-        //        status = PaymentStatusEnum.PaymentDone;
-        //    }
+        [HttpPost("/ChangePaymentStatus")]
+        public async Task<IActionResult> ChangePaymentStatus(bool QADone, bool Verified, bool PaymentDone, bool isLeg, bool isDelay, bool ispurchase, bool isPublicTransport, int id)
+        {
+            PaymentStatusEnum status = PaymentStatusEnum.QAPending;
+            if (QADone)
+            {
+                status = PaymentStatusEnum.QADone;
+            }
+            else if (Verified)
+            {
+                status = PaymentStatusEnum.Verified;
+            }
+            else if (PaymentDone)
+            {
+                status = PaymentStatusEnum.PaymentDone;
+            }
 
+            var response = await _PaymentService.ChangeLegPaymentStatus(entityId: id, status: status, userId: Convert.ToInt32(_authUserService.GetUserId()),isLeg,isDelay, ispurchase, isPublicTransport);
+            if (response.Success)
+            {
 
+                return Ok();
+            }
+            else
+            {
 
-        //    if (isLeg)
-        //    {
-
-        //    }
-        //    var response = await _jobService.ChangeLegPaymentStatus(id, status,)
-        //    if (response.Success)
-        //    {
-
-        //        return Ok(response.Object);
-        //    }
-        //    else
-        //    {
-
-        //        return StatusCode((int)response.ErrorType, response.ErrorMessage);
-        //    }
-        //}
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
     }
 }

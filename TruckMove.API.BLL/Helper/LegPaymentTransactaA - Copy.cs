@@ -10,7 +10,7 @@ using static TruckMove.API.DAL.MasterData.MasterData;
 namespace TruckMove.API.BLL.Helper
 {
 
-    public class LegPaymentTransact
+    public class LegPaymentTransactA
     {
         private readonly PaymentRates _rates;
 
@@ -27,16 +27,22 @@ namespace TruckMove.API.BLL.Helper
 
         public double Rate { get; private set; }
 
+        public double TotHours { get; private set; }
+
+        public double RoundedHours { get; private set; }
+
         public string CalculationBreakdown { get; private set; } = string.Empty;
 
-        public LegPaymentTransact(Leg leg, PaymentRates rates)
+        public int Grade4Hourlyrate = 500;
+
+        public LegPaymentTransactA(Leg leg, PaymentRates rates)
         {
             if (leg == null) throw new ArgumentNullException(nameof(leg));
             _rates = rates ?? throw new ArgumentNullException(nameof(rates));
 
             LegNumber = leg.LegNumber;
             TotalKm = leg.TotalDistance ?? 0;
-            LegDay = GetLegDay(leg.StartTime);
+            //LegDay = GetLegDay(leg.StartTime);
             IsCommercialLoad = leg.Job.IsCommercialLoad;
 
             // Count hookups
@@ -45,7 +51,7 @@ namespace TruckMove.API.BLL.Helper
             Hookup4RACount = leg.Trailers.Count(h => h.HookupType == (int)HookUpTypeEnum.FOUR_RA);
 
             // Determine LegType
-            LegType = TotalKm > _rates.Max_fixed_job_KMs ? "PerKM" : "Fixed";
+            LegType = TotalKm > Grade4Hourlyrate ? "PerKM" : "Hourly";
             if (leg.Job.IsDangerousGoods)
             {
                 LegType = "PerKMDangerousGoods";
@@ -54,36 +60,58 @@ namespace TruckMove.API.BLL.Helper
             SetRate();
         }
 
-        private static string GetLegDay(DateTime legDay) => legDay.DayOfWeek switch
+        //private static string GetLegDay(DateTime legDay) => legDay.DayOfWeek switch
+        //{
+        //    DayOfWeek.Saturday => "Saturday",
+        //    DayOfWeek.Sunday => "Sunday",
+        //    _ => "WeekDay"
+        //};
+        private void SetTotalHours(DateTime startTime, DateTime endTime)
         {
-            DayOfWeek.Saturday => "Saturday",
-            DayOfWeek.Sunday => "Sunday",
-            _ => "WeekDay"
-        };
-
+            TotHours = (endTime - startTime).TotalHours;
+            if(TotHours<4)
+            {
+                RoundedHours = 4;
+            }
+            else
+            {
+                RoundedHours = TotHours;
+            }
+        }
         private void SetRate()
         {
-            bool isPerKM = LegType == "PerKM";
-            bool isDangerousGoods = LegType == "PerKMDangerousGoods";
+           // bool isPerKM = LegType == "PerKM";
+           // bool isDangerousGoods = LegType == "PerKMDangerousGoods";
 
-            Rate = LegDay switch
+
+            Rate = LegType switch
             {
-                "Saturday" => isPerKM ? _rates.Saturday_KM_rate :
-                             isDangerousGoods ? _rates.Dangerous_Goods_day_Rate :
-                             _rates.Saturday_Fixed_rate,
+                "PerKM" => _rates.PerKmRate,
 
-                "Sunday" => isPerKM ? _rates.Sunday_KM_rate :
-                           isDangerousGoods ? _rates.Dangerous_Goods_day_Rate :
-                           _rates.Sunday_Fixed_rate,
+                "Hourly" => _rates.Grade_4_Hourly_rate,
 
-                "Holiday" => isPerKM ? _rates.Public_holiday_KM_rate :
-                            isDangerousGoods ? _rates.Dangerous_Goods_day_Rate :
-                            _rates.Public_holiday_Fixed_rate,
-
-                _ => isPerKM ? _rates.PerKmRate :
-                     isDangerousGoods ? _rates.Dangerous_Goods_day_Rate :
-                     _rates.Fixed_job_rate
+                "PerKMDangerousGoods" => _rates.Dangerous_Goods_day_Rate,
+                _ => throw new NotImplementedException()
             };
+
+            //Rate = LegDay switch
+            //{
+            //    "Saturday" => isPerKM ? _rates.Saturday_KM_rate :
+            //                 isDangerousGoods ? _rates.Dangerous_Goods_day_Rate :
+            //                 _rates.Saturday_Fixed_rate,
+
+            //    "Sunday" => isPerKM ? _rates.Sunday_KM_rate :
+            //               isDangerousGoods ? _rates.Dangerous_Goods_day_Rate :
+            //               _rates.Sunday_Fixed_rate,
+
+            //    "Holiday" => isPerKM ? _rates.Public_holiday_KM_rate :
+            //                isDangerousGoods ? _rates.Dangerous_Goods_day_Rate :
+            //                _rates.Public_holiday_Fixed_rate,
+
+            //    _ => isPerKM ? _rates.PerKmRate :
+            //         isDangerousGoods ? _rates.Dangerous_Goods_day_Rate :
+            //         _rates.Fixed_job_rate
+            //};
         }
 
         //public double Total => LegType switch
@@ -110,18 +138,18 @@ namespace TruckMove.API.BLL.Helper
 
         //public double HookupTotal => HookupSingleTotal + HookupDoubleTotal + Hookup4RATotal;
 
-        public double FixedJobTotal
-        {
-            get
-            {
-                if (LegType == "Fixed")
-                {
-                    AppendBreakdown($"Fixed Job Rate: {Rate:C}");
-                    return Rate;
-                }
-                return 0;
-            }
-        }
+        //public double FixedJobTotal
+        //{
+        //    get
+        //    {
+        //        if (LegType == "Fixed")
+        //        {
+        //            AppendBreakdown($"Fixed Job Rate: {Rate:C}");
+        //            return Rate;
+        //        }
+        //        return 0;
+        //    }
+        //}
 
         public double PerKmTotal
         {
@@ -131,6 +159,19 @@ namespace TruckMove.API.BLL.Helper
                 {
                     double total = Rate * TotalKm;
                     AppendBreakdown($"Per KM Rate: {Rate} x {TotalKm} km = {total:C}");
+                    return total;
+                }
+                return 0;
+            }
+        }
+        public double HourlyTotal
+        {
+            get
+            {
+                if (LegType == "Hourly")
+                {                                  
+                    double total = Rate * TotHours;
+                    AppendBreakdown($"Hourly Rate: {Rate:C} x {TotHours} hours = {total:C}");
                     return total;
                 }
                 return 0;
@@ -216,7 +257,7 @@ namespace TruckMove.API.BLL.Helper
                 double total = LegType switch
                 {
                     "PerKM" => PerKmTotal + CommercialLoadTotal + HookupTotal,
-                    "Fixed" => FixedJobTotal + CommercialLoadTotal + HookupTotal,
+                    "Hourly" => HourlyTotal + CommercialLoadTotal + HookupTotal,
                     "PerKMDangerousGoods" => DangerousGoodsTotal + HookupTotal,
                     _ => 0
                 };

@@ -85,7 +85,7 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
         public async Task<List<Leg>> GetUnpaidLegDataForDriver(int jobId, int driverId)
         {
             return await _legdbSet
-                .Where(l => l.JobId == jobId && l.DriverId == driverId && l.PaymentStatus == (int)PaymentStatusEnum.QAPending)
+                .Where(l => l.JobId == jobId && l.DriverId == driverId && (l.PaymentStatus == (int)PaymentStatusEnum.QAPending || l.PaymentStatus == (int)PaymentStatusEnum.QADone))
                 .Include(l => l.Job) // Include the Job entity
                 .Include(l=>l.Trailers) // Include the Trailers entity
                 .ToListAsync();

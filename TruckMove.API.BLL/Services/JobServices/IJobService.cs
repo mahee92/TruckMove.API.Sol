@@ -41,7 +41,7 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId);
 
-        Task<Response> ChangeLegPaymentStatus(int legId, PaymentStatusEnum status, int userId);
+        
         Task<Response> IsDriverChangeAllowed(int jobId);
 
         Task<Response> ReportDelay(int legId, int jobId,string endLocation, string apiKey, int userId);

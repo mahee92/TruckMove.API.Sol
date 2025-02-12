@@ -980,38 +980,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             return response;
 
         }
-        public async Task<Response> ChangeLegPaymentStatus(int legId, PaymentStatusEnum status, int userId)
-        {
-            Response response = new Response();
-            try
-            {
-
-                var leg = await _repositoryLeg.GetAsync(legId);
-
-                if (leg == null)
-                {
-                    response.Success = false;
-                    response.ErrorType = ErrorCode.NotFound;
-                    response.ErrorMessage = ErrorMessages.NotFound;
-                }
-                else
-                {
-                    leg.PaymentStatus = (int)status;
-                    leg.LastModifiedDate = DateTime.Now;
-                    leg.UpdatedById = userId;
-                    response.Success = true;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                response.Success = false;
-                response.ErrorType = ErrorCode.dbError;
-                response.ErrorMessage = ex.Message;
-            }
-            return response;
-
-        }
+        
         public async Task<Response<LegDto>> LegPostPutAsync(LegDto leg, string apiKey, int userId)
         {
             Response<LegDto> response = new Response<LegDto>();
