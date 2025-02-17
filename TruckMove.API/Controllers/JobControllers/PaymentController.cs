@@ -44,28 +44,25 @@ namespace TruckMove.API.Controllers.JobControllers
             _mySettings = mySettings.Value;
             _jobService = jobService;
 
-
-
-
-
         }
-        [HttpGet("/Odata/PayemntQAList")]
+        [HttpGet("/Odata/GetQAPendingList")]
         [EnableQuery]
 
-        public async Task<IActionResult> PayemntQAList()
+        public async Task<IActionResult> GetQAPendingList()
         {
-            var query = _PaymentService.GetAllUnpaidPaymentsForDrivers();
+            var query = _PaymentService.GetQAPendingList();
             return Ok(query);
         }
-        [HttpGet("/GetCalculatedLegPaymentsAsync")]
-        public async Task<IActionResult> GetCalculatedLegPaymentsAsync(int jobId, int driverId)
+        [HttpGet("/GetDetails")]
+        public async Task<IActionResult> GetDetails(int jobId, int driverId)
         {
-            var query = await _PaymentService.GetCalculatedLegPaymentsAsync(jobId, driverId);
+           
+            var query = await _PaymentService.GetDetails(jobId, driverId);
             return Ok(query);
         }
 
         [HttpPost("/ChangePaymentStatus")]
-        public async Task<IActionResult> ChangePaymentStatus(bool QADone, bool Verified, bool PaymentDone, bool isLeg, bool isDelay, bool ispurchase, bool isPublicTransport, int id)
+        public async Task<IActionResult> ChangePaymentStatus(bool QADone, bool Verified, bool PaymentDone, bool isLeg, bool isDelay, bool isPublicTransport, int id)
         {
             PaymentStatusEnum status = PaymentStatusEnum.QAPending;
             if (QADone)
@@ -81,7 +78,7 @@ namespace TruckMove.API.Controllers.JobControllers
                 status = PaymentStatusEnum.PaymentDone;
             }
 
-            var response = await _PaymentService.ChangeLegPaymentStatus(entityId: id, status: status, userId: Convert.ToInt32(_authUserService.GetUserId()),isLeg,isDelay, ispurchase, isPublicTransport);
+            var response = await _PaymentService.ChangePaymentStatus(entityId: id, status: status, userId: Convert.ToInt32(_authUserService.GetUserId()),isLeg,isDelay, isPublicTransport);
             if (response.Success)
             {
 

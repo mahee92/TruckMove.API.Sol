@@ -13,14 +13,14 @@ namespace TruckMove.API.BLL.Services.PaymentServices
     public interface IPaymentService
     {
 
-        IQueryable<DriverJobPaymentVM> GetAllUnpaidPaymentsForDrivers();
-        Task<object> GetCalculatedLegPaymentsAsync(int jobId, int driverId);
+        IQueryable<DriverJobPaymentVM> GetQAPendingList();
+     
 
 
-        Task<Response> ChangeLegPaymentStatus(int entityId, PaymentStatusEnum status, int userId, bool isLeg, bool isDelay, bool isPurchase, bool isPublicTransport);
+         Task<Response> ChangePaymentStatus(int entityId, PaymentStatusEnum status, int userId, bool isLeg, bool isDelay, bool isPublicTransport);
 
 
-
+        Task<object> GetDetails(int jobId, int driverId);
 
     }
 }

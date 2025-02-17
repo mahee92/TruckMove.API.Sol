@@ -26,6 +26,9 @@
 
         public double Grade_4_Hourly_rate { get; set; }
 
+        public double Delay_hourly_rate { get; set; }
+        public double Public_transport_hourly_Rate { get; set; }
+
 
 
 

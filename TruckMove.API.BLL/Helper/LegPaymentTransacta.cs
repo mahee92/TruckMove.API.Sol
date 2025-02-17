@@ -30,6 +30,7 @@ namespace TruckMove.API.BLL.Helper
         public double TotHours { get; private set; }
 
         public double RoundedHours { get; private set; }
+        public string RoundedHoursSring { get; private set; }
 
         public string CalculationBreakdown { get; private set; } = string.Empty;
 
@@ -66,10 +67,12 @@ namespace TruckMove.API.BLL.Helper
             if(TotHours<4)
             {
                 RoundedHours = 4;
+                RoundedHoursSring = $"4 ( {TotHours} rounded)";
             }
             else
             {
                 RoundedHours = TotHours;
+                RoundedHoursSring = RoundedHours.ToString();
             }
         }
         private void SetRate()
