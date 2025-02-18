@@ -22,6 +22,6 @@ namespace TruckMove.API.DAL.Repositories
         Task<List<TaskStatus>> GetAllTasStatuses();
 
         Task<List<Rates>> GetAllRates();
-
+        Task<List<PaymentStatus>> GetAllPaymentStatus();
     }
 }

@@ -61,7 +61,7 @@ namespace TruckMove.API.Controllers
         {
             var roles = new List<RoleEnum> { RoleEnum.OpsManager };
             var response = await _masterdataService.GetUsersByRoleAsync(roles);
-           
+
             if (response.Success)
             {
                 return Ok(response.Objects);
@@ -99,7 +99,7 @@ namespace TruckMove.API.Controllers
             }
             else
             {
-               
+
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
@@ -146,8 +146,22 @@ namespace TruckMove.API.Controllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+        [HttpGet("/GetPaymentStatuses")]
+        public async Task<IActionResult> GetPaymentStatuses()
+        {
+            var response = await _masterdataService.GetAllPaymentStatus();
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
         [HttpGet("/GetRates")]
-      //  [Authorize(Roles = "Administrator")]
+        //  [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetRates()
         {
             var response = await _masterdataService.GetAllRates();
