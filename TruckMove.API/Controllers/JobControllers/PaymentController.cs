@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.Extensions.Options;
 using TruckMove.API.BLL.Helper;
 using TruckMove.API.BLL.Models.JobDTOs;
+using TruckMove.API.BLL.Models.PaymentDto;
 using TruckMove.API.BLL.Models.Primary;
 using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Models.VehicleDtos;
@@ -53,6 +54,17 @@ namespace TruckMove.API.Controllers.JobControllers
             var query = _PaymentService.GetQAPendingList();
             return Ok(query);
         }
+
+        [HttpGet("/Odata/GetPayemntQADoneList")]
+        [EnableQuery]
+        public async Task<IActionResult> GetPayemntQADoneList()
+        {
+            var query = _PaymentService.GetPayemntQADoneList();
+            return Ok(query);
+        }
+
+
+
         [HttpGet("/GetDetails")]
         public async Task<IActionResult> GetDetails(int jobId, int driverId)
         {
@@ -62,23 +74,11 @@ namespace TruckMove.API.Controllers.JobControllers
         }
 
         [HttpPost("/ChangePaymentStatus")]
-        public async Task<IActionResult> ChangePaymentStatus(bool QADone, bool Verified, bool PaymentDone, bool isLeg, bool isDelay, bool isPublicTransport, int id)
+        public async Task<IActionResult> ChangePaymentStatus([FromBody] PaymentStatusDTO status)
         {
-            PaymentStatusEnum status = PaymentStatusEnum.QAPending;
-            if (QADone)
-            {
-                status = PaymentStatusEnum.QADone;
-            }
-            else if (Verified)
-            {
-                status = PaymentStatusEnum.Verified;
-            }
-            else if (PaymentDone)
-            {
-                status = PaymentStatusEnum.PaymentDone;
-            }
+            
 
-            var response = await _PaymentService.ChangePaymentStatus(entityId: id, status: status, userId: Convert.ToInt32(_authUserService.GetUserId()),isLeg,isDelay, isPublicTransport);
+            var response = await _PaymentService.ChangePaymentStatus(status, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 

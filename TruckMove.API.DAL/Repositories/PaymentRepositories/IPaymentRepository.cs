@@ -11,8 +11,11 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
     public interface IPaymentRepository
     {
        
-        public IQueryable<DriverJobPaymentVM> GetQAPendingList();
-       
+        IQueryable<DriverJobPaymentVM> GetQAPendingList();
+        IQueryable<DriverJobPaymentVM> GetPayemntQADoneList();
+
+
+
         Task<List<DelayDriver>> GetUnpaidDelaysForDriver(int jobId, int driverId);
         Task<List<Leg>> GetUnpaidLegDataForDriver(int jobId, int driverId);
 

@@ -7,12 +7,11 @@ using TruckMove.API.DAL.VMmodels;
 using TruckMove.API.BLL.Helper;
 using static TruckMove.API.DAL.MasterData.MasterData;
 using TruckMove.API.DAL.Models;
-
-
+using TruckMove.API.BLL.Models.PaymentDto;
 
 namespace TruckMove.API.BLL.Services.PaymentServices
 {
-    public class PaymentService :IPaymentService
+    public class PaymentService : IPaymentService
     {
         private readonly IMapper _mapper;
         private readonly IPaymentRepository _paymentRepository;
@@ -46,6 +45,10 @@ namespace TruckMove.API.BLL.Services.PaymentServices
         {
             return _paymentRepository.GetQAPendingList();
 
+        }
+        public IQueryable<DriverJobPaymentVM> GetPayemntQADoneList()
+        {
+            return _paymentRepository.GetPayemntQADoneList();
         }
         #endregion
 
@@ -243,9 +246,7 @@ namespace TruckMove.API.BLL.Services.PaymentServices
         #endregion 
 
         #region Status Change
-        public async Task<Response> ChangePaymentStatus(
-            int entityId, PaymentStatusEnum status, int userId,
-            bool isLeg, bool isDelay, bool isPublicTransport)
+        public async Task<Response> ChangePaymentStatus(PaymentStatusDTO PaymentStatusDTO, int userId)
         {
             Response response = new Response();
 
@@ -253,12 +254,12 @@ namespace TruckMove.API.BLL.Services.PaymentServices
             {
                 object entity = null;
 
-                if (isLeg)
+                if (PaymentStatusDTO.isLeg)
                 {
-                    entity = await _repositoryLeg.GetAsync(entityId);
+                    entity = await _repositoryLeg.GetAsync(PaymentStatusDTO.Id);
                     if (entity is Leg leg)
                     {
-                        leg.PaymentStatus = (int)status;
+                        leg.PaymentStatus = (int)PaymentStatusDTO.StatusId;
                         leg.LastModifiedDate = DateTime.Now;
                         leg.UpdatedById = userId;
                         var res = await _repositoryLeg.UpdateAsync(leg);
@@ -266,12 +267,12 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                         response.Success = true;
                     }
                 }
-                else if(isPublicTransport)
+                else if(PaymentStatusDTO.isPublicTransport)
                 {
-                    entity = await _repositoryPublicTransport.GetAsync(entityId);
+                    entity = await _repositoryPublicTransport.GetAsync(PaymentStatusDTO.Id);
                     if (entity is PublicTransport publicTransport)
                     {
-                        publicTransport.PaymentStatus = (int)status;
+                        publicTransport.PaymentStatus = (int)PaymentStatusDTO.StatusId;
                         publicTransport.LastModifiedDate = DateTime.Now;
                         publicTransport.UpdatedById = userId;
                         var res = await _repositoryPublicTransport.UpdateAsync(publicTransport);
@@ -279,12 +280,12 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                         response.Success = true;
                     }
                 }
-                else if (isDelay)
+                else if (PaymentStatusDTO.isDelay)
                 {
-                    entity = await _paymentRepository.GetDelayDriverAsync(entityId);
+                    entity = await _paymentRepository.GetDelayDriverAsync(PaymentStatusDTO.Id);
                     if (entity is DelayDriver delay)
                     {
-                        delay.PaymentStatus = (int)status;
+                        delay.PaymentStatus = (int)PaymentStatusDTO.StatusId;
                         //delay.LastModifiedDate = DateTime.Now;
                         //delay.UpdatedById = userId;
                         var res = await _paymentRepository.DelayDriverUpdateAsync(delay);
@@ -312,6 +313,8 @@ namespace TruckMove.API.BLL.Services.PaymentServices
             
             return response;
         }
+
+     
         #endregion
 
 
