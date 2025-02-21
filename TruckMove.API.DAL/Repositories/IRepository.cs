@@ -14,7 +14,9 @@ namespace TruckMove.API.DAL.Repositories
         Task<List<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities);
                     
         Task<TEntity> UpdateAsync(TEntity entity);
-             
+
+        
+
         Task DeleteAsync(TEntity entity);
         Task DeleteAsync(int id);
         Task DeleteByIdsAsync(IEnumerable<int> ids);

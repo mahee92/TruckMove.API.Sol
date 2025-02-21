@@ -32,7 +32,8 @@ using TruckMove.API.BLL.Models.PrimaryDTOs;
 using Microsoft.OData.UriParser;
 using TruckMove.API.DAL.Repositories.PaymentRepositories;
 using TruckMove.API.BLL.Services.PaymentServices;
-
+using Microsoft.AspNetCore.Mvc;
+using TruckMove.API.Controllers;
 
 internal class Program
 {
@@ -66,7 +67,7 @@ internal class Program
         app.Run();
         Log.CloseAndFlush();
     }
-   
+
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
         var modelBuilder = new ODataConventionModelBuilder();
@@ -89,7 +90,21 @@ internal class Program
                                   .AllowAnyHeader()
                                   .AllowAnyMethod());
         });
+        builder.Services.AddDistributedMemoryCache();
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30); // Session expires in 30 mins
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
+        builder.Services.Configure<JsonOptions>(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new DecimalJsonConverter());
+            options.JsonSerializerOptions.Converters.Add(new DoubleJsonConverter());
+        });
 
+        // Register IHttpClientFactory
+        builder.Services.AddHttpClient();
 
         // Configure app settings
         builder.Configuration
@@ -126,13 +141,13 @@ internal class Program
         builder.Services.AddAutoMapper(cfg =>
         {
             var profile = new MapProfile();
-           cfg.AddProfile(profile);
+            cfg.AddProfile(profile);
             //cfg.CreateJsonDataReaderMap<PreDepartureChecklistDto>();
             profile.CreateGenericMap<UserInputDto, User>();
             profile.CreateGenericMap<User, UserOutputDto>();
 
 
-            
+
             profile.CreateGenericMap<Role, RoleDto>();
             profile.CreateGenericMap<Company, CompanyDto>();
             profile.CreateGenericMap<CompanyDto, Company>();
@@ -148,17 +163,17 @@ internal class Program
             profile.CreateGenericMap<Job, JobDto>();
             profile.CreateGenericMap<VehicleDto, Vehicle>();
 
-           
+
 
             profile.CreateGenericMap<WayPoint, WayPointDto>();
-           
+
             profile.CreateGenericMap<Note, NoteDto>();
             profile.CreateGenericMap<NoteDto, Note>();
             profile.CreateGenericMap<ImageDto, Image>();
             profile.CreateGenericMap<Image, ImageDto>();
             profile.CreateGenericMap<TrailerDto, Trailer>();
             profile.CreateGenericMap<Trailer, TrailerDto>();
-             profile.CreateGenericMap<TrailerOutPutDto, Trailer>();
+            profile.CreateGenericMap<TrailerOutPutDto, Trailer>();
             profile.CreateGenericMap<Trailer, TrailerOutPutDto>();
 
             profile.CreateGenericMap<TrailerStatus, TrailerStatusDto>();
@@ -176,10 +191,10 @@ internal class Program
             profile.CreateGenericMap<PermitsAndPlateDto, PermitsAndPlate>();
             profile.CreateGenericMap<PermitsAndPlateOutputDto, PermitsAndPlate>();
             profile.CreateGenericMap<PermitsAndPlate, PermitsAndPlateOutputDto>();
-            
+
             profile.CreateGenericMap<AttachmentDto, Attachment>();
             profile.CreateGenericMap<Attachment, AttachmentDto>();
-            
+
             profile.CreateGenericMap<Accommodation, AccommodationDto>();
             profile.CreateGenericMap<AccommodationDto, Accommodation>();
             profile.CreateGenericMap<Accommodation, AccommodationOutputDto>();
@@ -187,7 +202,7 @@ internal class Program
 
             profile.CreateGenericMap<PublicTransport, PublicTransportDto>();
             profile.CreateGenericMap<PublicTransportDto, PublicTransport>();
-          
+
 
             profile.CreateGenericMap<PurchaseDto, Purchase>();
             profile.CreateGenericMap<Purchase, PurchaseDto>();
@@ -233,7 +248,7 @@ internal class Program
                 ValidAudience = builder.Configuration.GetValue<string>("JwtSettings:Audience"),
                 IssuerSigningKey = new SymmetricSecurityKey(key)
             };
-        });
+       });
 
         builder.Services.AddScoped<IAuthUserService, AuthUserService>();
         builder.Services.AddSingleton<JwtTokenGenerator>();
@@ -245,23 +260,23 @@ internal class Program
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
 
-          //  c.MapType<Dictionary<JobStatusEnum, bool>>(() => new OpenApiSchema
-          //  {
-          //      Type = "object",
-          //      AdditionalProperties = new OpenApiSchema
-          //      {
-          //          Type = "boolean"
-          //      },
-          //      Properties = Enum.GetValues(typeof(JobStatusEnum))
-          //.Cast<JobStatusEnum>()
-          //.ToDictionary(
-          //    status => status.ToString(),
-          //    status => new OpenApiSchema
-          //    {
-          //        Type = "boolean",
-          //        Example = new OpenApiBoolean(false) // Set default value
-          //    })
-          //  });
+            //  c.MapType<Dictionary<JobStatusEnum, bool>>(() => new OpenApiSchema
+            //  {
+            //      Type = "object",
+            //      AdditionalProperties = new OpenApiSchema
+            //      {
+            //          Type = "boolean"
+            //      },
+            //      Properties = Enum.GetValues(typeof(JobStatusEnum))
+            //.Cast<JobStatusEnum>()
+            //.ToDictionary(
+            //    status => status.ToString(),
+            //    status => new OpenApiSchema
+            //    {
+            //        Type = "boolean",
+            //        Example = new OpenApiBoolean(false) // Set default value
+            //    })
+            //  });
 
             // Add JWT Authentication
             var securityScheme = new OpenApiSecurityScheme
@@ -315,7 +330,7 @@ internal class Program
 
             c.AddSecurityRequirement(securityRequirement);
 
-           
+
         });
 
         builder.Services.AddEndpointsApiExplorer();
@@ -326,6 +341,8 @@ internal class Program
         builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
         builder.Services.Configure<MySettings>(builder.Configuration.GetSection("MySettings"));
         builder.Services.Configure<GoogleMapSettings>(builder.Configuration.GetSection("GoogleMapSettings"));
+        builder.Services.Configure<XeroConfiguration>(builder.Configuration.GetSection("Xero"));
+
 
 
     }
@@ -344,7 +361,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<Contact>, Repository<Contact>>();
         builder.Services.AddScoped<IRepository<User>, Repository<User>>();
         builder.Services.AddScoped<IRepository<Job>, Repository<Job>>();
-        builder.Services.AddScoped<IRepository<Vehicle>, Repository<Vehicle>>();        
+        builder.Services.AddScoped<IRepository<Vehicle>, Repository<Vehicle>>();
         builder.Services.AddScoped<IRepository<JobContact>, Repository<JobContact>>();
         builder.Services.AddScoped<IRepository<Checklist>, Repository<Checklist>>();
         builder.Services.AddScoped<IRepository<Note>, Repository<Note>>();
@@ -406,14 +423,14 @@ internal class Program
         app.UseMiddleware<UserInfoMiddleware>();
         // Configure OData
         // Configure OData (Uncomment the following lines to add OData support)
-        
+
         //var modelBuilder = new ODataConventionModelBuilder(app.Services);
         //modelBuilder.EntitySet<Product>("Products");
         //app.UseEndpoints(endpoints =>
         //{
         //    endpoints.MapODataRoute("odata", "odata", modelBuilder.GetEdmModel());
         //});
-
+        app.UseSession();
         app.MapControllers();
 
     }

@@ -92,7 +92,7 @@ namespace TruckMove.API.DAL.Repositories
             await updateJob(entity);
             return entity;
         }
-
+      
         public async Task DeleteAsync(TEntity entity)
         {
             _context.Entry(entity).State = EntityState.Modified;

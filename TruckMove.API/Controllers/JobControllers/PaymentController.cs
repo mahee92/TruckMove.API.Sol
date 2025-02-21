@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.Extensions.Options;
@@ -15,6 +16,7 @@ using TruckMove.API.BLL.Services.Primary;
 using TruckMove.API.Controllers.Primary;
 using TruckMove.API.Helper;
 using TruckMove.API.Settings;
+using Xero.NetStandard.OAuth2.Config;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static TruckMove.API.DAL.MasterData.MasterData;
 
@@ -32,18 +34,14 @@ namespace TruckMove.API.Controllers.JobControllers
 
         private readonly IAuthUserService _authUserService;
         private readonly IPaymentService _PaymentService;
-        private readonly MySettings _mySettings;
-        private readonly IJobService _jobService;
 
 
 
-        public PaymentController(IAuthUserService authUserService, IPaymentService PaymentService, IOptions<MySettings> mySettings, IOptions<GoogleMapSettings> googleMapSettings, IJobService jobService)
+        public PaymentController(IAuthUserService authUserService, IPaymentService PaymentService, IOptions<MySettings> mySettings, IOptions<GoogleMapSettings> googleMapSettings, IJobService jobService, IOptions<XeroConfiguration> xeroConfig)
         {
 
             _authUserService = authUserService;
             _PaymentService = PaymentService;
-            _mySettings = mySettings.Value;
-            _jobService = jobService;
 
         }
         [HttpGet("/Odata/GetQAPendingList")]
@@ -51,15 +49,15 @@ namespace TruckMove.API.Controllers.JobControllers
 
         public async Task<IActionResult> GetQAPendingList()
         {
-            var query = _PaymentService.GetQAPendingList();
+            var query =  _PaymentService.GetQAPendingList(Convert.ToInt32(_authUserService.GetUserId()));
             return Ok(query);
         }
 
-        [HttpGet("/Odata/GetPayemntQADoneList")]
+        [HttpGet("/Odata/GetPayemntList")]
         [EnableQuery]
-        public async Task<IActionResult> GetPayemntQADoneList()
+        public async Task<IActionResult> GetPayemntList(int status)
         {
-            var query = _PaymentService.GetPayemntQADoneList();
+            var query =  _PaymentService.GetPayemntList(status, Convert.ToInt32(_authUserService.GetUserId()));
             return Ok(query);
         }
 
@@ -76,19 +74,32 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpPost("/ChangePaymentStatus")]
         public async Task<IActionResult> ChangePaymentStatus([FromBody] PaymentStatusDTO status)
         {
+            Response response = null;
+            if ( (PaymentStatusEnum)status.StatusId == PaymentStatusEnum.Verified || (PaymentStatusEnum)status.StatusId == PaymentStatusEnum.PaymentDone)
+            {
+                
+                response = await _PaymentService.VerifyOrPayPayment(status.JobId??-1,status.DriverId??-1, Convert.ToInt32(_authUserService.GetUserId()), (int)status.StatusId);
+               
+            }
+            else
+            {
+                 response = await _PaymentService.ChangePaymentStatus(status, Convert.ToInt32(_authUserService.GetUserId()));
+                
+            }
             
-
-            var response = await _PaymentService.ChangePaymentStatus(status, Convert.ToInt32(_authUserService.GetUserId()));
             if (response.Success)
             {
 
-                return Ok();
+                return Ok(response.data);
             }
             else
             {
 
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
+
         }
+       
+
     }
 }

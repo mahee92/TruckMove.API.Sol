@@ -11,8 +11,8 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
     public interface IPaymentRepository
     {
        
-        IQueryable<DriverJobPaymentVM> GetQAPendingList();
-        IQueryable<DriverJobPaymentVM> GetPayemntQADoneList();
+        IQueryable<DriverJobPaymentVM> GetQAPendingList(int contoller);
+        public IQueryable<DriverJobPaymentVM> GetPayemntList(int status);
 
 
 
@@ -23,5 +23,9 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
 
         Task<DelayDriver> GetDelayDriverAsync(int entityId);
         Task<DelayDriver> DelayDriverUpdateAsync(DelayDriver entity);
+       
+
+        Task ExecuteInTransactionAsync(Func<Task> operations);
+        Task<List<T>> UpdateListAsync<T>(List<T> entities) where T : class;
     }
 }

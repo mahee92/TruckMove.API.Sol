@@ -10,7 +10,6 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
     {
         private readonly DbContext _context;
         private readonly DbSet<Leg> _legdbSet;
-        private readonly DbSet<Purchase> _purchaseSet;
         private readonly DbSet<PublicTransport> _publicTransportSet;
         private readonly DbSet<DelayDriver> _delayDriverSet;
         private readonly DbSet<Delay> _delaysSet;
@@ -22,7 +21,6 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
 
             _context = new TrukMoveContext(options);
             _legdbSet = _context.Set<Leg>();
-            _purchaseSet = _context.Set<Purchase>();
             _publicTransportSet = _context.Set<PublicTransport>();
             _delayDriverSet = _context.Set<DelayDriver>();
 
@@ -32,19 +30,14 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
 
         }
         #region Lists
-        public IQueryable<DriverJobPaymentVM> GetQAPendingList()
+        public IQueryable<DriverJobPaymentVM> GetQAPendingList(int controller)
         {
 
             var query = _jobSet
-               .Where(j => j.Status == (int)JobStatusEnum.Arrived || j.Status == (int)JobStatusEnum.InStore)
+               .Where(j => (j.Status == (int)JobStatusEnum.Arrived || j.Status == (int)JobStatusEnum.InStore) && j.Controller == controller)
                .SelectMany(j => _legdbSet
                    .Where(l => l.PaymentStatus == (int)PaymentStatusEnum.QAPending && l.JobId == j.Id)
                    .Select(l => new { l.JobId, l.DriverId, j.PickupLocation, j.DropOfLocation })
-               .Concat(
-                   _purchaseSet
-                   .Where(p => p.PaymentStatus == (int)PaymentStatusEnum.QAPending && p.Driver != null && p.JobId == j.Id && p.Status == (int)TaskStatusEnum.Completed)
-                   .Select(p => new { p.JobId, DriverId = p.Driver ?? 0, j.PickupLocation, j.DropOfLocation })
-               )
                .Concat(
                    _publicTransportSet
                    .Where(pt => pt.PaymentStatus == (int)PaymentStatusEnum.QAPending && pt.Driver != null && pt.JobId == j.Id && pt.Status == (int)TaskStatusEnum.Completed)
@@ -80,17 +73,13 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
         }
 
 
-        public IQueryable<DriverJobPaymentVM> GetPayemntQADoneList()
+        public IQueryable<DriverJobPaymentVM> GetPayemntList(int status)
         {
             var driverJobs = _jobSet
                 .Where(j => j.Status == (int)JobStatusEnum.Arrived || j.Status == (int)JobStatusEnum.InStore)
                 .SelectMany(j =>
                     _legdbSet.Where(l => l.JobId == j.Id)
                              .Select(l => new { j.Id, l.DriverId, j.PickupLocation, j.DropOfLocation })
-                    .Concat(
-                        _purchaseSet.Where(p => p.JobId == j.Id && p.Driver != null)
-                                    .Select(p => new { j.Id, DriverId = p.Driver ?? 0, j.PickupLocation, j.DropOfLocation })
-                    )
                     .Concat(
                         _publicTransportSet.Where(pt => pt.JobId == j.Id && pt.Driver != null)
                                            .Select(pt => new { j.Id, DriverId = pt.Driver ?? 0, j.PickupLocation, j.DropOfLocation })
@@ -107,12 +96,11 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
             // Ensure all related records for each Driver-Job combination are QADone
             var qaDoneDrivers = driverJobs
                 .Where(dj =>
-                    !_legdbSet.Any(l => l.JobId == dj.Id && l.DriverId == dj.DriverId && l.PaymentStatus != (int)PaymentStatusEnum.QADone) &&
-                    !_purchaseSet.Any(p => p.JobId == dj.Id && p.Driver == dj.DriverId && p.PaymentStatus != (int)PaymentStatusEnum.QADone) &&
-                    !_publicTransportSet.Any(pt => pt.JobId == dj.Id && pt.Driver == dj.DriverId && pt.PaymentStatus != (int)PaymentStatusEnum.QADone) &&
+                    !_legdbSet.Any(l => l.JobId == dj.Id && l.DriverId == dj.DriverId && l.PaymentStatus != status) &&         
+                    !_publicTransportSet.Any(pt => pt.JobId == dj.Id && pt.Driver == dj.DriverId && pt.PaymentStatus != status) &&
                     !_delayDriverSet.Any(dd => _delaysSet
                         .Where(d => d.JobId == dj.Id)
-                        .Any(d => d.Id == dd.DelayId && dd.DriverId == dj.DriverId && dd.PaymentStatus != (int)PaymentStatusEnum.QADone))
+                        .Any(d => d.Id == dd.DelayId && dd.DriverId == dj.DriverId && dd.PaymentStatus != status))
                 );
 
             var result = qaDoneDrivers
@@ -135,10 +123,6 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
 
 
         #endregion
-
-
-
-
 
         #region Details
         public async Task<List<DelayDriver>> GetUnpaidDelaysForDriver(int jobId, int driverId)
@@ -174,10 +158,25 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
                 .ToListAsync();
         }
 
-        #endregion 
+        #endregion
 
 
-
+        #region Verify
+        public async Task ExecuteInTransactionAsync(Func<Task> operations)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await operations();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw; // Re-throw the exception to be handled in the business layer
+            }
+        }
+        #endregion
 
         public async Task<DelayDriver> GetDelayDriverAsync(int entityId)
         {
@@ -190,9 +189,17 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
 
             return entity;
         }
+        public async Task<List<T>> UpdateListAsync<T>(List<T> entities) where T : class
+        {
+            foreach (var entity in entities)
+            {
+                _context.Entry(entity).State = EntityState.Modified;
+            }
 
+            await _context.SaveChangesAsync();
+            return entities;
+        }
 
-
-
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,7 +64,7 @@ namespace TruckMove.API.BLL.Helper
 
         private void SetTotalHours(DateTime startTime, DateTime endTime)
         {
-            TotHours = (endTime - startTime).TotalHours;
+            TotHours = Math.Round((endTime - startTime).TotalHours, 2);
             if(TotHours<4)
             {
                 RoundedHours = 4;

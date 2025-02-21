@@ -14,12 +14,14 @@ namespace TruckMove.API.Controllers
         
         private readonly MySettings _mySettings;
         private readonly IAuthUserService _authUserService;
+        private readonly XeroConfiguration _xeroConfig;
 
-        public meController(IOptions<MySettings> mySettings, IAuthUserService authUserService)
+        public meController(IOptions<MySettings> mySettings, IAuthUserService authUserService,IOptions<XeroConfiguration> xeroConfig)
         {
             
             _mySettings = mySettings.Value;
             _authUserService = authUserService;
+            _xeroConfig = xeroConfig.Value;
         }
         [HttpGet]
         public async Task<IActionResult> me()

@@ -8,6 +8,8 @@ using TruckMove.API.BLL.Helper;
 using static TruckMove.API.DAL.MasterData.MasterData;
 using TruckMove.API.DAL.Models;
 using TruckMove.API.BLL.Models.PaymentDto;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace TruckMove.API.BLL.Services.PaymentServices
 {
@@ -41,14 +43,23 @@ namespace TruckMove.API.BLL.Services.PaymentServices
 
 
         #region Lists
-        public IQueryable<DriverJobPaymentVM> GetQAPendingList()
+        public IQueryable<DriverJobPaymentVM> GetQAPendingList(int controller)
         {
-            return _paymentRepository.GetQAPendingList();
+            return _paymentRepository.GetQAPendingList(controller);
 
         }
-        public IQueryable<DriverJobPaymentVM> GetPayemntQADoneList()
+        public IQueryable<DriverJobPaymentVM> GetPayemntList(int status,int controller)
         {
-            return _paymentRepository.GetPayemntQADoneList();
+            if(status == (int)PaymentStatusEnum.QAPending)
+            {
+                return _paymentRepository.GetQAPendingList(controller);
+            }
+            else
+            {
+                return _paymentRepository.GetPayemntList(status);
+            }
+
+           
         }
         #endregion
 
@@ -172,7 +183,7 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                     rates.PerKmRate,
 
 
-
+                    
                     payment.HourlyTotal,
                     payment.RoundedHoursSring,
                     rates.Grade_4_Hourly_rate,
@@ -263,7 +274,7 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                         leg.LastModifiedDate = DateTime.Now;
                         leg.UpdatedById = userId;
                         var res = await _repositoryLeg.UpdateAsync(leg);
-                        response.data = ((PaymentStatusEnum)res.PaymentStatus).ToString();
+                        response.data = res.PaymentStatus.ToString();
                         response.Success = true;
                     }
                 }
@@ -276,7 +287,7 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                         publicTransport.LastModifiedDate = DateTime.Now;
                         publicTransport.UpdatedById = userId;
                         var res = await _repositoryPublicTransport.UpdateAsync(publicTransport);
-                        response.data = ((PaymentStatusEnum)res.PaymentStatus).ToString();
+                        response.data = res.PaymentStatus.ToString();
                         response.Success = true;
                     }
                 }
@@ -289,7 +300,7 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                         //delay.LastModifiedDate = DateTime.Now;
                         //delay.UpdatedById = userId;
                         var res = await _paymentRepository.DelayDriverUpdateAsync(delay);
-                        response.data = ((PaymentStatusEnum)res.PaymentStatus).ToString();
+                        response.data = res.PaymentStatus.ToString();
                         response.Success = true;
                     }
                 }
@@ -314,7 +325,60 @@ namespace TruckMove.API.BLL.Services.PaymentServices
             return response;
         }
 
-     
+        public async Task<Response> VerifyOrPayPayment(int jobId, int driverId, int userId, int status)
+        {
+            Response response = new Response();
+
+            try
+            {
+               if(jobId == -1 || driverId == -1)
+                {
+                    response.Success = false;
+                    response.ErrorType = ErrorCode.NotFound;
+                    response.ErrorMessage = ErrorMessages.NotFound;
+                    return response;
+                }
+
+                await _paymentRepository.ExecuteInTransactionAsync(async () =>
+                {
+                    var legs = await _paymentRepository.GetUnpaidLegDataForDriver(jobId, driverId);
+                    var publicTransports = await _paymentRepository.GetUnpaidPublicTransportsDataForDriver(jobId, driverId);
+                    var delays = await _paymentRepository.GetUnpaidDelaysForDriver(jobId, driverId);
+
+                    foreach (var leg in legs)
+                    {
+                        leg.PaymentStatus = status;
+                        leg.LastModifiedDate = DateTime.Now;
+                        leg.UpdatedById = userId;
+                    }
+                    await _paymentRepository.UpdateListAsync(legs);
+
+                    foreach (var publicTransport in publicTransports)
+                    {
+                        publicTransport.PaymentStatus = status;
+                        publicTransport.LastModifiedDate = DateTime.Now;
+                        publicTransport.UpdatedById = userId;
+                    }
+                    await _paymentRepository.UpdateListAsync(publicTransports);
+
+                    foreach (var delay in delays)
+                    {
+                        delay.PaymentStatus = status;
+                    }
+                    await _paymentRepository.UpdateListAsync(delays);
+                });
+
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+
+            return response;
+        }
         #endregion
 
 

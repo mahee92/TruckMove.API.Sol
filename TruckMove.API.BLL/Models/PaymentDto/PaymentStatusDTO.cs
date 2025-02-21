@@ -15,5 +15,8 @@ namespace TruckMove.API.BLL.Models.PaymentDto
         public bool isDelay { get; set; }
         public bool isPublicTransport { get; set; }
 
+        public int? JobId { get; set; }
+        public int? DriverId { get; set; }
+
     }
 }
