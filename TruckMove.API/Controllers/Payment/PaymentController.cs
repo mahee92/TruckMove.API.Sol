@@ -20,13 +20,13 @@ using Xero.NetStandard.OAuth2.Config;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static TruckMove.API.DAL.MasterData.MasterData;
 
-namespace TruckMove.API.Controllers.JobControllers
+namespace TruckMove.API.Controllers.Payment
 {
     [ApiController]
     [Route("[controller]")]
 #if DEBUG
 #else
-    [Authorize(Roles = "Administrator,OpsManager,AdminTeam,PayrollTeam")]
+    [Authorize(Roles = "Administrator,OpsManager")]
 #endif
     public class PaymentController : ControllerBase
     {
@@ -49,7 +49,7 @@ namespace TruckMove.API.Controllers.JobControllers
 
         public async Task<IActionResult> GetQAPendingList()
         {
-            var query =  _PaymentService.GetQAPendingList(Convert.ToInt32(_authUserService.GetUserId()));
+            var query = _PaymentService.GetQAPendingList(Convert.ToInt32(_authUserService.GetUserId()));
             return Ok(query);
         }
 
@@ -57,7 +57,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [EnableQuery]
         public async Task<IActionResult> GetPayemntList(int status)
         {
-            var query =  _PaymentService.GetPayemntList(status, Convert.ToInt32(_authUserService.GetUserId()));
+            var query = _PaymentService.GetPayemntList(status, Convert.ToInt32(_authUserService.GetUserId()));
             return Ok(query);
         }
 
@@ -66,7 +66,7 @@ namespace TruckMove.API.Controllers.JobControllers
         [HttpGet("/GetDetails")]
         public async Task<IActionResult> GetDetails(int jobId, int driverId)
         {
-           
+
             var query = await _PaymentService.GetDetails(jobId, driverId);
             return Ok(query);
         }
@@ -75,18 +75,18 @@ namespace TruckMove.API.Controllers.JobControllers
         public async Task<IActionResult> ChangePaymentStatus([FromBody] PaymentStatusDTO status)
         {
             Response response = null;
-            if ( (PaymentStatusEnum)status.StatusId == PaymentStatusEnum.Verified || (PaymentStatusEnum)status.StatusId == PaymentStatusEnum.PaymentDone)
+            if (status.StatusId == PaymentStatusEnum.Verified || status.StatusId == PaymentStatusEnum.PaymentDone)
             {
-                
-                response = await _PaymentService.VerifyOrPayPayment(status.JobId??-1,status.DriverId??-1, Convert.ToInt32(_authUserService.GetUserId()), (int)status.StatusId);
-               
+
+                response = await _PaymentService.VerifyOrPayPayment(status.JobId ?? -1, status.DriverId ?? -1, Convert.ToInt32(_authUserService.GetUserId()), (int)status.StatusId);
+
             }
             else
             {
-                 response = await _PaymentService.ChangePaymentStatus(status, Convert.ToInt32(_authUserService.GetUserId()));
-                
+                response = await _PaymentService.ChangePaymentStatus(status, Convert.ToInt32(_authUserService.GetUserId()));
+
             }
-            
+
             if (response.Success)
             {
 
@@ -99,7 +99,7 @@ namespace TruckMove.API.Controllers.JobControllers
             }
 
         }
-       
+
 
     }
 }

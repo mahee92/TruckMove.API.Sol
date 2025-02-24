@@ -43,7 +43,7 @@ namespace TruckMove.API.BLL.Helper
             _rates = rates ?? throw new ArgumentNullException(nameof(rates));
 
             LegNumber = leg.LegNumber;
-            TotalKm = leg.TotalDistance ?? 0;
+            TotalKm = Math.Round(leg.TotalDistance ?? 0,2);
             IsCommercialLoad = leg.Job.IsCommercialLoad;
 
             // Count hookups
@@ -100,9 +100,9 @@ namespace TruckMove.API.BLL.Helper
             {
                 if (LegType == "PerKM")
                 {
-                    double total = Rate * TotalKm;
+                    double total = Math.Round(Rate * TotalKm,2);
                     AppendBreakdown($"Per KM Rate: {Rate} x {TotalKm} km = {total:C}");
-                    return total;
+                    return Math.Round(total,2);
                 }
                 return 0;
             }
@@ -113,7 +113,7 @@ namespace TruckMove.API.BLL.Helper
             {
                 if (LegType == "Hourly")
                 {                                  
-                    double total = Rate * RoundedHours;
+                    double total = Math.Round(Rate * RoundedHours,2);
                     AppendBreakdown($"Hourly Rate: {Rate:C} x {RoundedHours} hours = {total:C}");
                     return total;
                 }
@@ -129,7 +129,7 @@ namespace TruckMove.API.BLL.Helper
                 {
                     double total = Rate * TotalKm;
                     AppendBreakdown($"Dangerous Goods Per KM Rate: {Rate} x {TotalKm} km = {total:C}");
-                    return total;
+                    return Math.Round(total,2);
                 }
                 return 0;
             }
@@ -155,7 +155,7 @@ namespace TruckMove.API.BLL.Helper
             {
                 if (HookupSingleCount > 0)
                 {
-                    double total = HookupSingleCount * _rates.hookUp_Single;
+                    double total = Math.Round(HookupSingleCount * _rates.hookUp_Single,2);
                     AppendBreakdown($"Hookup Single: {HookupSingleCount} x {_rates.hookUp_Single:C} = {total:C}");
                     return total;
                 }
@@ -169,7 +169,7 @@ namespace TruckMove.API.BLL.Helper
             {
                 if (HookupDoubleCount > 0)
                 {
-                    double total = HookupDoubleCount * _rates.hookUp_Double;
+                    double total =Math.Round( HookupDoubleCount * _rates.hookUp_Double,2);
                     AppendBreakdown($"Hookup Double: {HookupDoubleCount} x {_rates.hookUp_Double:C} = {total:C}");
                     return total;
                 }
@@ -183,7 +183,7 @@ namespace TruckMove.API.BLL.Helper
             {
                 if (Hookup4RACount > 0)
                 {
-                    double total = Hookup4RACount * _rates.hookUp_4RA;
+                    double total = Math.Round(Hookup4RACount * _rates.hookUp_4RA,2);
                     AppendBreakdown($"Hookup 4RA: {Hookup4RACount} x {_rates.hookUp_4RA:C} = {total:C}");
                     return total;
                 }
@@ -191,7 +191,7 @@ namespace TruckMove.API.BLL.Helper
             }
         }
 
-        public double HookupTotal => HookupSingleTotal + HookupDoubleTotal + Hookup4RATotal;
+        public double HookupTotal => Math.Round(HookupSingleTotal + HookupDoubleTotal + Hookup4RATotal,2);
 
         public double Total
         {
@@ -206,7 +206,7 @@ namespace TruckMove.API.BLL.Helper
                 };
 
                 AppendBreakdown($"Total Payment: {total:C}");
-                return total;
+                return Math.Round(total,2);
             }
         }
 

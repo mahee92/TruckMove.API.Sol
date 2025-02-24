@@ -82,7 +82,7 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                              (double)delaysResult.delaygrandTotal +
                              (double)publicTransportsResult.publicTrasportgrandTotal;
 
-            return new { Legs = Legs, delays = delays, publicTransports= publicTransports,total= Total };
+            return new { Legs = Legs, delays = delays, publicTransports= publicTransports,total= Math.Round(Total,2) };
 
 
         }
@@ -129,18 +129,18 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                 d.Delay.StartTime,
                 d.Delay.EndTime,
                 DurationHours = d.Delay.StartTime.HasValue && d.Delay.EndTime.HasValue
-                                ? (d.Delay.EndTime.Value - d.Delay.StartTime.Value).TotalHours
+                                ? Math.Round( (d.Delay.EndTime.Value - d.Delay.StartTime.Value).TotalHours,2)
                                 : 0, // Handle null values
                 rates.Delay_hourly_rate,
                 Total = d.Delay.StartTime.HasValue && d.Delay.EndTime.HasValue
-                        ? (d.Delay.EndTime.Value - d.Delay.StartTime.Value).TotalHours * rates.Delay_hourly_rate
+                         ? Math.Round((d.Delay.EndTime.Value - d.Delay.StartTime.Value).TotalHours * rates.Delay_hourly_rate, 2)
                         : 0,
                 PaymentStatusText = ((PaymentStatusEnum)d.PaymentStatus).ToString(),
             }).ToList();
 
             double delayTotal = response.Sum(r => r.Total);
 
-            return new { DelayGroups = response, delaygrandTotal = delayTotal };
+            return new { DelayGroups = response, delaygrandTotal = Math.Round(delayTotal,2) };
         }
 
         public async Task<object> GetCalculatedLegPayments(int jobId, int driverId, PaymentRates rates)
@@ -222,7 +222,7 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                 };
             }).ToList();
 
-            return new { LegGroups = response, leggrandTotal= leggrandTotal };
+            return new { LegGroups = response, leggrandTotal= Math.Round(leggrandTotal,2) };
         }
 
         public async Task<object> GetCalculatedPublicTransportsPayments(int jobId, int driverId, PaymentRates rates)
@@ -240,18 +240,18 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                 d.DepartureAddress,
                 d.ArrivalAddress,
                 DurationHours = d.ArrivalDateTime.HasValue && d.DepartureDateTime.HasValue
-                                ? (d.ArrivalDateTime.Value - d.DepartureDateTime.Value).TotalHours
+                                ?Math.Round( (d.ArrivalDateTime.Value - d.DepartureDateTime.Value).TotalHours,2)
                                 : 0, // Handle null values
                 rates.Public_transport_hourly_Rate,
                 Total = d.ArrivalDateTime.HasValue && d.DepartureDateTime.HasValue
-                                ? (d.ArrivalDateTime.Value - d.DepartureDateTime.Value).TotalHours * rates.Public_transport_hourly_Rate
+                                ? Math.Round((d.ArrivalDateTime.Value - d.DepartureDateTime.Value).TotalHours * rates.Public_transport_hourly_Rate,2)
                                 : 0,
                 PaymentStatusText = ((PaymentStatusEnum)d.PaymentStatus).ToString()
             }).ToList();
 
             double total = response.Sum(r => r.Total);
 
-            return new { publicTrasportGroups = response, publicTrasportgrandTotal = total };
+            return new { publicTrasportGroups = response, publicTrasportgrandTotal = Math.Round(total,2) };
         }
 
         #endregion 
