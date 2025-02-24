@@ -22,7 +22,7 @@ namespace TruckMove.API.DAL.Models
             Purchases = new HashSet<Purchase>();
             Checklists = new HashSet<Checklist>();
             Delays = new HashSet<Delay>();
-
+            PaymentAdjustments = new HashSet<PaymentAdjustment>();
 
         }
 
@@ -88,6 +88,8 @@ namespace TruckMove.API.DAL.Models
        
         [NotMapped]
         public int QALegCount;
+
+        public virtual ICollection<PaymentAdjustment> PaymentAdjustments { get; set; }
 
 
     }

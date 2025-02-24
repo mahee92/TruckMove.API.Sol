@@ -101,5 +101,20 @@ namespace TruckMove.API.Controllers.Payment
         }
 
 
+        [HttpPost("/PaymentAjustments/Post")]
+        public async Task<IActionResult> PostAsync([FromBody] PaymentAdjustmentDTO paymentAdjustment)
+        {
+            var response = await _PaymentService.AddPaymentAjustments(paymentAdjustment, Convert.ToInt32(_authUserService.GetUserId()));
+            return Ok(response);
+        }
+
+        [HttpDelete("/PaymentAjustments/Delete")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            var response = await _PaymentService.DeletePaymentAjustment(id);
+            return Ok(response);
+        }
+
+
     }
 }

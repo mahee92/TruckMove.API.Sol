@@ -27,5 +27,11 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
 
         Task ExecuteInTransactionAsync(Func<Task> operations);
         Task<List<T>> UpdateListAsync<T>(List<T> entities) where T : class;
+        Task<PaymentAdjustment> AddPaymentAdjustmentAsync(PaymentAdjustment entity);
+
+        Task<List<PaymentAdjustment>> GetUnpaidPaymentAjustments(int jobId, int driverId);
+
+        Task DeletePaymentAdjustmentAsync(int id);
+
     }
 }

@@ -9,6 +9,7 @@ namespace TruckMove.API.DAL.dbFirst2
         {
             DelayDrivers = new HashSet<DelayDriver>();
             Legs = new HashSet<Leg>();
+            PaymentAdjustments = new HashSet<PaymentAdjustment>();
             PublicTransports = new HashSet<PublicTransport>();
             Purchases = new HashSet<Purchase>();
         }
@@ -18,6 +19,7 @@ namespace TruckMove.API.DAL.dbFirst2
 
         public virtual ICollection<DelayDriver> DelayDrivers { get; set; }
         public virtual ICollection<Leg> Legs { get; set; }
+        public virtual ICollection<PaymentAdjustment> PaymentAdjustments { get; set; }
         public virtual ICollection<PublicTransport> PublicTransports { get; set; }
         public virtual ICollection<Purchase> Purchases { get; set; }
     }

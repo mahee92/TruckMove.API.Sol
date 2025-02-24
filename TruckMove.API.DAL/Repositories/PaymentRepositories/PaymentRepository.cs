@@ -15,7 +15,7 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
         private readonly DbSet<Delay> _delaysSet;
         private readonly DbSet<User> _driverSet;
         private readonly DbSet<Job> _jobSet;
-
+        private readonly DbSet<PaymentAdjustment> _paymentAdjustments;
         public PaymentRepository(DbContextOptions<TrukMoveContext> options)
         {
 
@@ -27,6 +27,8 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
             _delaysSet = _context.Set<Delay>();
             _driverSet = _context.Set<User>();
             _jobSet = _context.Set<Job>();
+            _paymentAdjustments = _context.Set<PaymentAdjustment>();
+
 
         }
         #region Lists
@@ -199,7 +201,26 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
             await _context.SaveChangesAsync();
             return entities;
         }
+        public async Task<PaymentAdjustment> AddPaymentAdjustmentAsync(PaymentAdjustment entity)
+        {
+            await _paymentAdjustments.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
 
-        
+        }
+
+        public Task<List<PaymentAdjustment>> GetUnpaidPaymentAjustments(int jobId, int driverId)
+        {
+             return _paymentAdjustments
+                .Where(x => x.JobId == jobId && x.DriverId == driverId && x.Status == (int)PaymentStatusEnum.QADone)
+                .ToListAsync();
+        }
+
+        public async Task DeletePaymentAdjustmentAsync(int id)
+        {
+            var entity = await _paymentAdjustments.Where(e => e.Id == id).FirstOrDefaultAsync();
+             _paymentAdjustments.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
     }
 }

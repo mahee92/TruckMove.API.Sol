@@ -20,9 +20,8 @@ namespace TruckMove.API.BLL.Services.PaymentServices
 
         Task<Response> ChangePaymentStatus(PaymentStatusDTO PaymentStatusDTO, int userId);
         Task<Response> VerifyOrPayPayment(int jobId, int driverId, int userId, int status);
+       Task<Response> AddPaymentAjustments(PaymentAdjustmentDTO paymentAdjustment, int userId);
 
-
-
-
+        Task<Response> DeletePaymentAjustment(int id);
     }
 }

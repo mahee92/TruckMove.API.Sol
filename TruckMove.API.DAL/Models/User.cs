@@ -38,6 +38,9 @@ namespace TruckMove.API.DAL.Models
             LegUpdatedBies = new HashSet<Leg>();
             DelayDrivers = new HashSet<DelayDriver>();
             Delays = new HashSet<Delay>();
+            PaymentAdjustments = new HashSet<PaymentAdjustment>();
+            PaymentAdjustmentUpdatedBies = new HashSet<PaymentAdjustment>();
+            PaymentAdjustmentCreatedBies = new HashSet<PaymentAdjustment>();
         }
 
         public int Id { get; set; }
@@ -95,5 +98,10 @@ namespace TruckMove.API.DAL.Models
 
         public virtual ICollection<Delay> DelayUpdatedBies { get; set; }
         public virtual ICollection<Delay> DelayCreatedBies { get; set; }
+
+        public virtual ICollection<PaymentAdjustment> PaymentAdjustments { get; set; }
+
+        public virtual ICollection<PaymentAdjustment> PaymentAdjustmentUpdatedBies { get; set; }
+        public virtual ICollection<PaymentAdjustment> PaymentAdjustmentCreatedBies { get; set; }
     }
 }

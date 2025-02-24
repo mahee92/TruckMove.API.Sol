@@ -72,6 +72,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<PaymentStatus> PaymentStatuses { get; set; } = null!;
 
+        public virtual DbSet<PaymentAdjustment> PaymentAdjustments { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -1140,6 +1142,38 @@ namespace TruckMove.API.DAL.Models
                     entity.Property(e => e.Id).ValueGeneratedNever();
 
                     entity.Property(e => e.Status).HasMaxLength(50);
+                });
+
+                modelBuilder.Entity<PaymentAdjustment>(entity =>
+                {
+                    entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
+
+
+                    entity.HasOne(d => d.CreatedBy)
+                       .WithMany(p => p.PaymentAdjustmentCreatedBies)
+                       .HasForeignKey(d => d.CreatedById);
+
+                    entity.HasOne(d => d.UpdatedBy)
+                        .WithMany(p => p.PaymentAdjustmentUpdatedBies)
+                        .HasForeignKey(d => d.UpdatedById);
+
+                    entity.HasOne(d => d.Driver)
+                        .WithMany(p => p.PaymentAdjustments)
+                        .HasForeignKey(d => d.DriverId)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_PaymentAdjustments_Users");
+
+                    entity.HasOne(d => d.Job)
+                        .WithMany(p => p.PaymentAdjustments)
+                        .HasForeignKey(d => d.JobId)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_PaymentAdjustments_Jobs");
+
+                    entity.HasOne(d => d.StatusNavigation)
+                        .WithMany(p => p.PaymentAdjustments)
+                        .HasForeignKey(d => d.Status)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_PaymentAdjustments_PaymentStatus");
                 });
 
 

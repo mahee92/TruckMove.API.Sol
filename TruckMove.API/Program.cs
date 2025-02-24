@@ -34,6 +34,7 @@ using TruckMove.API.DAL.Repositories.PaymentRepositories;
 using TruckMove.API.BLL.Services.PaymentServices;
 using Microsoft.AspNetCore.Mvc;
 using TruckMove.API.Controllers;
+using TruckMove.API.BLL.Models.PaymentDto;
 
 internal class Program
 {
@@ -218,6 +219,9 @@ internal class Program
             profile.CreateGenericMap<DelayDriver, DelayDriverDto>();
             profile.CreateGenericMap<UpdateRateValueDto, Rates>();
             profile.CreateGenericMap<Rates, UpdateRateValueDto>();
+
+            profile.CreateGenericMap<PaymentAdjustmentDTO, PaymentAdjustment>();
+            profile.CreateGenericMap<PaymentAdjustment, PaymentAdjustmentDTO>();
 
 
 

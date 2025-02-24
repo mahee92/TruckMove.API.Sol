@@ -11,6 +11,7 @@ namespace TruckMove.API.DAL.Models
             Legs = new HashSet<Leg>();
             PublicTransports = new HashSet<PublicTransport>();
             Purchases = new HashSet<Purchase>();
+            PaymentAdjustments = new HashSet<PaymentAdjustment>();
         }
 
         public int Id { get; set; }
@@ -20,5 +21,7 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Leg> Legs { get; set; }
         public virtual ICollection<PublicTransport> PublicTransports { get; set; }
         public virtual ICollection<Purchase> Purchases { get; set; }
+
+        public virtual ICollection<PaymentAdjustment> PaymentAdjustments { get; set; }
     }
 }

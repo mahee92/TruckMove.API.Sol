@@ -11,6 +11,7 @@ using TruckMove.API.BLL.Models.PaymentDto;
 using Microsoft.EntityFrameworkCore;
 
 
+
 namespace TruckMove.API.BLL.Services.PaymentServices
 {
     public class PaymentService : IPaymentService
@@ -73,16 +74,19 @@ namespace TruckMove.API.BLL.Services.PaymentServices
              var Legs = await GetCalculatedLegPayments(jobId, driverId,rates);
              var delays = await GetCalculatedDelayPayments(jobId, driverId, rates);
              var publicTransports = await GetCalculatedPublicTransportsPayments(jobId, driverId, rates);
+            var paymentAjustments = await GetPaymentAjustments(jobId, driverId);
 
             dynamic legsResult = Legs;
             dynamic delaysResult = delays;
             dynamic publicTransportsResult = publicTransports;
+            dynamic paymentAjustmentsResult = paymentAjustments;
 
             var Total = (double)legsResult.leggrandTotal +
                              (double)delaysResult.delaygrandTotal +
-                             (double)publicTransportsResult.publicTrasportgrandTotal;
+                             (double)publicTransportsResult.publicTrasportgrandTotal+
+                             (double)paymentAjustmentsResult.paymentAdjustmentsgrandTotal;
 
-            return new { Legs = Legs, delays = delays, publicTransports= publicTransports,total= Math.Round(Total,2) };
+            return new { Legs = Legs, delays = delays, publicTransports= publicTransports, paymentAjustments= paymentAjustments,  total = Math.Round(Total,2) };
 
 
         }
@@ -95,16 +99,6 @@ namespace TruckMove.API.BLL.Services.PaymentServices
 
                 PerKmRate = rates.FirstOrDefault(x => x.Name.Contains("Per_KM_Rate"))?.Value ?? 0,
                 Grade_4_Hourly_rate = rates.FirstOrDefault(x => x.Name.Contains("Grade_4_Hourly_rate"))?.Value ?? 0,
-                //Saturday_KM_rate = rates.FirstOrDefault(x => x.Name.Contains("Saturday_KM_rate"))?.Value ?? 0,
-                //Sunday_KM_rate = rates.FirstOrDefault(x => x.Name.Contains("Sunday_KM_rate"))?.Value ?? 0,
-                //Public_holiday_KM_rate = rates.FirstOrDefault(x => x.Name.Contains("Public_holiday_KM_rate"))?.Value ?? 0,
-
-
-                // Max_fixed_job_KMs = rates.FirstOrDefault(x => x.Name.Contains("Max_fixed_job_KMs"))?.Value ?? 0,
-                //Fixed_job_rate = rates.FirstOrDefault(x => x.Name.Contains("Fixed_job_rate"))?.Value ?? 0,
-                //Saturday_Fixed_rate = rates.FirstOrDefault(x => x.Name.Contains("Saturday_fixed_rate"))?.Value ?? 0,
-                //Sunday_Fixed_rate = rates.FirstOrDefault(x => x.Name.Contains("Sunday_fixed_rate"))?.Value ?? 0,
-                //Public_holiday_Fixed_rate = rates.FirstOrDefault(x => x.Name.Contains("Public_holiday_fixed_rate"))?.Value ?? 0,
 
                 Commercial_load_KM_rate = rates.FirstOrDefault(x => x.Name.Contains("Commercial_load_KM_rate"))?.Value ?? 0,
 
@@ -254,6 +248,25 @@ namespace TruckMove.API.BLL.Services.PaymentServices
             return new { publicTrasportGroups = response, publicTrasportgrandTotal = Math.Round(total,2) };
         }
 
+        public async Task<object> GetPaymentAjustments(int jobId, int driverId)
+        {
+            var paymentAdjustments = await _paymentRepository.GetUnpaidPaymentAjustments(jobId, driverId);
+
+            var response = paymentAdjustments.Select(d => new
+            {
+                d.Id,
+                d.JobId,
+                d.DriverId,
+                d.Description,
+                Total= Math.Round(d.Amount,2),
+                PaymentStatusText = ((PaymentStatusEnum)d.Status).ToString(),
+            }).ToList();
+
+            decimal total = response.Sum(r => r.Total);
+
+            return new { paymentAdjustments = response, paymentAdjustmentsgrandTotal = Math.Round(total, 2) };
+        }
+
         #endregion 
 
         #region Status Change
@@ -379,6 +392,54 @@ namespace TruckMove.API.BLL.Services.PaymentServices
 
             return response;
         }
+
+        public async Task<Response> AddPaymentAjustments(PaymentAdjustmentDTO paymentAdjustment, int userId)
+        {
+            Response response = new Response();
+            try
+            {
+
+                PaymentAdjustment newPaymentAdjustment = _mapper.Map<PaymentAdjustment>(paymentAdjustment);
+                newPaymentAdjustment.CreatedDate = DateTime.Now;
+                newPaymentAdjustment.CreatedById = userId;
+                newPaymentAdjustment.Status = (int)PaymentStatusEnum.QADone;
+                var res = await _paymentRepository.AddPaymentAdjustmentAsync(newPaymentAdjustment);
+                response.data = res.Id.ToString();
+                response.Success = true;
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+
+            return response;
+        }
+
+        public async Task<Response> DeletePaymentAjustment(int id)
+        {
+            Response response = new Response();
+            try
+            {
+                await _paymentRepository.DeletePaymentAdjustmentAsync(id);
+                response.Success = true;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+                return response;
+            }
+
+            return response;
+        }
+
+
+
         #endregion
 
 

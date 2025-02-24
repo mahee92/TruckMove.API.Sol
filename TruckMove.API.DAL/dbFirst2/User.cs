@@ -38,6 +38,7 @@ namespace TruckMove.API.DAL.dbFirst2
             LegUpdatedBies = new HashSet<Leg>();
             NoteCreatedBies = new HashSet<Note>();
             NoteUpdatedBies = new HashSet<Note>();
+            PaymentAdjustments = new HashSet<PaymentAdjustment>();
             PermitsAndPlateAssigneeNavigations = new HashSet<PermitsAndPlate>();
             PermitsAndPlateCreatedBies = new HashSet<PermitsAndPlate>();
             PermitsAndPlateUpdatedBies = new HashSet<PermitsAndPlate>();
@@ -105,6 +106,7 @@ namespace TruckMove.API.DAL.dbFirst2
         public virtual ICollection<Leg> LegUpdatedBies { get; set; }
         public virtual ICollection<Note> NoteCreatedBies { get; set; }
         public virtual ICollection<Note> NoteUpdatedBies { get; set; }
+        public virtual ICollection<PaymentAdjustment> PaymentAdjustments { get; set; }
         public virtual ICollection<PermitsAndPlate> PermitsAndPlateAssigneeNavigations { get; set; }
         public virtual ICollection<PermitsAndPlate> PermitsAndPlateCreatedBies { get; set; }
         public virtual ICollection<PermitsAndPlate> PermitsAndPlateUpdatedBies { get; set; }
