@@ -25,6 +25,7 @@ namespace TruckMove.API.DAL.dbFirst2
         public virtual DbSet<Contact> Contacts { get; set; } = null!;
         public virtual DbSet<Delay> Delays { get; set; } = null!;
         public virtual DbSet<DelayDriver> DelayDrivers { get; set; } = null!;
+        public virtual DbSet<DelayType> DelayTypes { get; set; } = null!;
         public virtual DbSet<HookupType> HookupTypes { get; set; } = null!;
         public virtual DbSet<Image> Images { get; set; } = null!;
         public virtual DbSet<Job> Jobs { get; set; } = null!;
@@ -399,6 +400,13 @@ namespace TruckMove.API.DAL.dbFirst2
                     .HasForeignKey(d => d.PaymentStatus)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_DelayDrivers_PaymentStatus");
+            });
+
+            modelBuilder.Entity<DelayType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Type).HasMaxLength(50);
             });
 
             modelBuilder.Entity<HookupType>(entity =>
