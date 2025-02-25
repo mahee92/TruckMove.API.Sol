@@ -9,6 +9,7 @@ using TruckMove.API.BLL.Models.PrimaryDTO;
 using TruckMove.API.BLL.Models.UserManagmentDTO;
 using TruckMove.API.BLL.Models.VehicleDTOs;
 using TruckMove.API.DAL.Models;
+using TruckMove.API.DAL.VMmodels;
 
 namespace TruckMove.API.BLL.Models.TaskDTOs
 {
@@ -26,7 +27,7 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
 
         public virtual List<DelayDto>? Delays { get; set; }
 
-        public virtual List<int>? JobsEligibleForPaymentQA { get; set; }
+        public virtual List<DriverJobPaymentVM>? JobsEligibleForPaymentQA { get; set; }
 
 
     }

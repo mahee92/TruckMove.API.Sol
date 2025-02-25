@@ -36,7 +36,7 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
         {
 
             var query = _jobSet
-               .Where(j => (j.Status == (int)JobStatusEnum.Arrived || j.Status == (int)JobStatusEnum.InStore) && j.Controller == controller)
+               .Where(j => (j.Status == (int)JobStatusEnum.ArrivalChecked || j.Status == (int)JobStatusEnum.InStore) && j.Controller == controller)
                .SelectMany(j => _legdbSet
                    .Where(l => l.PaymentStatus == (int)PaymentStatusEnum.QAPending && l.JobId == j.Id)
                    .Select(l => new { l.JobId, l.DriverId, j.PickupLocation, j.DropOfLocation })
@@ -78,7 +78,7 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
         public IQueryable<DriverJobPaymentVM> GetPayemntList(int status)
         {
             var driverJobs = _jobSet
-                .Where(j => j.Status == (int)JobStatusEnum.Arrived || j.Status == (int)JobStatusEnum.InStore)
+                .Where(j => j.Status == (int)JobStatusEnum.ArrivalChecked || j.Status == (int)JobStatusEnum.InStore)
                 .SelectMany(j =>
                     _legdbSet.Where(l => l.JobId == j.Id)
                              .Select(l => new { j.Id, l.DriverId, j.PickupLocation, j.DropOfLocation })

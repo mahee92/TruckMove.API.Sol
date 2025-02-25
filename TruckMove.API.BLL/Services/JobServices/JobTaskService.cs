@@ -12,8 +12,9 @@ using TruckMove.API.DAL.Models;
 using TruckMove.API.BLL.Models.JobDTOs;
 using TruckMove.API.BLL.Models.VehicleDtos;
 using static TruckMove.API.DAL.MasterData.MasterData;
-
-
+using TruckMove.API.DAL.Repositories.PaymentRepositories;
+using Microsoft.AspNetCore.Mvc;
+using TruckMove.API.DAL.VMmodels;
 
 namespace TruckMove.API.BLL.Services.JobServices
 {
@@ -29,7 +30,8 @@ namespace TruckMove.API.BLL.Services.JobServices
         private readonly IRepository<Purchase> _repositoryPurchase;
         private readonly ITaskRepository _taskRepository;
         private readonly IRepository<Delay> _repositoryDelay;
-        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation, IRepository<PublicTransport> repositoryPublicTransport, IRepository<Purchase> repositoryPurchase, ITaskRepository taskRepository,IRepository<Delay> delay)
+        private readonly IPaymentRepository _paymentRepository;
+        public JobTaskService(IMapper mapper, IRepository<Job> repository, IJobRepository jobRepository, IRepository<PermitsAndPlate> repositorypermitsAndPlate, IRepository<Attachment> repositoryAttachment, IRepository<Accommodation> repositoryAccomadation, IRepository<PublicTransport> repositoryPublicTransport, IRepository<Purchase> repositoryPurchase, ITaskRepository taskRepository,IRepository<Delay> delay, IPaymentRepository paymentRepository)
         {
             _mapper = mapper;
             _repository = repository;
@@ -41,6 +43,7 @@ namespace TruckMove.API.BLL.Services.JobServices
             _repositoryPurchase = repositoryPurchase;
             _taskRepository = taskRepository;
             _repositoryDelay = delay;
+            _paymentRepository = paymentRepository;
 
 
         }
@@ -697,11 +700,11 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var purchaseTasks = _taskRepository.GetPurchaseTasksByUserId(userId);
                 var drivingTasks = _taskRepository.GetDrivingTasksByUserId(userId);
                 var delayTasks = _taskRepository.GetDelayTasksByUserId(userId);
-                var GetJobsEligibleForPaymentQA = _taskRepository.GetJobsEligibleForPaymentQA(userId);
-                
-               
+                //var GetJobsEligibleForPaymentQA = _paymentRepository.GetQAPendingList(userId);//_taskRepository.GetJobsEligibleForPaymentQA(userId);
 
-                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks,delayTasks, GetJobsEligibleForPaymentQA);
+
+
+                await Task.WhenAll(permitTasks, accommodationTasks, publicTransportTasks, purchaseTasks, drivingTasks,delayTasks);
 
                
                 var permitsResult = await permitTasks;
@@ -711,7 +714,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var drivingResult = await drivingTasks;
                 var delayResult = await delayTasks;
 
-                var GetJobsEligibleForPaymentQAResult = await GetJobsEligibleForPaymentQA;
+                //var GetJobsEligibleForPaymentQAResult = await GetJobsEligibleForPaymentQA;
 
                 response.Object = new MyTaskDto();
                 if (permitsResult != null && permitsResult.Count > 0)
@@ -744,11 +747,14 @@ namespace TruckMove.API.BLL.Services.JobServices
                     response.Object.Delays = new List<DelayDto>();
                     AddMappedTasksToResponse(response.Object.Delays, delayResult);
                 }
-                if (GetJobsEligibleForPaymentQAResult != null && GetJobsEligibleForPaymentQAResult.Count > 0)
-                {
-                    response.Object.JobsEligibleForPaymentQA = new List<int>();
-                    response.Object.JobsEligibleForPaymentQA.AddRange(GetJobsEligibleForPaymentQAResult);
-                }
+
+                 response.Object.JobsEligibleForPaymentQA = new List<DriverJobPaymentVM>();
+                 var res =  _paymentRepository.GetQAPendingList(userId).ToList();
+                 response.Object.JobsEligibleForPaymentQA.AddRange(res);
+                  
+                    
+                    
+                
 
 
                 response.Success = true;
