@@ -108,7 +108,9 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                 hookUp_Double = rates.FirstOrDefault(x => x.Name.Contains("Hookup_Double"))?.Value ?? 0,
                 hookUp_4RA = rates.FirstOrDefault(x => x.Name.Contains("Hookup_4RA"))?.Value ?? 0,
                 Delay_hourly_rate = rates.FirstOrDefault(x => x.Name.Contains("Delay_hourly_rate"))?.Value ?? 0,
-                Public_transport_hourly_Rate = rates.FirstOrDefault(x => x.Name.Contains("Public_transport_hourly_Rate"))?.Value ?? 0
+                Public_transport_hourly_Rate = rates.FirstOrDefault(x => x.Name.Contains("Public_transport_hourly_Rate"))?.Value ?? 0,
+                Public_Transport_Delay = rates.FirstOrDefault(x => x.Name.Contains("Public_Transport_Delay"))?.Value ?? 0
+
 
             };
             return paymentRates;
@@ -122,12 +124,13 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                 d.Id,
                 d.Delay.StartTime,
                 d.Delay.EndTime,
+                type=  ((DelayTypeEnum)d.Delay.Type).ToString(),
                 DurationHours = d.Delay.StartTime.HasValue && d.Delay.EndTime.HasValue
                                 ? Math.Round( (d.Delay.EndTime.Value - d.Delay.StartTime.Value).TotalHours,2)
                                 : 0, // Handle null values
-                rates.Delay_hourly_rate,
+                rate=(d.Delay.Type==(int)DelayTypeEnum.TripDelay)?rates.Delay_hourly_rate:rates.Public_Transport_Delay,
                 Total = d.Delay.StartTime.HasValue && d.Delay.EndTime.HasValue
-                         ? Math.Round((d.Delay.EndTime.Value - d.Delay.StartTime.Value).TotalHours * rates.Delay_hourly_rate, 2)
+                ? Math.Round((d.Delay.EndTime.Value - d.Delay.StartTime.Value).TotalHours * ((d.Delay.Type == (int)DelayTypeEnum.TripDelay) ? rates.Delay_hourly_rate : rates.Public_Transport_Delay), 2)
                         : 0,
                 PaymentStatusText = ((PaymentStatusEnum)d.PaymentStatus).ToString(),
             }).ToList();

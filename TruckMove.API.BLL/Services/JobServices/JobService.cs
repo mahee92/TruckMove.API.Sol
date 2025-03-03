@@ -386,7 +386,8 @@ namespace TruckMove.API.BLL.Services.JobServices
                 var res4 = await _repository.GetWithNestedIncludesAsync(id, "Delays.AssigneeNavigation",
                                                                              "Delays.StatusNavigation",
                                                                              "Delays.Notes", 
-                                                                             "Delays.DelayDrivers");
+                                                                             "Delays.DelayDrivers",
+                                                                             "Delays.TypeNavigation");
                 job.Accommodations = res2.Accommodations;
                 job.PermitsAndPlates = res2.PermitsAndPlates;
                 job.PublicTransports = res3.PublicTransports;

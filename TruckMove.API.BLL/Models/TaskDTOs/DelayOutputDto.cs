@@ -14,8 +14,10 @@ namespace TruckMove.API.BLL.Models.TaskDTOs
 
         public virtual UserDto? AssigneeNavigation { get; set; }
 
-        public virtual TaskStatusDto? StatusNavigation { get; set; } 
+        public virtual TaskStatusDto? StatusNavigation { get; set; }
 
-        
+        public virtual DelayTypeDto? TypeNavigation { get; set; }
+
+
     }
 }

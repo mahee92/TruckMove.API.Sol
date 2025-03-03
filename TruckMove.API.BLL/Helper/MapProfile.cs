@@ -90,6 +90,14 @@ namespace TruckMove.API.BLL.Helper
 
             );
 
+            CreateMap<DelayType, DelayTypeDto>();
+            CreateMap<DelayTypeDto, DelayType>();
+            CreateMap<DelayOutputDto, Delay>();
+            CreateMap<Delay, DelayOutputDto>();
+                //.ForMember(dest => dest.StatusNavigation, opt => opt.MapFrom(src => src.StatusNavigation))
+               // .ForMember(dest => dest.TypeNavigation, opt => opt.MapFrom(src => src.TypeNavigation)
+
+           // );
         }
 
         public void CreateGenericMap<TSource, TDestination>()

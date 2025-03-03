@@ -74,6 +74,8 @@ namespace TruckMove.API.DAL.Models
 
         public virtual DbSet<PaymentAdjustment> PaymentAdjustments { get; set; } = null!;
 
+        public virtual DbSet<DelayType> DelayTypes { get; set; } = null!;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -182,6 +184,13 @@ namespace TruckMove.API.DAL.Models
                                 new PaymentStatus { Id = (int)PaymentStatusEnum.QADone, Status = PaymentStatusEnum.QADone.ToString() },
                                 new PaymentStatus { Id = (int)PaymentStatusEnum.Verified, Status = PaymentStatusEnum.Verified.ToString() },
                                 new PaymentStatus { Id = (int)PaymentStatusEnum.PaymentDone, Status = PaymentStatusEnum.PaymentDone.ToString() });
+
+           
+                modelBuilder.Entity<DelayType>().HasData(
+                                   new DelayType { Id = (int)DelayTypeEnum.TripDelay, Type = DelayTypeEnum.TripDelay.ToString() },
+                                   new DelayType { Id = (int)DelayTypeEnum.PublicTransportDelay, Type = DelayTypeEnum.PublicTransportDelay.ToString() });
+
+
 
             modelBuilder.Entity<Accommodation>(entity =>
             {
@@ -1059,6 +1068,8 @@ namespace TruckMove.API.DAL.Models
                         .IsRequired()
                         .HasDefaultValueSql("(CONVERT([bit],(1)))");
 
+                    entity.Property(e => e.Type).HasDefaultValueSql("((1))");
+
                     entity.HasOne(d => d.CreatedBy)
                         .WithMany(p => p.DelayCreatedBies)
                         .HasForeignKey(d => d.CreatedById);
@@ -1094,6 +1105,12 @@ namespace TruckMove.API.DAL.Models
                         .WithOne(dd => dd.Delay)
                         .HasForeignKey(dd => dd.DelayId)
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    entity.HasOne(d => d.TypeNavigation)
+                        .WithMany(p => p.Delays)
+                        .HasForeignKey(d => d.Type)
+                        .OnDelete(DeleteBehavior.ClientSetNull)
+                        .HasConstraintName("FK_Delays_DelayTypes");
                 });
 
                 modelBuilder.Entity<DelayDriver>(entity =>
@@ -1174,6 +1191,13 @@ namespace TruckMove.API.DAL.Models
                         .HasForeignKey(d => d.Status)
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_PaymentAdjustments_PaymentStatus");
+                });
+
+                modelBuilder.Entity<DelayType>(entity =>
+                {
+                    entity.Property(e => e.Id).ValueGeneratedNever();
+
+                    entity.Property(e => e.Type).HasMaxLength(50);
                 });
 
 

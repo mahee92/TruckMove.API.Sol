@@ -25,6 +25,8 @@ namespace TruckMove.API.DAL.Models
 
         public bool IsActive { get; set; }
 
+        public int Type { get; set; }
+
         public virtual User? AssigneeNavigation { get; set; }
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
@@ -33,6 +35,8 @@ namespace TruckMove.API.DAL.Models
         public virtual ICollection<Note>? Notes { get; set; }
 
         public bool ShouldUpdateJob => true;
+
+        public virtual DelayType TypeNavigation { get; set; } = null!;
     }
 
 }

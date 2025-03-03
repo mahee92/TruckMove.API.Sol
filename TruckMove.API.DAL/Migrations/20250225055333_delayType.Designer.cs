@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20250225055333_delayType")]
+    partial class delayType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -506,11 +508,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int>("Type")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValueSql("((1))");
-
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("int");
 
@@ -523,8 +520,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.HasIndex("JobId");
 
                     b.HasIndex("Status");
-
-                    b.HasIndex("Type");
 
                     b.HasIndex("UpdatedById");
 
@@ -579,12 +574,12 @@ namespace TruckMove.API.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Type = "TripDelay"
+                            Type = "Delay occoured in Trip (breakdown ext.)"
                         },
                         new
                         {
                             Id = 2,
-                            Type = "PublicTransportDelay"
+                            Type = "Delay occoured in public traspotation"
                         });
                 });
 
@@ -2436,12 +2431,6 @@ namespace TruckMove.API.DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Delays_TaskStatus");
 
-                    b.HasOne("TruckMove.API.DAL.Models.DelayType", "TypeNavigation")
-                        .WithMany("Delays")
-                        .HasForeignKey("Type")
-                        .IsRequired()
-                        .HasConstraintName("FK_Delays_DelayTypes");
-
                     b.HasOne("TruckMove.API.DAL.Models.User", "UpdatedBy")
                         .WithMany("DelayUpdatedBies")
                         .HasForeignKey("UpdatedById");
@@ -2453,8 +2442,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("Job");
 
                     b.Navigation("StatusNavigation");
-
-                    b.Navigation("TypeNavigation");
 
                     b.Navigation("UpdatedBy");
                 });
@@ -3097,11 +3084,6 @@ namespace TruckMove.API.DAL.Migrations
                     b.Navigation("DelayDrivers");
 
                     b.Navigation("Notes");
-                });
-
-            modelBuilder.Entity("TruckMove.API.DAL.Models.DelayType", b =>
-                {
-                    b.Navigation("Delays");
                 });
 
             modelBuilder.Entity("TruckMove.API.DAL.Models.HookupType", b =>

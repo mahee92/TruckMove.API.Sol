@@ -24,11 +24,15 @@ namespace TruckMove.API.DAL.dbFirst2
         public DateTime? LastModifiedDate { get; set; }
         public int? UpdatedById { get; set; }
         public bool? IsPaid { get; set; }
+        public int Type { get; set; }
+
+
 
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? CreatedBy { get; set; }
         public virtual Job Job { get; set; } = null!;
         public virtual TaskStatus StatusNavigation { get; set; } = null!;
+        public virtual DelayType TypeNavigation { get; set; } = null!;
         public virtual User? UpdatedBy { get; set; }
         public virtual ICollection<DelayDriver> DelayDrivers { get; set; }
         public virtual ICollection<Note> Notes { get; set; }

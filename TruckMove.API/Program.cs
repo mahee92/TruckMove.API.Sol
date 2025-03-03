@@ -212,8 +212,8 @@ internal class Program
             profile.CreateGenericMap<CheckListImageDto, CheckListImage>();
             profile.CreateGenericMap<DelayDto, Delay>();
             profile.CreateGenericMap<Delay, DelayDto>();
-            profile.CreateGenericMap<DelayOutputDto, Delay>();
-            profile.CreateGenericMap<Delay, DelayOutputDto>();
+          
+           
 
             profile.CreateGenericMap<DelayDriverDto, DelayDriver>();
             profile.CreateGenericMap<DelayDriver, DelayDriverDto>();

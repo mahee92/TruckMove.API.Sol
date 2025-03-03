@@ -29,6 +29,8 @@
         public double Delay_hourly_rate { get; set; }
         public double Public_transport_hourly_Rate { get; set; }
 
+        public double Public_Transport_Delay { get; set; }
+
 
 
 

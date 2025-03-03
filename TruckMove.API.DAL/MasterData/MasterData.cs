@@ -126,5 +126,11 @@ namespace TruckMove.API.DAL.MasterData
             PaymentDone = 4
 
         }
+
+        public enum DelayTypeEnum
+        {
+            TripDelay = 1,
+            PublicTransportDelay = 2
+        }
     }
 }

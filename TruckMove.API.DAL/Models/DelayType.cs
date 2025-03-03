@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TruckMove.API.DAL.dbFirst2
+namespace TruckMove.API.DAL.Models
 {
     public partial class DelayType
     {
