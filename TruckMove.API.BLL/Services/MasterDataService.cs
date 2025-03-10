@@ -209,6 +209,28 @@ namespace TruckMove.API.BLL.Services
                 response.ErrorMessage = ex.Message;
             }
             return response;
+        }//async Task<List<DelayType>> 
+
+        public async Task<Response<DelayType>> GetAllDelayTypes()
+        {
+            Response<DelayType> response = new Response<DelayType>();
+            try
+            {
+                var types = await _repository.GetAllDelayTypes();
+                response.Success = true;
+                if (types.Count > 0)
+                {
+                    response.Objects = new List<DelayType>();
+                    response.Objects = types;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorType = ErrorCode.dbError;
+                response.ErrorMessage = ex.Message;
+            }
+            return response;
         }
 
 

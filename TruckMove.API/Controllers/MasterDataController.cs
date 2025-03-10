@@ -175,5 +175,20 @@ namespace TruckMove.API.Controllers
                 return StatusCode((int)response.ErrorType, response.ErrorMessage);
             }
         }
+
+        [HttpGet("/GetDelayTypes")]
+        public async Task<IActionResult> GetDelayTypes()
+        {
+            var response = await _masterdataService.GetAllDelayTypes();
+            if (response.Success)
+            {
+                return Ok(response.Objects);
+            }
+            else
+            {
+
+                return StatusCode((int)response.ErrorType, response.ErrorMessage);
+            }
+        }
     }
 }

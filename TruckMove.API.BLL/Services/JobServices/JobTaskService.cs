@@ -523,7 +523,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                     var res = await _repositoryDelay.AddAsync(newDelay);
                  
                    var res2 = await _repositoryDelay.GetWithNestedIncludesAsync(res.Id, "AssigneeNavigation",
-                                                                  "StatusNavigation", "DelayDrivers"
+                                                                  "StatusNavigation", "DelayDrivers", "TypeNavigation"
                                                                   );
                    // HandleDrivers(delay, res2);
                     response.Object = _mapper.Map<DelayOutputDto>(res2);
@@ -550,7 +550,7 @@ namespace TruckMove.API.BLL.Services.JobServices
                         HandleDrivers(delay, existingDelay);
                         var updatedDelay = await _repositoryDelay.UpdateAsync(res);
                         var res2 = await _repositoryDelay.GetWithNestedIncludesAsync(res.Id, "AssigneeNavigation",
-                                                                  "StatusNavigation", "DelayDrivers"
+                                                                  "StatusNavigation", "DelayDrivers", "TypeNavigation"
                                                                   );
 
                         

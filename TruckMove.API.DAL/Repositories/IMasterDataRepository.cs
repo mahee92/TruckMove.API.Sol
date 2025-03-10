@@ -23,5 +23,6 @@ namespace TruckMove.API.DAL.Repositories
 
         Task<List<Rates>> GetAllRates();
         Task<List<PaymentStatus>> GetAllPaymentStatus();
+        Task<List<DelayType>> GetAllDelayTypes();
     }
 }

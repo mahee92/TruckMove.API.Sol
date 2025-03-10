@@ -74,5 +74,10 @@ namespace TruckMove.API.DAL.Repositories
         {
             return await _context.Set<PaymentStatus>().ToListAsync();
         }
+
+        public async Task<List<DelayType>> GetAllDelayTypes()
+        {
+            return await _context.Set<DelayType>().ToListAsync();
+        }
     }
 }

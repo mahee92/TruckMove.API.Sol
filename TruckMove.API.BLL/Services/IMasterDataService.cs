@@ -26,5 +26,7 @@ namespace TruckMove.API.BLL.Services
         
         Task<Response<UpdateRateValueDto>> GetAllRates();
         Task<Response<PaymentStatus>> GetAllPaymentStatus();
+
+        Task<Response<DelayType>> GetAllDelayTypes();
     }
 }
