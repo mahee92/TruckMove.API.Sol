@@ -1165,6 +1165,11 @@ namespace TruckMove.API.DAL.Models
                 {
                     entity.Property(e => e.Amount).HasColumnType("decimal(18, 0)");
 
+                    entity.Property(e => e.IsFromQa)
+                    .IsRequired()
+                    .HasColumnName("IsFromQA")
+                    .HasDefaultValueSql("((1))");
+
 
                     entity.HasOne(d => d.CreatedBy)
                        .WithMany(p => p.PaymentAdjustmentCreatedBies)

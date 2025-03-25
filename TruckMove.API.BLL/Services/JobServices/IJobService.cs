@@ -20,6 +20,8 @@ namespace TruckMove.API.BLL.Services.JobServices
 
         IQueryable<JobOutPutDTO> GetAllAsync();
 
+        IQueryable<object> GetAllAsync2();
+
 
         Task<Response> ContactAddDelete(int id, List<int> contacts);
         Task<Response<VehicleDto>> VehiclePostPutAsync(VehicleDto vehicle, int userId);

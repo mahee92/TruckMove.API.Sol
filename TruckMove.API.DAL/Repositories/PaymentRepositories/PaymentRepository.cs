@@ -203,6 +203,7 @@ namespace TruckMove.API.DAL.Repositories.PaymentRepositories
         }
         public async Task<PaymentAdjustment> AddPaymentAdjustmentAsync(PaymentAdjustment entity)
         {
+            
             await _paymentAdjustments.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;

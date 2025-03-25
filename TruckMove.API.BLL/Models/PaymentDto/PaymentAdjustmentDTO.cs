@@ -8,5 +8,6 @@
         public string Description { get; set; } = null!;
         public decimal Amount { get; set; }
         public int Status { get; set; }
+        public bool? IsFromQa { get; set; }
     }
 }

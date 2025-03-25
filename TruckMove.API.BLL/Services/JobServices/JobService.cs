@@ -428,8 +428,13 @@ namespace TruckMove.API.BLL.Services.JobServices
             var jobs = _jobRepository.GetAllAsync();
             return jobs.ProjectTo<JobOutPutDTO>(_mapper.ConfigurationProvider);
         }
+        //public IQueryable<object> GetAllAsync2()
 
-        
+        public IQueryable<object> GetAllAsync2()
+        {
+            return _jobRepository.GetAllAsync2();
+           // return jobs.ProjectTo<JobOutPutDTO>(_mapper.ConfigurationProvider);
+        }
 
         public async Task<Response<LegHistoryDto>> GetLegHistory(int jobId)
         {

@@ -18,6 +18,8 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
 
         IQueryable<Job> GetAllAsync(int driverId);
         IQueryable<Job> GetAllAsync();
+
+        IQueryable<Object> GetAllAsync2();
         Task<List<WayPoint>> GetWayPointsByJobId(int jobId);
 
         Task DeleteWaypointsByIdsAsync(IEnumerable<int> ids);

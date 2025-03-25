@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20250311045632_payemntAdjFromQA")]
+    partial class payemntAdjFromQA
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1203,11 +1205,10 @@ namespace TruckMove.API.DAL.Migrations
                     b.Property<int>("DriverId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("IsFromQa")
-                        .IsRequired()
+                    b.Property<bool>("FromQA")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
-                        .HasColumnName("IsFromQA")
+                        .HasColumnName("FromQA")
                         .HasDefaultValueSql("((1))");
 
                     b.Property<int>("JobId")

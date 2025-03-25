@@ -262,7 +262,8 @@ namespace TruckMove.API.BLL.Services.PaymentServices
                 d.DriverId,
                 d.Description,
                 Total= Math.Round(d.Amount,2),
-                PaymentStatusText = ((PaymentStatusEnum)d.Status).ToString(),
+                PaymentStatusText = ((PaymentStatusEnum)d.Status).ToString() ,
+                d.IsFromQa
             }).ToList();
 
             decimal total = response.Sum(r => r.Total);

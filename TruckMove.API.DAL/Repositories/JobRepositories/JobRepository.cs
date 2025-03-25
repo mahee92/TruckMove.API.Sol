@@ -99,6 +99,57 @@ namespace TruckMove.API.DAL.Repositories.JobRepositories
             // string sqlQuery = query.ToQueryString();
             return query;
         }
+        public IQueryable<object> GetAllAsync2()
+        {
+
+            var query = _dbSet
+                .Where(e => e.IsActive)
+                .Select(e => new 
+                {
+                    Id = e.Id,
+                    notes=e.Notes.Where(x=>x.JobId== e.Id).Select(x=>x.NoteText).ToList(),
+                    companyName = e.Company.CompanyName,
+                    companyId= e.CompanyId,
+                    LastModifiedDate =e.LastModifiedDate,
+                    currentDriver = (e.DriverNavigation!=null)?e.DriverNavigation.FirstName + " " + e.DriverNavigation.LastName:"-",
+                   
+                    vehicle = (e.VehicleNavigation != null) ? e.VehicleNavigation.Make + " " + e.VehicleNavigation.Model + " " + e.VehicleNavigation.Year  : "-",
+                    checkListCompleted = e.Checklists.Any(),
+
+                    pickupdate = e.PickupDate,
+                    dropoffdate = e.EstimatedDeliveryDate,
+                    pickuplocation = e.PickupLocation,
+                    dropofflocation = e.DropOfLocation,
+                   
+                    
+                   
+
+
+                    accommodationCompleteCount = e.Accommodations.Where(x=>x.Status== (int)TaskStatusEnum.Completed).Count(),
+                    accommodationNotCompleteCount = e.Accommodations.Where(x => x.Status != (int)TaskStatusEnum.Completed).Count(),
+                    purchaseCompleteCount = e.Purchases.Where(x => x.Status == (int)TaskStatusEnum.Completed).Count(),
+                    purchaseNotCompleteCount = e.Purchases.Where(x => x.Status != (int)TaskStatusEnum.Completed).Count(),
+                    publicTransportCompleteCount = e.PublicTransports.Where(x => x.Status == (int)TaskStatusEnum.Completed).Count(),
+                    publicTransportNotCompleteCount = e.PublicTransports.Where(x => x.Status != (int)TaskStatusEnum.Completed).Count(),
+                    delayCompletedCount = e.Delays.Where(x => x.Status == (int)TaskStatusEnum.Completed).Count(),
+                    delayNotCompletedCount = e.Delays.Where(x => x.Status != (int)TaskStatusEnum.Completed).Count(),
+
+                    statusText = e.StatusNavigation.Status,
+                    statusId = e.StatusNavigation.Id,
+                    statusLightColour = e.StatusNavigation.LightColour,
+                    statusDarkColour = e.StatusNavigation.DarkColour,
+
+                    opsManager = (e.ControllerNavigation != null) ? e.ControllerNavigation.FirstName + " " + e.ControllerNavigation.LastName : "-",
+                    opsManagerId = (e.ControllerNavigation != null) ? e.ControllerNavigation.Id : 0,
+                    
+
+
+
+
+                })
+                .AsQueryable();
+            return query;
+        }
         public async Task<List<WayPoint>> GetWayPointsByJobId(int jobId)
         {
             return await _context.Set<WayPoint>().Where(x => x.JobId == jobId).ToListAsync();

@@ -105,6 +105,19 @@ namespace TruckMove.API.Controllers.JobControllers
             return Ok(query);
         }
 
+        [HttpGet("/Odata/Job/GetAll2")]
+        [EnableQuery]
+        public async Task<IActionResult> GetAll2()
+        {
+            //string jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZHJpdmVyQGV4YW1wbGUuY29tIiwibmFtZWlkIjoiMjEiLCJyb2xlIjoiRHJpdmVyIiwibmJmIjoxNzE5MzM0NTIyLCJleHAiOjE3MTkzMzgxMjIsImlhdCI6MTcxOTMzNDUyMiwiaXNzIjoiaHR0cHM6Ly92dG10cnVja21vdmUuYXBpLmRldi5yaXZlcmluYS5kaWdpdGFsLyIsImF1ZCI6Imh0dHBzOi8vdnRtdHJ1Y2ttb3ZlLmFwaS5kZXYucml2ZXJpbmEuZGlnaXRhbC8ifQ.qMI46lgenS0kKwDsYf8HIew_R-IzgSIrT713Dl1m60";
+            //await JobApiClient.SetJwtToken();
+            //string result = await JobApiClient.ApiCallAsync();
+
+            var query = _jobService.GetAllAsync2();
+            //var count = query.Count();
+            return Ok(query);
+        }
+
         [HttpGet("IsDriverChangeAllowed")]
         public async Task<IActionResult> IsDriverChangeAllowed(int jobId)
         {

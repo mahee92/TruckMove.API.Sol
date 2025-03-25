@@ -11,6 +11,7 @@ namespace TruckMove.API.DAL.dbFirst2
         public string Description { get; set; } = null!;
         public decimal Amount { get; set; }
         public int Status { get; set; }
+        public bool? IsFromQa { get; set; }
 
         public virtual User Driver { get; set; } = null!;
         public virtual Job Job { get; set; } = null!;

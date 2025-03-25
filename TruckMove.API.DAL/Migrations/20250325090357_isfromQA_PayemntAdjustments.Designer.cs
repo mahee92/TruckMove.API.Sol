@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TruckMove.API.DAL.Models;
 
@@ -11,9 +12,10 @@ using TruckMove.API.DAL.Models;
 namespace TruckMove.API.DAL.Migrations
 {
     [DbContext(typeof(TrukMoveContext))]
-    partial class TrukMoveContextModelSnapshot : ModelSnapshot
+    [Migration("20250325090357_isfromQA_PayemntAdjustments")]
+    partial class isfromQA_PayemntAdjustments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -26,8 +26,6 @@ namespace TruckMove.API.DAL.dbFirst2
         public bool? IsPaid { get; set; }
         public int Type { get; set; }
 
-
-
         public virtual User? AssigneeNavigation { get; set; }
         public virtual User? CreatedBy { get; set; }
         public virtual Job Job { get; set; } = null!;
