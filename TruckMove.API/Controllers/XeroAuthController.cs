@@ -30,7 +30,7 @@ namespace TruckMove.API.Controllers
             _xeroConfig = xeroConfig.Value;
             _httpClientFactory = httpClientFactory;
         }
-
+        
         [HttpGet("redirect")]
         public async Task<IActionResult> RedirectToXero()
         {
@@ -93,6 +93,26 @@ namespace TruckMove.API.Controllers
 
             Log.Information("Xero token received and stored.");
             return Ok("Authorization successful.");
+        }
+
+        [HttpGet("CheckConnectivity")]
+        public async Task<IActionResult> CheckConnectivity()
+        {
+            if (IsAccessTokenValid())
+            {
+               
+                return Ok("Connected");
+            }
+
+            return BadRequest("Not Connected");
+        }
+
+        [HttpGet("Logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            Log.Information("User logged out from Xero.");
+            return Ok("Logged out successfully.");
         }
 
         private async Task RefreshTokenAsync()

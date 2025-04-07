@@ -434,7 +434,7 @@ internal class Program
         //{
         //    endpoints.MapODataRoute("odata", "odata", modelBuilder.GetEdmModel());
         //});
-       // app.UseSession();
+        app.UseSession();
         app.MapControllers();
 
     }
